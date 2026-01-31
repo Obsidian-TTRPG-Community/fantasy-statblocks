@@ -34,7 +34,7 @@
         "cross-env": "^7.0.3",
         "dom-to-image": "^2.6.0",
         "dotenv": "^16.4.5",
-        "esbuild": "^0.23.1",
+        "esbuild": "^0.25.0",
         "esbuild-loader": "^4.2.2",
         "esbuild-plugin-inline-worker": "github:mitschabaude/esbuild-plugin-inline-worker",
         "esbuild-sass-plugin": "^3.3.1",
