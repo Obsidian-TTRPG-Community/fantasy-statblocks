@@ -56,6 +56,7 @@ export default class StatBlockRenderer extends MarkdownRenderChild {
     params!: Partial<StatblockParameters>;
     context: string;
     layout!: Layout;
+    rawSource: string = "";
     constructor(
         public rendererParameters: RendererParameters,
         public icons = true
@@ -362,6 +363,88 @@ export default class StatBlockRenderer extends MarkdownRenderChild {
         return ret;
     }
 
+    /**
+     * Inject column-break items into layout blocks based on [column-break] markers in source
+     */
+    injectColumnBreaks(blocks: StatblockItem[]): StatblockItem[] {
+        const columnBreakMatches = this.rawSource.match(/^\s*\[column-break\]\s*$/gm);
+        const columnBreakCount = columnBreakMatches?.length || 0;
+        
+        // If no column breaks found, return blocks as-is
+        if (columnBreakCount === 0) {
+            return blocks;
+        }
+
+        // Find the positions where [column-break] appears in the raw source
+        const sourceLines = this.rawSource.split('\n');
+        const columnBreakLineNumbers: number[] = [];
+        
+        sourceLines.forEach((line, index) => {
+            if (line.trim() === '[column-break]') {
+                columnBreakLineNumbers.push(index);
+            }
+        });
+
+        // For each column break, find the YAML key that appears before it
+        const blockPositions: number[] = [];
+        
+        for (const breakLineNum of columnBreakLineNumbers) {
+            // Find the last top-level YAML key before this break
+            let lastKeyName = '';
+            let lastKeyLine = -1;
+            
+            for (let i = breakLineNum - 1; i >= 0; i--) {
+                const line = sourceLines[i];
+                // Match top-level keys (lines that start without whitespace and contain ':')
+                const keyMatch = line.match(/^([a-zA-Z_-]+):/);
+                if (keyMatch) {
+                    lastKeyName = keyMatch[1];
+                    lastKeyLine = i;
+                    break;
+                }
+            }
+            
+            // Find the last block with a property matching this key name
+            let insertIdx = blocks.length - 1;
+            if (lastKeyName) {
+                for (let i = blocks.length - 1; i >= 0; i--) {
+                    const block = blocks[i];
+                    // Check if this block corresponds to the key we found
+                    if ('properties' in block && block.properties.length > 0) {
+                        const blockProperty = block.properties[0];
+                        // Match property names (they might be transformed, e.g., "trait" -> "traits")
+                        if (blockProperty === lastKeyName || blockProperty.startsWith(lastKeyName)) {
+                            insertIdx = i;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            blockPositions.push(insertIdx);
+        }
+
+        // Insert column-break items in reverse order to avoid index shifting
+        for (let i = blockPositions.length - 1; i >= 0; i--) {
+            const insertIndex = blockPositions[i];
+            const columnBreakId = `column-break-${Date.now()}-${i}-${Math.random()}`;
+            
+            const columnBreakItem: StatblockItem = {
+                type: 'column-break' as const,
+                id: columnBreakId
+            } as any;
+            
+            // Insert after the block at insertIndex
+            if (insertIndex + 1 <= blocks.length) {
+                blocks.splice(insertIndex + 1, 0, columnBreakItem);
+            } else {
+                blocks.push(columnBreakItem);
+            }
+        }
+
+        return blocks;
+    }
+
     setCreature(
         params:
             | {
@@ -388,12 +471,16 @@ export default class StatBlockRenderer extends MarkdownRenderChild {
     async init() {
         this.containerEl.empty();
         this.monster = (await this.build()) as Monster;
+        
+        // Inject column-break items based on ---column--- markers in source
+        const blocksWithBreaks = this.injectColumnBreaks([...this.layout.blocks]);
+        
         this.$ui = new Statblock({
             target: this.containerEl,
             props: {
                 context: this.context,
                 monster: this.monster,
-                statblock: this.layout.blocks,
+                statblock: blocksWithBreaks,
                 layout: this.layout,
                 plugin: this.plugin,
                 renderer: this,

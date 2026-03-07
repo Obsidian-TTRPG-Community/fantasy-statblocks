@@ -433,6 +433,12 @@ export default class StatBlockPlugin extends Plugin {
         ctx: MarkdownPostProcessorContext
     ) {
         try {
+            /** Store raw source before any transformations for column break detection */
+            const rawSourceForColumnBreaks = source;
+            
+            /** Remove [column-break] markers before YAML parsing - remove entire lines containing only [column-break] */
+            source = source.split('\n').filter(line => line.trim() !== '[column-break]').join('\n');
+            
             /** Replace Links */
             source = Linkifier.transformSource(source);
 
@@ -448,6 +454,9 @@ export default class StatBlockPlugin extends Plugin {
                 params,
                 context: ctx.sourcePath
             });
+            
+            // Store the raw source for column break detection (before link transformation)
+            statblock.rawSource = rawSourceForColumnBreaks;
 
             ctx.addChild(statblock);
         } catch (e) {
