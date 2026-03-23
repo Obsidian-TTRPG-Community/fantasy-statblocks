@@ -17,7 +17,8 @@ export const StatblockItemTypes = [
     "collapse",
     "javascript",
     "layout",
-    "action"
+    "action",
+    "column-break"
 ] as const;
 
 export const TypeNames: Array<[(typeof StatblockItemTypes)[number] | null, string]> = [
@@ -162,6 +163,9 @@ type ActionProps = {
     callback?: string;
     icon?: string;
 };
+type ColumnBreakProps = {
+    type: "column-break";
+};
 
 export type GroupItem = CommonProps & GroupProps;
 export type HeadingItem = CommonProps & HeadingProps;
@@ -180,6 +184,7 @@ export type IfElseItem = RequiredProps & IfElseProps;
 export type CollapseItem = RequiredProps & CollapseProps;
 export type JavaScriptItem = RequiredProps & JavaScriptProps;
 export type LayoutItem = RequiredProps & LayoutProps;
+export type ColumnBreakItem = RequiredProps & ColumnBreakProps;
 
 export type StatblockItem =
     | GroupItem
@@ -197,7 +202,8 @@ export type StatblockItem =
     | CollapseItem
     | JavaScriptItem
     | LayoutItem
-    | ActionItem;
+    | ActionItem
+    | ColumnBreakItem;
 
 export type MarkdownableItem = Exclude<
     StatblockItem,

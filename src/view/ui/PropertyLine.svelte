@@ -44,7 +44,10 @@
 <style>
     .line {
         line-height: var(--active-property-line-height);
-        display: block;
+        display: inline-flex;
+        align-items: center;
+        min-width: 0;
+        flex-shrink: 1;
         font-family: var(--active-property-font);
         color: var(--active-property-font-color);
         font-variant: var(--active-property-font-variant);

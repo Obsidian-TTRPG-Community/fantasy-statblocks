@@ -53,7 +53,8 @@
         if (
             item.type == "ifelse" ||
             item.type == "javascript" ||
-            item.type == "layout"
+            item.type == "layout" ||
+            item.type == "column-break"
         )
             return true;
 
@@ -517,6 +518,12 @@
                 }
                 break;
             }
+            case "column-break": {
+                // Column break markers create an invisible marker element
+                // that Content.svelte uses to force column breaks
+                // Don't add any content to target, just push an empty container
+                break;
+            }
 
         }
         if ("hasRule" in item && item.hasRule) {
@@ -531,7 +538,13 @@
             });
             targets.push(rule);
         }
-        return targets.filter((el) => el.hasChildNodes());
+        // Keep elements that have children OR are column-break markers
+        const filtered = targets.filter((el) => {
+            const hasChildren = el.hasChildNodes();
+            const isColumnBreak = el.className && el.className.includes("column-break-container");
+            return hasChildren || isColumnBreak;
+        });
+        return filtered;
     };
     $: maxHeight =
         !isNaN(Number(monster.columnHeight)) && monster.columnHeight! > 0
@@ -544,6 +557,14 @@
             if (elements?.length) targets.push(...elements);
         }
     }
+
+    // Track which targets are column-break markers
+    const columnBreakIndices: Set<number> = new Set();
+    targets.forEach((target: HTMLElement, index: number) => {
+        if (target.className && target.className.includes("column-break-container")) {
+            columnBreakIndices.add(index);
+        }
+    });
 
     let columnWidth = "400px";
 
@@ -575,6 +596,7 @@
             props: {
                 heights,
                 targets,
+                columnBreakIndices,
                 columns: 1,
                 columnWidth,
                 classes
@@ -615,7 +637,7 @@
 </script>
 
 {#if HEIGHT_READY}
-    <Content {heights} {targets} {columns} {columnWidth} {split} {classes} />
+    <Content {heights} {targets} {columnBreakIndices} {columns} {columnWidth} {split} {classes} />
 {/if}
 
 <style>

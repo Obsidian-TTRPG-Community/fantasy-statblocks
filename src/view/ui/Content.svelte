@@ -6,6 +6,7 @@
 
     export let columns: number = 1;
     export let targets: HTMLElement[];
+    export let columnBreakIndices: Set<number> = new Set();
     export let columnWidth = "400px";
 
     export let heights: number[] = [];
@@ -47,7 +48,25 @@
             const remainingHeight = heights
                 .slice(i + 1)
                 .reduce((a, b) => a + b, 0);
+            
+            // Check if this is a column-break marker using the Set
+            const isColumnBreak = columnBreakIndices.has(i);
+            
+            if (isColumnBreak && columnEls.length < columns) {
+                // Force a new column for column-break markers
+                maxHeight = Math.max(maxHeight, columnEl.scrollHeight);
+                tempColumnContainer.empty();
+                columnEl = tempColumnContainer.createDiv("column");
+                columnEls.push(columnEl);
+                // Don't append the break marker itself to the column
+                continue;
+            }
+            
+            // Only use automatic column balancing if NO manual breaks are present
+            const hasManualBreaks = columnBreakIndices.size > 0;
+            
             if (
+                !hasManualBreaks &&
                 columnEls.length < columns &&
                 heights[i] + columnEl.scrollHeight > maxHeight &&
                 remainingHeight < columnEl.scrollHeight
@@ -60,6 +79,7 @@
             columnEl.appendChild(target);
 
             if (
+                !hasManualBreaks &&
                 columnEls.length < columns &&
                 columnEl.scrollHeight > maxHeight &&
                 (columns <= 2 ||
