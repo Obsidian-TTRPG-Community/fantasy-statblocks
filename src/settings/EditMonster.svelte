@@ -8,6 +8,7 @@
         stringifyYaml
     } from "obsidian";
     import type { Monster } from "index";
+    import { translate, t } from "src/i18n/i18n";
 
     const dispatch = createEventDispatcher();
 
@@ -16,17 +17,17 @@
     let textArea: HTMLTextAreaElement;
 
     const json = (node: HTMLElement) => {
-        new ExtraButtonComponent(node).setIcon("code-glyph").setTooltip("JSON");
+        new ExtraButtonComponent(node).setIcon("code-glyph").setTooltip(translate("common.json"));
     };
     const yaml = (node: HTMLElement) => {
         new ExtraButtonComponent(node)
             .setIcon("lines-of-text")
-            .setTooltip("YAML");
+            .setTooltip(translate("common.yaml"));
     };
     const save = (node: HTMLElement) => {
         new ButtonComponent(node)
             .setIcon("checkmark")
-            .setTooltip("Save Changes")
+            .setTooltip(translate("common.saveChanges"))
             .onClick(() => {
                 if (useJson) {
                     try {
@@ -38,7 +39,7 @@
                     } catch (e) {
                         console.error(e);
                         new Notice(
-                            `There was an error saving the creaturen\n\n${e.message}`
+                            translate("editMonster.saveError").replace("{message}", e.message)
                         );
                         return;
                     }
@@ -49,7 +50,7 @@
     const cancel = (node: HTMLElement) => {
         new ExtraButtonComponent(node)
             .setIcon("cross")
-            .setTooltip("Cancel")
+            .setTooltip(translate("common.cancel"))
             .onClick(() => {
                 dispatch("cancel");
             });
@@ -75,7 +76,7 @@
 </script>
 
 <div class="edit-monster-modal">
-    <h2>Edit Monster</h2>
+    <h2>{$t("editMonster.title")}</h2>
     <div class="top-level">
         <div class="json">
             <div

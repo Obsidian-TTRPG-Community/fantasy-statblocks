@@ -31,6 +31,7 @@ import { API } from "./api/api";
 import { Linkifier } from "./parser/linkify";
 import { Bestiary } from "./bestiary/bestiary";
 import { ExpectedValue } from "@javalent/dice-roller";
+import { detectLocale, setLocale } from "./i18n/i18n";
 
 export const DICE_ROLLER_SOURCE = "FANTASY_STATBLOCKS_PLUGIN";
 
@@ -57,7 +58,8 @@ const DEFAULT_DATA: StatblockData = {
     hideConditionHelp: false,
     alwaysImport: false,
     defaultLayoutsIntegrated: false,
-    atomicWrite: false
+    atomicWrite: false,
+    language: ""
 };
 
 export default class StatBlockPlugin extends Plugin {
@@ -134,6 +136,10 @@ export default class StatBlockPlugin extends Plugin {
 
         await this.loadSettings();
         await this.saveSettings();
+
+        // Language from select or detected from Obisidian}
+      const language = this.settings.language;
+      setLocale(language ? language : detectLocale(window.moment?.locale() ?? "en"));
 
         this.manager.initialize(this.settings);
         this.register(() => this.manager.unload());

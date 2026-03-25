@@ -12,7 +12,8 @@
         "experimentalDecorators": true,
         "types": ["svelte", "node"],
         "lib": ["dom", "esnext", "scripthost", "es2020"],
-        "isolatedModules": false
+        "isolatedModules": false,
+        "resolveJsonModule": true
     },
     "include": ["**/*.ts", "**/*.svelte"]
 }

@@ -3,6 +3,7 @@
     import type { TableItem } from "src/layouts/layout.types";
     import { slugify, stringify } from "src/util/util";
     import TextContentHolder from "./TextContentHolder.svelte";
+    import { translate } from "src/i18n/i18n";
 
     export let monster: Monster;
     export let item: TableItem;
@@ -55,7 +56,7 @@
 <div class="statblock-table {cssClass}">
     {#each [...valueMap.entries()].slice(0, headers.length) as [index, values]}
         <div class="table-item">
-            <span class="statblock-table-header">{headers[index]}</span>
+            <span class="statblock-table-header">{translate(headers[index])}</span>
             {#each values as value}
                 <span>
                     <TextContentHolder property={stringify(value)} />

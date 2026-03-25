@@ -8,6 +8,7 @@
     } from "src/layouts/layout.types";
     import { stringify } from "src/util/util";
     import TextContent from "./TextContent.svelte";
+    import { translate } from "src/i18n/i18n";
 
     export let monster: Monster;
     export let item: TraitsItem | TextItem | GroupItem | InlineItem;
@@ -20,7 +21,7 @@
             if (monsterProp.length) header = monsterProp;
         }
     } else if (item.heading?.length) {
-        header = item.heading;
+        header = translate(item.heading);
     }
     const slugify = (header: string) =>
         header

@@ -11,6 +11,7 @@
     import { derived, writable } from "svelte/store";
     import { onDestroy } from "svelte";
     import { confirmWithModal } from "src/view/statblock";
+    import { t, translate } from "src/i18n/i18n";
 
     export let plugin: StatBlockPlugin;
 
@@ -62,12 +63,12 @@
 
     const remove = async () => {
         if (!$filtered.length) return;
-        if (
-            await confirmWithModal(
-                plugin.app,
-                `Are you sure you want to delete ${$filtered.length} creature${$filtered.length === 1 ? "" : "s"}?`
-            )
-        ) {
+        const count = $filtered.length;
+        const plural = count === 1 ? "" : "s";
+        const msg = translate("creatures.deleteConfirm")
+            .replace("{count}", String(count))
+            .replace("{plural}", plural);
+        if (await confirmWithModal(plugin.app, msg)) {
             await plugin.deleteMonsters(...$filtered.map((m) => m.name));
         }
     };
@@ -81,6 +82,12 @@
             return filtered.slice((page - 1) * slice, page * slice);
         }
     );
+
+    $: creatureCountText = $filtered.length === 0
+        ? $t("creatures.noCreatures")
+        : $filtered.length === 1
+        ? $t("creatures.count").replace("{count}", String($filtered.length))
+        : $t("creatures.countPlural").replace("{count}", String($filtered.length));
 </script>
 
 <div class="bestiary-container">
@@ -90,10 +97,7 @@
     >
         <Filters on:remove={() => remove()} />
         <div class="setting-item-description">
-            {$filtered.length ? $filtered.length : "No"} creature{$filtered.length ===
-            1
-                ? ""
-                : "s"}
+            {creatureCountText}
         </div>
     </div>
     <div class="creatures-container">

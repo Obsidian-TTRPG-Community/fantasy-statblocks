@@ -161,6 +161,7 @@ export interface StatblockData {
     alwaysImport: boolean;
     defaultLayoutsIntegrated: boolean;
     atomicWrite: boolean;
+    language: string;
 }
 
 declare global {

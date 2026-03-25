@@ -8,6 +8,7 @@
     import { Bestiary } from "src/bestiary/bestiary";
     import { writable } from "svelte/store";
     import { createEventDispatcher } from "svelte";
+    import { t } from "src/i18n/i18n";
 
     const sources = writable([...Bestiary.getIndex("source").keys()]);
 
@@ -35,7 +36,7 @@
 
 <div class="container">
     <div class="controls">
-        <Search filter={NameFilter} placeholder={"Search Creatures"} />
+        <Search filter={NameFilter} placeholder={$t("creatures.searchPlaceholder")} />
         <div class="filter-button" on:click={() => (open = !open)}>
             <div use:filter />
             <div class="filter-number">{$ActiveFilters}</div>
@@ -45,14 +46,14 @@
         <div
             use:deleteIcon
             on:click={() => dispatch("remove")}
-            aria-label="Delete filtered creatures"
+            aria-label={$t("creatures.deleteFiltered")}
         />
     </div>
     {#if open}
         <div class="filters" transition:slide={{ easing: linear }}>
             <Options
                 options={$sources}
-                placeholder="Sources"
+                placeholder={$t("creatures.sourcesPlaceholder")}
                 filter={SourcesFilter}
             />
         </div>

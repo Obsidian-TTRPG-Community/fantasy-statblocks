@@ -4,12 +4,13 @@
     import type { PropertyItem } from "../../layouts/layout.types";
     import { slugify, stringify } from "../../util/util";
     import TextContentHolder from "./TextContentHolder.svelte";
+    import { translate } from "src/i18n/i18n";
 
     export let monster: Monster;
     export let item: PropertyItem;
 
     let property = stringify(monster[item.properties[0]], 0, ", ", false);
-    let display = item.display ?? item.properties[0];
+    let display = translate(item.display ?? item.properties[0]);
 
     if (item.callback) {
         try {

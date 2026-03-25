@@ -4,6 +4,7 @@
     import type { SavesItem } from "src/layouts/layout.types";
     import { slugify, toTitleCase } from "src/util/util";
     import TextContentHolder from "./TextContentHolder.svelte";
+    import { translate } from "src/i18n/i18n";
 
     export let monster: Monster;
     export let item: SavesItem;
@@ -61,7 +62,7 @@
 <div class="info">
     <div class="line {cssClasses}">
         <span class="property-name"
-            >{item.display ?? toTitleCase(item.properties[0])}</span
+            >{translate(item.display ?? toTitleCase(item.properties[0]))}</span
         >
         <div class="property-text">
             {#each saves as [name, value]}
