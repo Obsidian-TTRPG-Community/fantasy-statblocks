@@ -26,6 +26,8 @@ import { nanoid, stringify } from "src/util/util";
 import { DICE_ROLLER_SOURCE } from "src/main";
 import type { Monster } from "index";
 import { ExpectedValue } from "obsidian-overload";
+import BrowseCommunityModal from "src/community/BrowseModal";
+import { DEFAULT_COMMUNITY_SOURCE } from "src/community/types";
 
 export default class StatblockSettingTab extends PluginSettingTab {
     importer: Importer;
@@ -462,8 +464,47 @@ export default class StatblockSettingTab extends PluginSettingTab {
                     })
             );
 
+        new Setting(statblockCreatorContainer)
+            .setName("Browse Community Templates")
+            .setDesc(
+                "Discover and install statblock layouts shared by the community, complete with example notes showing the expected in-note format."
+            )
+            .addButton((b) =>
+                b
+                    .setIcon("globe")
+                    .setTooltip("Browse Community Templates")
+                    .onClick(() => {
+                        const modal = new BrowseCommunityModal(
+                            this.plugin,
+                            () => this.generateLayouts(containerEl)
+                        );
+                        modal.open();
+                    })
+            );
+
         const statblockAdditional =
             statblockCreatorContainer.createDiv("additional");
+        new Setting(statblockAdditional)
+            .setName("Community Template Registry")
+            .setDesc(
+                createFragment((e) => {
+                    e.createSpan({
+                        text: "URL of the registry index.json used by 'Browse Community Templates'. Leave blank to use the official registry, or enter a vault-relative path (e.g. _registry/index.json) for a local registry. "
+                    });
+                    e.createEl("br");
+                    e.createEl("code", { text: DEFAULT_COMMUNITY_SOURCE });
+                })
+            )
+            .addText((t) =>
+                t
+                    .setPlaceholder(DEFAULT_COMMUNITY_SOURCE)
+                    .setValue(this.plugin.settings.communityTemplateSource ?? "")
+                    .onChange(async (v) => {
+                        this.plugin.settings.communityTemplateSource = v.trim();
+                        this.plugin.communityTemplates.clearCache();
+                        await this.plugin.saveSettings();
+                    })
+            );
         new Setting(statblockAdditional)
             .setName("Default Layout")
             .setDesc(
@@ -528,6 +569,31 @@ export default class StatblockSettingTab extends PluginSettingTab {
             name,
             id: nanoid()
         };
+    }
+    /**
+     * When a community layout that installed CSS is removed, disable its
+     * snippet(s) and drop the tracking entry. The snippet file is left in the
+     * snippets folder (non-destructive) so the user can re-enable or delete it.
+     */
+    disableCommunitySnippetsFor(layoutId: string) {
+        const map = this.plugin.settings.communityTemplateSnippets;
+        const names = map?.[layoutId];
+        if (!map || !names || !names.length) return;
+        for (const name of names) {
+            try {
+                if (this.app.customCss.enabledSnippets?.has(name)) {
+                    this.app.customCss.setCssEnabledStatus(name, false);
+                }
+            } catch (e) {
+                /* ignore */
+            }
+        }
+        delete map[layoutId];
+        new Notice(
+            `Disabled CSS snippet(s) for this layout: ${names.join(
+                ", "
+            )}. The file(s) remain in your snippets folder.`
+        );
     }
     buildCustomLayouts(
         layoutContainer: HTMLDivElement,
@@ -718,6 +784,7 @@ export default class StatblockSettingTab extends PluginSettingTab {
                     b.setIcon("trash")
                         .setTooltip("Delete")
                         .onClick(async () => {
+                            this.disableCommunitySnippetsFor(layout.id);
                             this.plugin.settings.layouts =
                                 this.plugin.settings.layouts.filter(
                                     (l) => l.id !== layout.id

@@ -156,6 +156,16 @@ export interface StatblockData {
     alwaysImport: boolean;
     defaultLayoutsIntegrated: boolean;
     atomicWrite: boolean;
+    /**
+     * Override URL for the community template registry `index.json`.
+     * Empty/undefined falls back to the official registry.
+     */
+    communityTemplateSource?: string;
+    /**
+     * Maps an installed community layout id to the CSS snippet basename(s) it
+     * installed, so they can be cleaned up when the layout is removed.
+     */
+    communityTemplateSnippets?: { [layoutId: string]: string[] };
 }
 
 export interface StatblockAPI {

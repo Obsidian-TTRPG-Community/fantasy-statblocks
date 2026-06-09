@@ -34,6 +34,7 @@ import { StatblockSuggester } from "./suggest";
 import { DefaultLayouts } from "./layouts";
 import type { StatblockData } from "index";
 import LayoutManager from "./layouts/manager";
+import CommunityTemplateManager from "./community/manager";
 import { CREATURE_VIEW, CreatureView } from "./combatant";
 import { API } from "./api/api";
 import { Linkifier } from "./util/linkify";
@@ -52,6 +53,13 @@ declare module "obsidian" {
         commands: {
             listCommands: () => Command[];
             executeCommandById: (id: string) => boolean;
+        };
+        customCss: {
+            getSnippetsFolder(): string;
+            enabledSnippets: Set<string>;
+            snippets: string[];
+            requestLoadSnippets(): void;
+            setCssEnabledStatus(snippet: string, enabled: boolean): void;
         };
     }
     interface Workspace {
@@ -89,7 +97,9 @@ const DEFAULT_DATA: StatblockData = {
     hideConditionHelp: false,
     alwaysImport: false,
     defaultLayoutsIntegrated: false,
-    atomicWrite: true
+    atomicWrite: true,
+    communityTemplateSource: "",
+    communityTemplateSnippets: {}
 };
 
 export default class StatBlockPlugin extends Plugin implements StatblockAPI {
@@ -97,6 +107,7 @@ export default class StatBlockPlugin extends Plugin implements StatblockAPI {
     data: Map<string, Monster>;
     bestiary: Map<string, Monster>;
     manager = new LayoutManager();
+    communityTemplates = new CommunityTemplateManager(this);
 
     private names: string[];
     #creatures: Monster[];

@@ -78,6 +78,12 @@ export default class StatBlockRenderer extends MarkdownRenderChild {
         this.init();
     }
     setLayout() {
+        // An explicitly supplied layout (e.g. previewing a not-yet-installed
+        // community template) takes precedence over name-based resolution.
+        if (this.rendererParameters.layout) {
+            this.layout = this.rendererParameters.layout;
+            return;
+        }
         this.layout =
             this.plugin.layouts.find(
                 (layout) =>
