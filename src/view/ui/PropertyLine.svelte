@@ -1,14 +1,14 @@
 <script lang="ts">
-    import type { Monster } from "index";
+    import type { Monster } from "../../../index";
     import { Notice } from "obsidian";
-    import type { PropertyItem } from "types/layout";
-    import { slugify, stringify } from "src/util/util";
+    import type { PropertyItem } from "../../layouts/layout.types";
+    import { slugify, stringify } from "../../util/util";
     import TextContentHolder from "./TextContentHolder.svelte";
 
     export let monster: Monster;
     export let item: PropertyItem;
 
-    let property = stringify(monster[item.properties[0]]);
+    let property = stringify(monster[item.properties[0]], 0, ", ", false);
     let display = item.display ?? item.properties[0];
 
     if (item.callback) {
@@ -37,21 +37,28 @@
 {#if !item.conditioned || (item.conditioned && `${property}`.length)}
     <div class="line {cssClass}">
         <span class="property-name">{display}</span>
-        <TextContentHolder render={item.markdown} {property} />
+        <TextContentHolder {property} />
     </div>
 {/if}
 
 <style>
     .line {
-        line-height: var(--statblock-property-line-height);
+        line-height: var(--active-property-line-height);
         display: block;
-        color: var(--statblock-property-font-color);
+        font-family: var(--active-property-font);
+        color: var(--active-property-font-color);
+        font-variant: var(--active-property-font-variant);
+        font-size: var(--active-property-font-size);
+        font-weight: var(--active-property-font-weight);
     }
     .property-name {
         margin: 0;
         margin-right: 0.25em;
         display: inline;
-        color: var(--statblock-property-name-font-color);
-        font-weight: var(--statblock-property-name-font-weight);
+        font-family: var(--active-property-name-font);
+        color: var(--active-property-name-font-color);
+        font-variant: var(--active-property-name-font-variant);
+        font-size: var(--active-property-name-font-size);
+        font-weight: var(--active-property-name-font-weight);
     }
 </style>

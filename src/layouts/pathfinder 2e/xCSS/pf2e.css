@@ -1,58 +1,19 @@
-@charset "UTF-8";
 /*!
 Pathfinder TTRPG General Statblock Layout CSS
 
-version: 1.5.0
+version: 1.6.1
 by:      Moritz Jung (https://github.com/mProjectsCode) and Sigrunixia
 repo:    https://github.com/mProjectsCode/obsidian-pathfinder2e-statblocks
 
 This file was generated from SCSS.
-Looking for `!important`? Check for Rare_0X, and Trait_0X. That is the only spots they are used in this file.
+Looking for `!important`?
+- Check for:
+Rare_0X
+Trait_0X
+Popover
+
+That is the only spots they are used in this file.
 */
-/*
-Pathfinder Glyphs Only and any associated classes to call those Glyphs
-*/
-@font-face {
-  font-family: "Pathfinder";
-  src: url("data:application/x-font-ttf;charset=utf-8;base64,AAEAAAALAIAAAwAwT1MvMg8xOUgAAAC8AAAAYGNtYXBWj1fJAAABHAAAAHRnYXNwAAAAEAAAAZAAAAAIZ2x5ZlORXq8AAAGYAAACYGhlYWQnahodAAAD+AAAADZoaGVhDDUIawAABDAAAAAkaG10eCWQAIcAAARUAAAAKGxvY2ECvAH8AAAEfAAAABZtYXhwAA8APwAABJQAAAAgbmFtZQQfBa8AAAS0AAAC63Bvc3QAAwAAAAAHoAAAACAAAwTLAZAABQAAApkCzAAAAI8CmQLMAAAB6wAzAQkAAAAAAAAAAAAAAAAAAAABAAAAIAAAAAAAAAAAAAAAAABAAAArUwPA/8AAQAPAAEAAAAABAAAAAAAAAAAAAAAgAAAAAAADAAAAAwAAABwAAQADAAAAHAADAAEAAAAcAAQAWAAAABIAEAADAAIAAQAgADArMis7Kz0rU//9//8AAAAAACAAMCsyKzorPStT//3//wAB/+P/1NTT1MzUy9S2AAMAAQAAAAAAAAAAAAAAAAAAAAAAAAABAAH//wAPAAEAAAAAAAAAAAACAAA3OQEAAAAAAQAAAAAAAAAAAAIAADc5AQAAAAABAAAAAAAAAAAAAgAANzkBAAAAAAEAAAAAAAAAAAACAAA3OQEAAAAAAgAoACIEHwNXADcAPAAAASYnJicmJyYHBgcGBwYHBgc2NzY3Njc2NzYXFhcWFxYXFgcGBwYHBgcGBwYnFhcWNzY3Njc2NzYBBSc3AQQdFzs8VFNlZWpLQUEzMyQkERUdHSMkKSouVVFRQ0QwMBISEBEsK0RDVRwcGxs/REVFalRUNjYVFPyNAeltOP5MAkdHOTklJQ0ODwsYGCIiKyovGhYXEhINDQcMCwsdHi4uOTo3Ny0uISAMBAECAQ4DAwoPKSg5OEVE/opnldf++wAAAAMAIP/BBmADvwAFAAkADwAACQEHCQEXAQcXNyUBBxcHFwQa/gH2AQj++Pb+vLe3twTS/kDZ6OjZAcAB//f++P749wK2t7e3CAHA2Ojo2QAAAgAC/8AD/gPAAAUACQAACQEHCQEXAQcXNwP+/gD3AQn+9/f+u7e3twHAAgD3/vf+9/cCt7e3twAEAC3/wAhzA8AABQALAA8AFQAACQEHCQEXCQEHFwcXAQcXNyUBBxcHFwQp/gD3AQn+9/cGSv6Yr7u7r/nZt7e3BNz+P9rp6doBwAIA9/73/vf3AgoBaK66u64CFre3twgBwdno6dkAAAMAEP/ABBADwAAEAAkADwAACQQBNxcHJwEnNyc3AQIU/fwB/QID/gT+uG1tbW0BN3H79XwBZwPA/fr+BgIDAf3+EG1tbW3+hHH79nz+mQAAAQAAAAEZmgtZ1jpfDzz1AAsEAAAAAADf694DAAAAAN/r3gMAAP/ACHMDwAAAAAgAAgAAAAAAAAABAAADwP/AAAAIoAAAAAAIcwABAAAAAAAAAAAAAAAAAAAACgQAAAAAAAAAAAAAAAIAAAAEAAAABFAAKAaAACAEAAACCKAALQQgABAAAAAAAAoAFAAeACgAkAC4ANQBCAEwAAAAAQAAAAoAPQAEAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAABIA3gABAAAAAAABAAoAAAABAAAAAAACAAcB2gABAAAAAAADAAoBngABAAAAAAAEAAoB7wABAAAAAAAFAAsBfQABAAAAAAAGAAoBvAABAAAAAAAKADYA2wABAAAAAAANABcAHgABAAAAAAAOACgAYwADAAEECQABABQACgADAAEECQACAA4B4QADAAEECQADABQBqAADAAEECQAEABQB+QADAAEECQAFABYBiAADAAEECQAGABQBxgADAAEECQAKAGwBEQADAAEECQANAC4ANQADAAEECQAOAFAAi1BhdGhmaW5kZXIAUABhAHQAaABmAGkAbgBkAGUAclBhaXpvIENvbW11bml0eSBMaWNlbnNlAFAAYQBpAHoAbwAgAEMAbwBtAG0AdQBuAGkAdAB5ACAATABpAGMAZQBuAHMAZWh0dHBzOi8vcGFpem8uY29tL2NvbW11bml0eS9jb21tdW5pdHl1c2UAaAB0AHQAcABzADoALwAvAHAAYQBpAHoAbwAuAGMAbwBtAC8AYwBvAG0AbQB1AG4AaQB0AHkALwBjAG8AbQBtAHUAbgBpAHQAeQB1AHMAZVBhdGhmaW5kZXIgMmUgQWN0aW9uIEdseXBocwpGb250IGdlbmVyYXRlZCBieSBJY29Nb29uLgBQAGEAdABoAGYAaQBuAGQAZQByACAAMgBlACAAQQBjAHQAaQBvAG4AIABHAGwAeQBwAGgAcwAKAEYAbwBuAHQAIABnAGUAbgBlAHIAYQB0AGUAZAAgAGIAeQAgAEkAYwBvAE0AbwBvAG4ALlZlcnNpb24gMS4xAFYAZQByAHMAaQBvAG4AIAAxAC4AMVBhdGhmaW5kZXIAUABhAHQAaABmAGkAbgBkAGUAclBhdGhmaW5kZXIAUABhAHQAaABmAGkAbgBkAGUAclJlZ3VsYXIAUgBlAGcAdQBsAGEAclBhdGhmaW5kZXIAUABhAHQAaABmAGkAbgBkAGUAcgAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: block;
-}
-[class^=glyph-],
-[class*=" glyph-"] {
-  /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: "Pathfinder", serif !important;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.glyph-1action:before {
-  content: "⬻";
-}
-
-.glyph-2actions:before {
-  content: "⬺";
-}
-
-.glyph-3actions:before {
-  content: "⬽";
-}
-
-.glyph-free:before {
-  content: "⭓";
-}
-
-.glyph-reaction:before {
-  content: "⬲";
-}
-
 /*!
 /* @settings
 name: Pathfinder 2e Statblocks
@@ -116,6 +77,20 @@ settings:
         label: Kingmaker
         value: pathfinder-2e-influence-layout-theme-kingmaker
   -
+    id: layout-theme-item
+    title: Item Statblock Theme
+    description: The theme of the item statblock
+    type: class-select
+    allowEmpty: false
+    default: pathfinder-2e-item-layout-theme-default
+    options:
+    -
+        label: Default
+        value: pathfinder-2e-item-layout-theme-default
+    -
+        label: Kingmaker
+        value: pathfinder-2e-item-layout-theme-kingmaker
+  -
     id: layout-theme-misc
     title: Misc Statblock Theme
     description: The theme of the misc statblock
@@ -129,6 +104,20 @@ settings:
     -
         label: Kingmaker
         value: pathfinder-2e-misc-layout-theme-kingmaker
+  -
+    id: layout-theme-plane
+    title: Plane Statblock Theme
+    description: The theme of the plane statblock
+    type: class-select
+    allowEmpty: false
+    default: pathfinder-2e-plane-layout-theme-default
+    options:
+    -
+        label: Default
+        value: pathfinder-2e-plane-layout-theme-default
+    -
+        label: Kingmaker
+        value: pathfinder-2e-plane-layout-theme-kingmaker
   -
     id: layout-theme-quest
     title: Quest Statblock Theme
@@ -167,7 +156,15 @@ body.basic-pathfinder-2e-layout-theme-default .statblock.basic-pathfinder-2e-lay
   --statblock-color-size: rgb(75, 122, 92);
   --statblock-color-trait: rgb(86, 12, 6);
 }
-
+body.pathfinder-2e-creature-layout-theme-default .statblock.pathfinder-2e-creature-layout {
+  --statblock-color-common: rgb(54, 69, 79);
+  --statblock-color-uncommon: rgb(143, 85, 66);
+  --statblock-color-rare: rgb(11, 37, 96);
+  --statblock-color-unique: rgb(77, 27, 106);
+  --statblock-color-alignment: rgb(89, 98, 143);
+  --statblock-color-size: rgb(75, 122, 92);
+  --statblock-color-trait: rgb(86, 12, 6);
+}
 body.pathfinder-2e-action-layout-theme-default .statblock.pathfinder-2e-action-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -177,7 +174,6 @@ body.pathfinder-2e-action-layout-theme-default .statblock.pathfinder-2e-action-l
   --statblock-color-size: rgb(75, 122, 92);
   --statblock-color-trait: rgb(86, 12, 6);
 }
-
 body.pathfinder-2e-hazard-layout-theme-default .statblock.pathfinder-2e-hazard-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -187,7 +183,6 @@ body.pathfinder-2e-hazard-layout-theme-default .statblock.pathfinder-2e-hazard-l
   --statblock-color-size: rgb(75, 122, 92);
   --statblock-color-trait: rgb(86, 12, 6);
 }
-
 body.pathfinder-2e-influence-layout-theme-default .statblock.pathfinder-2e-influence-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -197,7 +192,15 @@ body.pathfinder-2e-influence-layout-theme-default .statblock.pathfinder-2e-influ
   --statblock-color-size: rgb(75, 122, 92);
   --statblock-color-trait: rgb(86, 12, 6);
 }
-
+body.pathfinder-2e-item-layout-theme-default .statblock.pathfinder-2e-item-layout {
+  --statblock-color-common: rgb(54, 69, 79);
+  --statblock-color-uncommon: rgb(143, 85, 66);
+  --statblock-color-rare: rgb(11, 37, 96);
+  --statblock-color-unique: rgb(77, 27, 106);
+  --statblock-color-alignment: rgb(89, 98, 143);
+  --statblock-color-size: rgb(75, 122, 92);
+  --statblock-color-trait: rgb(86, 12, 6);
+}
 body.pathfinder-2e-misc-layout-theme-default .statblock.pathfinder-2e-misc-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -207,7 +210,15 @@ body.pathfinder-2e-misc-layout-theme-default .statblock.pathfinder-2e-misc-layou
   --statblock-color-size: rgb(75, 122, 92);
   --statblock-color-trait: rgb(86, 12, 6);
 }
-
+body.pathfinder-2e-plane-layout-theme-default .statblock.pathfinder-2e-plane-layout {
+  --statblock-color-common: rgb(54, 69, 79);
+  --statblock-color-uncommon: rgb(143, 85, 66);
+  --statblock-color-rare: rgb(11, 37, 96);
+  --statblock-color-unique: rgb(77, 27, 106);
+  --statblock-color-alignment: rgb(89, 98, 143);
+  --statblock-color-size: rgb(75, 122, 92);
+  --statblock-color-trait: rgb(86, 12, 6);
+}
 body.pathfinder-2e-quest-layout-theme-default .statblock.pathfinder-2e-quest-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -217,7 +228,6 @@ body.pathfinder-2e-quest-layout-theme-default .statblock.pathfinder-2e-quest-lay
   --statblock-color-size: rgb(75, 122, 92);
   --statblock-color-trait: rgb(86, 12, 6);
 }
-
 body.pathfinder-2e-settlement-layout-theme-default .statblock.pathfinder-2e-settlement-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -227,7 +237,15 @@ body.pathfinder-2e-settlement-layout-theme-default .statblock.pathfinder-2e-sett
   --statblock-color-size: rgb(75, 122, 92);
   --statblock-color-trait: rgb(86, 12, 6);
 }
-
+body.pathfinder-2e-affliction-layout-theme-default .statblock.pathfinder-2e-affliction-layout {
+  --statblock-color-common: rgb(54, 69, 79);
+  --statblock-color-uncommon: rgb(143, 85, 66);
+  --statblock-color-rare: rgb(11, 37, 96);
+  --statblock-color-unique: rgb(77, 27, 106);
+  --statblock-color-alignment: rgb(89, 98, 143);
+  --statblock-color-size: rgb(75, 122, 92);
+  --statblock-color-trait: rgb(86, 12, 6);
+}
 body.basic-pathfinder-2e-layout-theme-kingmaker .statblock.basic-pathfinder-2e-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -237,7 +255,15 @@ body.basic-pathfinder-2e-layout-theme-kingmaker .statblock.basic-pathfinder-2e-l
   --statblock-color-size: rgb(25, 66, 26);
   --statblock-color-trait: rgb(125, 143, 63);
 }
-
+body.pathfinder-2e-creature-layout-theme-kingmaker .statblock.pathfinder-2e-creature-layout {
+  --statblock-color-common: rgb(54, 69, 79);
+  --statblock-color-uncommon: rgb(143, 85, 66);
+  --statblock-color-rare: rgb(11, 37, 96);
+  --statblock-color-unique: rgb(77, 27, 106);
+  --statblock-color-alignment: rgb(97, 129, 157);
+  --statblock-color-size: rgb(25, 66, 26);
+  --statblock-color-trait: rgb(125, 143, 63);
+}
 body.pathfinder-2e-action-layout-theme-kingmaker .statblock.pathfinder-2e-action-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -247,7 +273,6 @@ body.pathfinder-2e-action-layout-theme-kingmaker .statblock.pathfinder-2e-action
   --statblock-color-size: rgb(25, 66, 26);
   --statblock-color-trait: rgb(125, 143, 63);
 }
-
 body.pathfinder-2e-hazard-layout-theme-kingmaker .statblock.pathfinder-2e-hazard-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -257,7 +282,6 @@ body.pathfinder-2e-hazard-layout-theme-kingmaker .statblock.pathfinder-2e-hazard
   --statblock-color-size: rgb(25, 66, 26);
   --statblock-color-trait: rgb(125, 143, 63);
 }
-
 body.pathfinder-2e-influence-layout-theme-kingmaker .statblock.pathfinder-2e-influence-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -267,7 +291,15 @@ body.pathfinder-2e-influence-layout-theme-kingmaker .statblock.pathfinder-2e-inf
   --statblock-color-size: rgb(25, 66, 26);
   --statblock-color-trait: rgb(125, 143, 63);
 }
-
+body.pathfinder-2e-item-layout-theme-kingmaker .statblock.pathfinder-2e-item-layout {
+  --statblock-color-common: rgb(54, 69, 79);
+  --statblock-color-uncommon: rgb(143, 85, 66);
+  --statblock-color-rare: rgb(11, 37, 96);
+  --statblock-color-unique: rgb(77, 27, 106);
+  --statblock-color-alignment: rgb(97, 129, 157);
+  --statblock-color-size: rgb(25, 66, 26);
+  --statblock-color-trait: rgb(125, 143, 63);
+}
 body.pathfinder-2e-misc-layout-theme-kingmaker .statblock.pathfinder-2e-misc-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -277,7 +309,15 @@ body.pathfinder-2e-misc-layout-theme-kingmaker .statblock.pathfinder-2e-misc-lay
   --statblock-color-size: rgb(25, 66, 26);
   --statblock-color-trait: rgb(125, 143, 63);
 }
-
+body.pathfinder-2e-plane-layout-theme-kingmaker .statblock.pathfinder-2e-plane-layout {
+  --statblock-color-common: rgb(54, 69, 79);
+  --statblock-color-uncommon: rgb(143, 85, 66);
+  --statblock-color-rare: rgb(11, 37, 96);
+  --statblock-color-unique: rgb(77, 27, 106);
+  --statblock-color-alignment: rgb(97, 129, 157);
+  --statblock-color-size: rgb(25, 66, 26);
+  --statblock-color-trait: rgb(125, 143, 63);
+}
 body.pathfinder-2e-quest-layout-theme-kingmaker .statblock.pathfinder-2e-quest-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -287,7 +327,6 @@ body.pathfinder-2e-quest-layout-theme-kingmaker .statblock.pathfinder-2e-quest-l
   --statblock-color-size: rgb(25, 66, 26);
   --statblock-color-trait: rgb(125, 143, 63);
 }
-
 body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-settlement-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -297,7 +336,54 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   --statblock-color-size: rgb(25, 66, 26);
   --statblock-color-trait: rgb(125, 143, 63);
 }
-
+body.pathfinder-2e-affliction-layout-theme-kingmaker .statblock.pathfinder-2e-affliction-layout {
+  --statblock-color-common: rgb(54, 69, 79);
+  --statblock-color-uncommon: rgb(143, 85, 66);
+  --statblock-color-rare: rgb(11, 37, 96);
+  --statblock-color-unique: rgb(77, 27, 106);
+  --statblock-color-alignment: rgb(97, 129, 157);
+  --statblock-color-size: rgb(25, 66, 26);
+  --statblock-color-trait: rgb(125, 143, 63);
+}
+@font-face {
+  font-family: "Pathfinder-Actions";
+  src: url(data:application/x-font-ttf;charset=utf-8;base64,AAEAAAANAIAAAwBQRkZUTaBf/YkAAAkkAAAAHEdERUYAJQAAAAAJDAAAABhPUy8yDzE5wAAAAVgAAABgY21hcIUPLFwAAAHcAAABcGdhc3AAAAAQAAAJBAAAAAhnbHlmv0sljgAAA2AAAAIwaGVhZCgbkG4AAADcAAAANmhoZWEMNQhqAAABFAAAACRobXR4IOUAhwAAAbgAAAAkbG9jYQGoAlQAAANMAAAAFG1heHAADgA/AAABOAAAACBuYW1l5gKtSAAABZAAAAMGcG9zdJP9aoAAAAiYAAAAbAABAAAAARmaJrDlgl8PPPUACwQAAAAAAN/r3gMAAAAA4J1UVAAA/8AIcwPAAAAACAACAAAAAAAAAAEAAAPA/8AAAAigAAAAAAhzAAEAAAAAAAAAAAAAAAAAAAAJAAEAAAAJAD0ABAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAwVCAZAABQAAApkCzAAAAI8CmQLMAAAB6wAzAQkAAAAAAAAAAAAAAAAAAAABAAAAIAAAAAAAAAAAAAAAAABAAAArUwPA/8AAQAPAAEAAAAABAAAAAAAAAAAAAAAgAAEEAAAAAAAAAAFVAAAAAAAABFAAKAaAACAEAAACCKAALQQgABAAAAADAAAAAwAAABwAAQAAAAAAagADAAEAAAAcAAQATgAAAAwACAACAAQAASsyKz0rU//9//8AAAAAKzIrOitT//3//wAA1NIAANS1AAAAAQAMAAAADAAAABAAAAABAAMABQAGAAAABwAAAAABBgAAAQMAAAAAAAABAgAAAAIAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAIABAAeACgALwA8AEYAAEAAAAAAAAAAAACAAA5AgABAAAAAAAAAAAAAgAAOQIAAgAoACIEMwNlADcAPAAAASYnJicmJyYHBgcGBwYHBgc2NzY3Njc2NzYXFhcWFxYXFgcGBwYHBgcGBwYnFhcWNzY3Njc2NzYBBSc3AQQdFzs8VFNlZWpLQUEzMyQkERUdHSMkKSouVVFRQ0QwMBISEBEsK0RDVRwcGxs/REVFalRUNjYVFPyNAeltOP5MAkdHOTklJQ0ODwsYGCIiKyovGhYXEhINDQcMCwsdHi4uOTo3Ny0uISAMBAECAQ4DAwoPKSg5OEVE/opnldf++wAAAAMAIP/BBmADvwAFAAkADwAACQEHCQEXAQcXNyUBBxcHFwQa/gH2AQj++Pb+vLe3twTS/kDZ6OjZAcAB//f++P749wK2t7e3CAHA2Ojo2QAAAgAC/8AD/gPAAAUACQAACQEHCQEXAQcXNwP+/gD3AQn+9/f+u7e3twHAAgD3/vf+9/cCt7e3twAEAC3/wAhzA8AABQALAA8AFQAACQEHCQEXCQEHFwcXAQcXNyUBBxcHFwQp/gD3AQn+9/cGSv6Yr7u7r/nZt7e3BNz+P9rp6doBwAIA9/73/vf3AgoBaK66u64CFre3twgBwdno6dkAAAMAEP/ABBADwAAEAAkADwAACQU3FwcnASc3JzcBAhT9/AH9AgP+BP64bW1tbQE3cfv1fAFnA8D9+v4GAgMB/f4QbW1tbf6Ecfv2fP6ZAAAAAAASAN4AAQAAAAAAAQAKABYAAQAAAAAAAgAHADEAAQAAAAAAAwAKAE8AAQAAAAAABAAKAHAAAQAAAAAABQALAJMAAQAAAAAABgAKALUAAQAAAAAACgA2AS4AAQAAAAAADQAXAZUAAQAAAAAADgAoAf8AAwABBAkAAQAUAAAAAwABBAkAAgAOACEAAwABBAkAAwAUADkAAwABBAkABAAUAFoAAwABBAkABQAWAHsAAwABBAkABgAUAJ8AAwABBAkACgBsAMAAAwABBAkADQAuAWUAAwABBAkADgBQAa0AUABhAHQAaABmAGkAbgBkAGUAcgAAUGF0aGZpbmRlcgAAUgBlAGcAdQBsAGEAcgAAUmVndWxhcgAAUABhAHQAaABmAGkAbgBkAGUAcgAAUGF0aGZpbmRlcgAAUABhAHQAaABmAGkAbgBkAGUAcgAAUGF0aGZpbmRlcgAAVgBlAHIAcwBpAG8AbgAgADEALgAxAABWZXJzaW9uIDEuMQAAUABhAHQAaABmAGkAbgBkAGUAcgAAUGF0aGZpbmRlcgAAUABhAHQAaABmAGkAbgBkAGUAcgAgADIAZQAgAEEAYwB0AGkAbwBuACAARwBsAHkAcABoAHMACgBGAG8AbgB0ACAAZwBlAG4AZQByAGEAdABlAGQAIABiAHkAIABJAGMAbwBNAG8AbwBuAC4AAFBhdGhmaW5kZXIgMmUgQWN0aW9uIEdseXBocwpGb250IGdlbmVyYXRlZCBieSBJY29Nb29uLgAAUABhAGkAegBvACAAQwBvAG0AbQB1AG4AaQB0AHkAIABMAGkAYwBlAG4AcwBlAABQYWl6byBDb21tdW5pdHkgTGljZW5zZQAAaAB0AHQAcABzADoALwAvAHAAYQBpAHoAbwAuAGMAbwBtAC8AYwBvAG0AbQB1AG4AaQB0AHkALwBjAG8AbQBtAHUAbgBpAHQAeQB1AHMAZQAAaHR0cHM6Ly9wYWl6by5jb20vY29tbXVuaXR5L2NvbW11bml0eXVzZQAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkAAAECAAIBAwEEAQUBBgEHAQgHdW5pMDAwMAd1bmkwMDAxB3VuaTJCMzIHdW5pMkIzQQd1bmkyQjNCB3VuaTJCM0QHdW5pMkI1MwABAAH//wAPAAEAAAAMAAAAEAAAAAIAAAAEAAAAAgAAAAAAAQAAAADf1ssxAAAAAN/r3gMAAAAA4J1UVA==) format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+  unicode-range:
+    U+2B32,
+    U+2B3A,
+    U+2B3B,
+    U+2B3D,
+    U+2B53;
+}
+[class^=glyph-],
+[class*=" glyph-"] {
+  font-family: "Pathfinder-Actions", serif !important;
+  font-style: 400;
+  font-weight: 400;
+  font-variant: 400;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.glyph-1action:before {
+  content: "\2b3b";
+}
+.glyph-2actions:before {
+  content: "\2b3a";
+}
+.glyph-3actions:before {
+  content: "\2b3d";
+}
+.glyph-free:before {
+  content: "\2b53";
+}
+.glyph-reaction:before {
+  content: "\2b32";
+}
 .statblock.basic-pathfinder-2e-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -326,13 +412,33 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   --statblock-box-shadow-blur: 1.5em;
   --statblock-font-color: rgb(51, 51, 51);
   --statblock-font-weight: 400;
-  --statblock-content-font: system-ui, "Pathfinder", -apple-system,
-  BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-  "Open Sans", "Helvetica Neue", sans-serif;
+  --statblock-content-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
   --statblock-content-font-size: 13px;
-  --statblock-heading-font: system-ui, "Pathfinder", -apple-system,
-  BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-  "Open Sans", "Helvetica Neue", sans-serif;
+  --statblock-heading-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
   --statblock-heading-font-color: rgb(51, 51, 51);
   --statblock-heading-font-size: 1.35em;
   --statblock-heading-font-variant: small-caps;
@@ -354,7 +460,82 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   --statblock-column-width: 400px;
   --statblock-traits-gap: 2px;
 }
-
+.statblock.pathfinder-2e-creature-layout {
+  --statblock-color-common: rgb(54, 69, 79);
+  --statblock-color-uncommon: rgb(143, 85, 66);
+  --statblock-color-rare: rgb(11, 37, 96);
+  --statblock-color-unique: rgb(77, 27, 106);
+  --statblock-color-alignment: rgb(89, 98, 143);
+  --statblock-color-size: rgb(75, 122, 92);
+  --statblock-color-trait: rgb(86, 12, 6);
+  --statblock-primary-color: rgb(51, 51, 51);
+  --statblock-rule-color: rgb(51, 51, 51);
+  --statblock-background-color: rgb(246, 244, 242);
+  --statblock-bar-color: rgb(51, 51, 51);
+  --statblock-bar-border-size: 1px;
+  --statblock-bar-border-color: rgb(51, 51, 51);
+  --statblock-image-width: 75px;
+  --statblock-image-height: 75px;
+  --statblock-image-border-size: 2px;
+  --statblock-image-border-color: rgb(51, 51, 51);
+  --statblock-header-image-height: 22px;
+  --statblock-header-image-padding: 0 0 2px 0;
+  --statblock-border-size: 1px;
+  --statblock-border-color: rgb(51, 51, 51);
+  --statblock-box-shadow-color: none;
+  --statblock-box-shadow-x-offset: 0;
+  --statblock-box-shadow-y-offset: 0;
+  --statblock-box-shadow-blur: 1.5em;
+  --statblock-font-color: rgb(51, 51, 51);
+  --statblock-font-weight: 400;
+  --statblock-content-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
+  --statblock-content-font-size: 13px;
+  --statblock-heading-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
+  --statblock-heading-font-color: rgb(51, 51, 51);
+  --statblock-heading-font-size: 1.35em;
+  --statblock-heading-font-variant: small-caps;
+  --statblock-heading-font-weight: 700;
+  --statblock-heading-line-height: 1;
+  --statblock-property-line-height: 1.33em;
+  --statblock-property-font-color: rgb(51, 51, 51);
+  --statblock-property-name-font-color: rgb(51, 51, 51);
+  --statblock-property-name-font-weight: bold;
+  --statblock-section-heading-border-size: 1px;
+  --statblock-section-heading-border-color: transparent;
+  --statblock-section-heading-font-color: rgb(51, 51, 51);
+  --statblock-section-heading-font-size: 1.33em;
+  --statblock-section-heading-font-variant: small-caps;
+  --statblock-section-heading-font-weight: 400;
+  --statblock-saves-line-height: 1.33em;
+  --statblock-spells-font-style: italic;
+  --statblock-table-header-font-weight: bold;
+  --statblock-column-width: 400px;
+  --statblock-traits-gap: 2px;
+}
 .statblock.pathfinder-2e-action-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -383,13 +564,33 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   --statblock-box-shadow-blur: 1.5em;
   --statblock-font-color: rgb(51, 51, 51);
   --statblock-font-weight: 400;
-  --statblock-content-font: system-ui, "Pathfinder", -apple-system,
-  BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-  "Open Sans", "Helvetica Neue", sans-serif;
+  --statblock-content-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
   --statblock-content-font-size: 13px;
-  --statblock-heading-font: system-ui, "Pathfinder", -apple-system,
-  BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-  "Open Sans", "Helvetica Neue", sans-serif;
+  --statblock-heading-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
   --statblock-heading-font-color: rgb(51, 51, 51);
   --statblock-heading-font-size: 1.35em;
   --statblock-heading-font-variant: small-caps;
@@ -411,7 +612,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   --statblock-column-width: 400px;
   --statblock-traits-gap: 2px;
 }
-
 .statblock.pathfinder-2e-hazard-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -440,13 +640,33 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   --statblock-box-shadow-blur: 1.5em;
   --statblock-font-color: rgb(51, 51, 51);
   --statblock-font-weight: 400;
-  --statblock-content-font: system-ui, "Pathfinder", -apple-system,
-  BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-  "Open Sans", "Helvetica Neue", sans-serif;
+  --statblock-content-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
   --statblock-content-font-size: 13px;
-  --statblock-heading-font: system-ui, "Pathfinder", -apple-system,
-  BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-  "Open Sans", "Helvetica Neue", sans-serif;
+  --statblock-heading-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
   --statblock-heading-font-color: rgb(51, 51, 51);
   --statblock-heading-font-size: 1.35em;
   --statblock-heading-font-variant: small-caps;
@@ -468,7 +688,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   --statblock-column-width: 400px;
   --statblock-traits-gap: 2px;
 }
-
 .statblock.pathfinder-2e-influence-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -497,13 +716,33 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   --statblock-box-shadow-blur: 1.5em;
   --statblock-font-color: rgb(51, 51, 51);
   --statblock-font-weight: 400;
-  --statblock-content-font: system-ui, "Pathfinder", -apple-system,
-  BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-  "Open Sans", "Helvetica Neue", sans-serif;
+  --statblock-content-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
   --statblock-content-font-size: 13px;
-  --statblock-heading-font: system-ui, "Pathfinder", -apple-system,
-  BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-  "Open Sans", "Helvetica Neue", sans-serif;
+  --statblock-heading-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
   --statblock-heading-font-color: rgb(51, 51, 51);
   --statblock-heading-font-size: 1.35em;
   --statblock-heading-font-variant: small-caps;
@@ -525,7 +764,82 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   --statblock-column-width: 400px;
   --statblock-traits-gap: 2px;
 }
-
+.statblock.pathfinder-2e-item-layout {
+  --statblock-color-common: rgb(54, 69, 79);
+  --statblock-color-uncommon: rgb(143, 85, 66);
+  --statblock-color-rare: rgb(11, 37, 96);
+  --statblock-color-unique: rgb(77, 27, 106);
+  --statblock-color-alignment: rgb(89, 98, 143);
+  --statblock-color-size: rgb(75, 122, 92);
+  --statblock-color-trait: rgb(86, 12, 6);
+  --statblock-primary-color: rgb(51, 51, 51);
+  --statblock-rule-color: rgb(51, 51, 51);
+  --statblock-background-color: rgb(246, 244, 242);
+  --statblock-bar-color: rgb(51, 51, 51);
+  --statblock-bar-border-size: 1px;
+  --statblock-bar-border-color: rgb(51, 51, 51);
+  --statblock-image-width: 75px;
+  --statblock-image-height: 75px;
+  --statblock-image-border-size: 2px;
+  --statblock-image-border-color: rgb(51, 51, 51);
+  --statblock-header-image-height: 22px;
+  --statblock-header-image-padding: 0 0 2px 0;
+  --statblock-border-size: 1px;
+  --statblock-border-color: rgb(51, 51, 51);
+  --statblock-box-shadow-color: none;
+  --statblock-box-shadow-x-offset: 0;
+  --statblock-box-shadow-y-offset: 0;
+  --statblock-box-shadow-blur: 1.5em;
+  --statblock-font-color: rgb(51, 51, 51);
+  --statblock-font-weight: 400;
+  --statblock-content-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
+  --statblock-content-font-size: 13px;
+  --statblock-heading-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
+  --statblock-heading-font-color: rgb(51, 51, 51);
+  --statblock-heading-font-size: 1.35em;
+  --statblock-heading-font-variant: small-caps;
+  --statblock-heading-font-weight: 700;
+  --statblock-heading-line-height: 1;
+  --statblock-property-line-height: 1.33em;
+  --statblock-property-font-color: rgb(51, 51, 51);
+  --statblock-property-name-font-color: rgb(51, 51, 51);
+  --statblock-property-name-font-weight: bold;
+  --statblock-section-heading-border-size: 1px;
+  --statblock-section-heading-border-color: transparent;
+  --statblock-section-heading-font-color: rgb(51, 51, 51);
+  --statblock-section-heading-font-size: 1.33em;
+  --statblock-section-heading-font-variant: small-caps;
+  --statblock-section-heading-font-weight: 400;
+  --statblock-saves-line-height: 1.33em;
+  --statblock-spells-font-style: italic;
+  --statblock-table-header-font-weight: bold;
+  --statblock-column-width: 400px;
+  --statblock-traits-gap: 2px;
+}
 .statblock.pathfinder-2e-misc-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -554,13 +868,33 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   --statblock-box-shadow-blur: 1.5em;
   --statblock-font-color: rgb(51, 51, 51);
   --statblock-font-weight: 400;
-  --statblock-content-font: system-ui, "Pathfinder", -apple-system,
-  BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-  "Open Sans", "Helvetica Neue", sans-serif;
+  --statblock-content-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
   --statblock-content-font-size: 13px;
-  --statblock-heading-font: system-ui, "Pathfinder", -apple-system,
-  BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-  "Open Sans", "Helvetica Neue", sans-serif;
+  --statblock-heading-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
   --statblock-heading-font-color: rgb(51, 51, 51);
   --statblock-heading-font-size: 1.35em;
   --statblock-heading-font-variant: small-caps;
@@ -582,7 +916,82 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   --statblock-column-width: 400px;
   --statblock-traits-gap: 2px;
 }
-
+.statblock.pathfinder-2e-plane-layout {
+  --statblock-color-common: rgb(54, 69, 79);
+  --statblock-color-uncommon: rgb(143, 85, 66);
+  --statblock-color-rare: rgb(11, 37, 96);
+  --statblock-color-unique: rgb(77, 27, 106);
+  --statblock-color-alignment: rgb(89, 98, 143);
+  --statblock-color-size: rgb(75, 122, 92);
+  --statblock-color-trait: rgb(86, 12, 6);
+  --statblock-primary-color: rgb(51, 51, 51);
+  --statblock-rule-color: rgb(51, 51, 51);
+  --statblock-background-color: rgb(246, 244, 242);
+  --statblock-bar-color: rgb(51, 51, 51);
+  --statblock-bar-border-size: 1px;
+  --statblock-bar-border-color: rgb(51, 51, 51);
+  --statblock-image-width: 75px;
+  --statblock-image-height: 75px;
+  --statblock-image-border-size: 2px;
+  --statblock-image-border-color: rgb(51, 51, 51);
+  --statblock-header-image-height: 22px;
+  --statblock-header-image-padding: 0 0 2px 0;
+  --statblock-border-size: 1px;
+  --statblock-border-color: rgb(51, 51, 51);
+  --statblock-box-shadow-color: none;
+  --statblock-box-shadow-x-offset: 0;
+  --statblock-box-shadow-y-offset: 0;
+  --statblock-box-shadow-blur: 1.5em;
+  --statblock-font-color: rgb(51, 51, 51);
+  --statblock-font-weight: 400;
+  --statblock-content-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
+  --statblock-content-font-size: 13px;
+  --statblock-heading-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
+  --statblock-heading-font-color: rgb(51, 51, 51);
+  --statblock-heading-font-size: 1.35em;
+  --statblock-heading-font-variant: small-caps;
+  --statblock-heading-font-weight: 700;
+  --statblock-heading-line-height: 1;
+  --statblock-property-line-height: 1.33em;
+  --statblock-property-font-color: rgb(51, 51, 51);
+  --statblock-property-name-font-color: rgb(51, 51, 51);
+  --statblock-property-name-font-weight: bold;
+  --statblock-section-heading-border-size: 1px;
+  --statblock-section-heading-border-color: transparent;
+  --statblock-section-heading-font-color: rgb(51, 51, 51);
+  --statblock-section-heading-font-size: 1.33em;
+  --statblock-section-heading-font-variant: small-caps;
+  --statblock-section-heading-font-weight: 400;
+  --statblock-saves-line-height: 1.33em;
+  --statblock-spells-font-style: italic;
+  --statblock-table-header-font-weight: bold;
+  --statblock-column-width: 400px;
+  --statblock-traits-gap: 2px;
+}
 .statblock.pathfinder-2e-quest-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -611,13 +1020,33 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   --statblock-box-shadow-blur: 1.5em;
   --statblock-font-color: rgb(51, 51, 51);
   --statblock-font-weight: 400;
-  --statblock-content-font: system-ui, "Pathfinder", -apple-system,
-  BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-  "Open Sans", "Helvetica Neue", sans-serif;
+  --statblock-content-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
   --statblock-content-font-size: 13px;
-  --statblock-heading-font: system-ui, "Pathfinder", -apple-system,
-  BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-  "Open Sans", "Helvetica Neue", sans-serif;
+  --statblock-heading-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
   --statblock-heading-font-color: rgb(51, 51, 51);
   --statblock-heading-font-size: 1.35em;
   --statblock-heading-font-variant: small-caps;
@@ -639,7 +1068,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   --statblock-column-width: 400px;
   --statblock-traits-gap: 2px;
 }
-
 .statblock.pathfinder-2e-settlement-layout {
   --statblock-color-common: rgb(54, 69, 79);
   --statblock-color-uncommon: rgb(143, 85, 66);
@@ -668,13 +1096,33 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   --statblock-box-shadow-blur: 1.5em;
   --statblock-font-color: rgb(51, 51, 51);
   --statblock-font-weight: 400;
-  --statblock-content-font: system-ui, "Pathfinder", -apple-system,
-  BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-  "Open Sans", "Helvetica Neue", sans-serif;
+  --statblock-content-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
   --statblock-content-font-size: 13px;
-  --statblock-heading-font: system-ui, "Pathfinder", -apple-system,
-  BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-  "Open Sans", "Helvetica Neue", sans-serif;
+  --statblock-heading-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
   --statblock-heading-font-color: rgb(51, 51, 51);
   --statblock-heading-font-size: 1.35em;
   --statblock-heading-font-variant: small-caps;
@@ -696,7 +1144,82 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   --statblock-column-width: 400px;
   --statblock-traits-gap: 2px;
 }
-
+.statblock.pathfinder-2e-affliction-layout {
+  --statblock-color-common: rgb(54, 69, 79);
+  --statblock-color-uncommon: rgb(143, 85, 66);
+  --statblock-color-rare: rgb(11, 37, 96);
+  --statblock-color-unique: rgb(77, 27, 106);
+  --statblock-color-alignment: rgb(89, 98, 143);
+  --statblock-color-size: rgb(75, 122, 92);
+  --statblock-color-trait: rgb(86, 12, 6);
+  --statblock-primary-color: rgb(51, 51, 51);
+  --statblock-rule-color: rgb(51, 51, 51);
+  --statblock-background-color: rgb(246, 244, 242);
+  --statblock-bar-color: rgb(51, 51, 51);
+  --statblock-bar-border-size: 1px;
+  --statblock-bar-border-color: rgb(51, 51, 51);
+  --statblock-image-width: 75px;
+  --statblock-image-height: 75px;
+  --statblock-image-border-size: 2px;
+  --statblock-image-border-color: rgb(51, 51, 51);
+  --statblock-header-image-height: 22px;
+  --statblock-header-image-padding: 0 0 2px 0;
+  --statblock-border-size: 1px;
+  --statblock-border-color: rgb(51, 51, 51);
+  --statblock-box-shadow-color: none;
+  --statblock-box-shadow-x-offset: 0;
+  --statblock-box-shadow-y-offset: 0;
+  --statblock-box-shadow-blur: 1.5em;
+  --statblock-font-color: rgb(51, 51, 51);
+  --statblock-font-weight: 400;
+  --statblock-content-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
+  --statblock-content-font-size: 13px;
+  --statblock-heading-font:
+    "Pathfinder-Actions",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
+  --statblock-heading-font-color: rgb(51, 51, 51);
+  --statblock-heading-font-size: 1.35em;
+  --statblock-heading-font-variant: small-caps;
+  --statblock-heading-font-weight: 700;
+  --statblock-heading-line-height: 1;
+  --statblock-property-line-height: 1.33em;
+  --statblock-property-font-color: rgb(51, 51, 51);
+  --statblock-property-name-font-color: rgb(51, 51, 51);
+  --statblock-property-name-font-weight: bold;
+  --statblock-section-heading-border-size: 1px;
+  --statblock-section-heading-border-color: transparent;
+  --statblock-section-heading-font-color: rgb(51, 51, 51);
+  --statblock-section-heading-font-size: 1.33em;
+  --statblock-section-heading-font-variant: small-caps;
+  --statblock-section-heading-font-weight: 400;
+  --statblock-saves-line-height: 1.33em;
+  --statblock-spells-font-style: italic;
+  --statblock-table-header-font-weight: bold;
+  --statblock-column-width: 400px;
+  --statblock-traits-gap: 2px;
+}
 .statblock.basic-pathfinder-2e-layout .statblock-content {
   background-color: var(--statblock-background-color);
   border: var(--statblock-border-size) var(--statblock-border-color) solid;
@@ -729,48 +1252,125 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 }
 .statblock.basic-pathfinder-2e-layout .statblock-content > .column {
   width: var(--statblock-column-width);
-  /* Hazard Block Specific */
+}
+.statblock.basic-pathfinder-2e-layout .statblock-content > .column > .property-container > .line:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.basic-pathfinder-2e-layout .statblock-content > .column > .property-container > .line > .property-name {
+  margin-left: -1em;
+}
+.statblock.basic-pathfinder-2e-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.basic-pathfinder-2e-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property > .property-name {
+  margin-left: -1em;
 }
 .statblock.basic-pathfinder-2e-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property) {
-  margin-block: 0.25rem;
+  margin-block: 0.25em;
 }
 .statblock.basic-pathfinder-2e-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property):last-child {
   margin-bottom: 0;
 }
-.statblock.basic-pathfinder-2e-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line.name) {
-  margin: 0;
-}
-.statblock.basic-pathfinder-2e-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline) > :is(.property, .line:has(.property-name)) {
-  margin-left: 1em;
-}
-.statblock.basic-pathfinder-2e-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline) > :is(.property, .line) .property-name {
-  margin-left: -1em;
-}
 .statblock.basic-pathfinder-2e-layout .statblock-content > .column > .statblock-item-container:has(.tapered-rule) {
-  margin-block: 0.25rem;
+  margin-block: 0.25em;
 }
 .statblock.basic-pathfinder-2e-layout .statblock-content > .column > .statblock-item-inline:has(.name) + .statblock-item-container:has(.tapered-rule) {
   margin-top: 0;
 }
-.statblock.basic-pathfinder-2e-layout .statblock-content > .column > .statblock-item-inline:has(.rare_01,
-.rare_02,
-.rare_03,
-.rare_04,
-.alignment,
-.size,
-.xp,
-.kingdom_xp,
-.trait_01,
-.trait_02,
-.trait_03,
-.trait_04,
-.trait_05,
-.trait_06,
-.trait_07) {
+.statblock.basic-pathfinder-2e-layout .statblock-content > .column > .statblock-item-inline:has(.rare_01, .rare_02, .rare_03, .rare_04, .alignment, .size, .xp, .kingdom_xp, .trait_01, .trait_02, .trait_03, .trait_04, .trait_05, .trait_06, .trait_07) {
   row-gap: var(--statblock-traits-gap);
-  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }
-
+.statblock.pathfinder-2e-creature-layout .statblock-content {
+  background-color: var(--statblock-background-color);
+  border: var(--statblock-border-size) var(--statblock-border-color) solid;
+  box-shadow: none;
+  color: var(--statblock-property-font-color);
+  display: flex;
+  font-family: var(--statblock-content-font);
+  font-size: var(--statblock-content-font-size);
+  margin: 0.5em 2px;
+  padding: 0.5em;
+  gap: 1rem;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content .statblock-item-container.statblock-trait-prop .property.attacks > .property-name {
+  font-weight: normal;
+  font-style: normal;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content .statblock-table.abilitymods .statblock-markdown {
+  display: none;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content .statblock-table.abilitymods .calculated-modifier::before,
+.statblock.pathfinder-2e-creature-layout .statblock-content .statblock-table.abilitymods .calculated-modifier::after {
+  content: "";
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content .inline-container.oneline {
+  display: block;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content .inline-container.oneline *:not(.dice-roller) {
+  display: inline;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content .inline-container.oneline > .statblock-inline-item:not(:first-child) .property-name {
+  margin-right: 0;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content .inline-container.oneline > .statblock-inline-item:not(:first-child) .property-name::before {
+  content: "; ";
+  font-weight: normal;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content .inline-container.withnote * {
+  display: inline;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content .inline-container.withnote > .statblock-inline-item:not(:first-child) .property-name {
+  display: none;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content .callout {
+  mix-blend-mode: normal;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content .statblock-detached {
+  position: absolute;
+  top: -9999px;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content .statblock-item-container {
+  margin: 0;
+  padding: 0;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content .statblock-item-inline {
+  align-content: flex-start;
+  align-items: baseline;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 0;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content > .column {
+  width: var(--statblock-column-width);
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content > .column > .property-container > .line:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content > .column > .property-container > .line > .property-name {
+  margin-left: -1em;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property > .property-name {
+  margin-left: -1em;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property) {
+  margin-block: 0.25em;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property):last-child {
+  margin-bottom: 0;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content > .column > .statblock-item-container:has(.tapered-rule) {
+  margin-block: 0.25em;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-content > .column > .statblock-item-inline:has(.name) + .statblock-item-container:has(.tapered-rule) {
+  margin-top: 0;
+}
 .statblock.pathfinder-2e-action-layout .statblock-content {
   background-color: var(--statblock-background-color);
   border: var(--statblock-border-size) var(--statblock-border-color) solid;
@@ -803,48 +1403,35 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 }
 .statblock.pathfinder-2e-action-layout .statblock-content > .column {
   width: var(--statblock-column-width);
-  /* Hazard Block Specific */
+}
+.statblock.pathfinder-2e-action-layout .statblock-content > .column > .property-container > .line:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-action-layout .statblock-content > .column > .property-container > .line > .property-name {
+  margin-left: -1em;
+}
+.statblock.pathfinder-2e-action-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-action-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property > .property-name {
+  margin-left: -1em;
 }
 .statblock.pathfinder-2e-action-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property) {
-  margin-block: 0.25rem;
+  margin-block: 0.25em;
 }
 .statblock.pathfinder-2e-action-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property):last-child {
   margin-bottom: 0;
 }
-.statblock.pathfinder-2e-action-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line.name) {
-  margin: 0;
-}
-.statblock.pathfinder-2e-action-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline) > :is(.property, .line:has(.property-name)) {
-  margin-left: 1em;
-}
-.statblock.pathfinder-2e-action-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline) > :is(.property, .line) .property-name {
-  margin-left: -1em;
-}
 .statblock.pathfinder-2e-action-layout .statblock-content > .column > .statblock-item-container:has(.tapered-rule) {
-  margin-block: 0.25rem;
+  margin-block: 0.25em;
 }
 .statblock.pathfinder-2e-action-layout .statblock-content > .column > .statblock-item-inline:has(.name) + .statblock-item-container:has(.tapered-rule) {
   margin-top: 0;
 }
-.statblock.pathfinder-2e-action-layout .statblock-content > .column > .statblock-item-inline:has(.rare_01,
-.rare_02,
-.rare_03,
-.rare_04,
-.alignment,
-.size,
-.xp,
-.kingdom_xp,
-.trait_01,
-.trait_02,
-.trait_03,
-.trait_04,
-.trait_05,
-.trait_06,
-.trait_07) {
+.statblock.pathfinder-2e-action-layout .statblock-content > .column > .statblock-item-inline:has(.rare_01, .rare_02, .rare_03, .rare_04, .alignment, .size, .xp, .kingdom_xp, .trait_01, .trait_02, .trait_03, .trait_04, .trait_05, .trait_06, .trait_07) {
   row-gap: var(--statblock-traits-gap);
   margin-bottom: 0.5em;
 }
-
 .statblock.pathfinder-2e-hazard-layout .statblock-content {
   background-color: var(--statblock-background-color);
   border: var(--statblock-border-size) var(--statblock-border-color) solid;
@@ -877,51 +1464,38 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 }
 .statblock.pathfinder-2e-hazard-layout .statblock-content > .column {
   width: var(--statblock-column-width);
-  /* Hazard Block Specific */
+}
+.statblock.pathfinder-2e-hazard-layout .statblock-content > .column > .property-container > .line:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-hazard-layout .statblock-content > .column > .property-container > .line > .property-name {
+  margin-left: -1em;
+}
+.statblock.pathfinder-2e-hazard-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-hazard-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property > .property-name {
+  margin-left: -1em;
 }
 .statblock.pathfinder-2e-hazard-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property) {
-  margin-block: 0.25rem;
+  margin-block: 0.25em;
 }
 .statblock.pathfinder-2e-hazard-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property):last-child {
   margin-bottom: 0;
 }
-.statblock.pathfinder-2e-hazard-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line.name) {
-  margin: 0;
-}
-.statblock.pathfinder-2e-hazard-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline) > :is(.property, .line:has(.property-name)) {
-  margin-left: 1em;
-}
-.statblock.pathfinder-2e-hazard-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline) > :is(.property, .line) .property-name {
-  margin-left: -1em;
-}
 .statblock.pathfinder-2e-hazard-layout .statblock-content > .column > .statblock-item-container:has(.tapered-rule) {
-  margin-block: 0.25rem;
+  margin-block: 0.25em;
 }
 .statblock.pathfinder-2e-hazard-layout .statblock-content > .column > .statblock-item-inline:has(.name) + .statblock-item-container:has(.tapered-rule) {
   margin-top: 0;
 }
-.statblock.pathfinder-2e-hazard-layout .statblock-content > .column > .statblock-item-inline:has(.rare_01,
-.rare_02,
-.rare_03,
-.rare_04,
-.alignment,
-.size,
-.xp,
-.kingdom_xp,
-.trait_01,
-.trait_02,
-.trait_03,
-.trait_04,
-.trait_05,
-.trait_06,
-.trait_07) {
+.statblock.pathfinder-2e-hazard-layout .statblock-content > .column > .statblock-item-inline:has(.rare_01, .rare_02, .rare_03, .rare_04, .alignment, .size, .xp, .kingdom_xp, .trait_01, .trait_02, .trait_03, .trait_04, .trait_05, .trait_06, .trait_07) {
   row-gap: var(--statblock-traits-gap);
   margin-bottom: 0.5em;
 }
 .statblock.pathfinder-2e-hazard-layout .statblock-content > .column > .statblock-item-container:has(.effect) {
   margin-left: 1em;
 }
-
 .statblock.pathfinder-2e-influence-layout .statblock-content {
   background-color: var(--statblock-background-color);
   border: var(--statblock-border-size) var(--statblock-border-color) solid;
@@ -954,48 +1528,96 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 }
 .statblock.pathfinder-2e-influence-layout .statblock-content > .column {
   width: var(--statblock-column-width);
-  /* Hazard Block Specific */
+}
+.statblock.pathfinder-2e-influence-layout .statblock-content > .column > .property-container > .line:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-influence-layout .statblock-content > .column > .property-container > .line > .property-name {
+  margin-left: -1em;
+}
+.statblock.pathfinder-2e-influence-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-influence-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property > .property-name {
+  margin-left: -1em;
 }
 .statblock.pathfinder-2e-influence-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property) {
-  margin-block: 0.25rem;
+  margin-block: 0.25em;
 }
 .statblock.pathfinder-2e-influence-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property):last-child {
   margin-bottom: 0;
 }
-.statblock.pathfinder-2e-influence-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line.name) {
-  margin: 0;
-}
-.statblock.pathfinder-2e-influence-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline) > :is(.property, .line:has(.property-name)) {
-  margin-left: 1em;
-}
-.statblock.pathfinder-2e-influence-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline) > :is(.property, .line) .property-name {
-  margin-left: -1em;
-}
 .statblock.pathfinder-2e-influence-layout .statblock-content > .column > .statblock-item-container:has(.tapered-rule) {
-  margin-block: 0.25rem;
+  margin-block: 0.25em;
 }
 .statblock.pathfinder-2e-influence-layout .statblock-content > .column > .statblock-item-inline:has(.name) + .statblock-item-container:has(.tapered-rule) {
   margin-top: 0;
 }
-.statblock.pathfinder-2e-influence-layout .statblock-content > .column > .statblock-item-inline:has(.rare_01,
-.rare_02,
-.rare_03,
-.rare_04,
-.alignment,
-.size,
-.xp,
-.kingdom_xp,
-.trait_01,
-.trait_02,
-.trait_03,
-.trait_04,
-.trait_05,
-.trait_06,
-.trait_07) {
+.statblock.pathfinder-2e-influence-layout .statblock-content > .column > .statblock-item-inline:has(.rare_01, .rare_02, .rare_03, .rare_04, .alignment, .size, .xp, .kingdom_xp, .trait_01, .trait_02, .trait_03, .trait_04, .trait_05, .trait_06, .trait_07) {
   row-gap: var(--statblock-traits-gap);
   margin-bottom: 0.5em;
 }
-
+.statblock.pathfinder-2e-item-layout .statblock-content {
+  background-color: var(--statblock-background-color);
+  border: var(--statblock-border-size) var(--statblock-border-color) solid;
+  box-shadow: none;
+  color: var(--statblock-property-font-color);
+  display: flex;
+  font-family: var(--statblock-content-font);
+  font-size: var(--statblock-content-font-size);
+  margin: 0.5em 2px;
+  padding: 0.5em;
+  gap: 1rem;
+}
+.statblock.pathfinder-2e-item-layout .statblock-content .statblock-detached {
+  position: absolute;
+  top: -9999px;
+}
+.statblock.pathfinder-2e-item-layout .statblock-content .statblock-item-container {
+  margin: 0;
+  padding: 0;
+}
+.statblock.pathfinder-2e-item-layout .statblock-content .statblock-item-inline {
+  align-content: flex-start;
+  align-items: baseline;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 0;
+}
+.statblock.pathfinder-2e-item-layout .statblock-content > .column {
+  width: var(--statblock-column-width);
+}
+.statblock.pathfinder-2e-item-layout .statblock-content > .column > .property-container > .line:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-item-layout .statblock-content > .column > .property-container > .line > .property-name {
+  margin-left: -1em;
+}
+.statblock.pathfinder-2e-item-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-item-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property > .property-name {
+  margin-left: -1em;
+}
+.statblock.pathfinder-2e-item-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property) {
+  margin-block: 0.25em;
+}
+.statblock.pathfinder-2e-item-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property):last-child {
+  margin-bottom: 0;
+}
+.statblock.pathfinder-2e-item-layout .statblock-content > .column > .statblock-item-container:has(.tapered-rule) {
+  margin-block: 0.25em;
+}
+.statblock.pathfinder-2e-item-layout .statblock-content > .column > .statblock-item-inline:has(.name) + .statblock-item-container:has(.tapered-rule) {
+  margin-top: 0;
+}
+.statblock.pathfinder-2e-item-layout .statblock-content > .column > .statblock-item-inline:has(.rare_01, .rare_02, .rare_03, .rare_04, .alignment, .size, .xp, .kingdom_xp, .trait_01, .trait_02, .trait_03, .trait_04, .trait_05, .trait_06, .trait_07) {
+  row-gap: var(--statblock-traits-gap);
+  margin-bottom: 0.5em;
+}
 .statblock.pathfinder-2e-misc-layout .statblock-content {
   background-color: var(--statblock-background-color);
   border: var(--statblock-border-size) var(--statblock-border-color) solid;
@@ -1028,48 +1650,96 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 }
 .statblock.pathfinder-2e-misc-layout .statblock-content > .column {
   width: var(--statblock-column-width);
-  /* Hazard Block Specific */
+}
+.statblock.pathfinder-2e-misc-layout .statblock-content > .column > .property-container > .line:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-misc-layout .statblock-content > .column > .property-container > .line > .property-name {
+  margin-left: -1em;
+}
+.statblock.pathfinder-2e-misc-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-misc-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property > .property-name {
+  margin-left: -1em;
 }
 .statblock.pathfinder-2e-misc-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property) {
-  margin-block: 0.25rem;
+  margin-block: 0.25em;
 }
 .statblock.pathfinder-2e-misc-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property):last-child {
   margin-bottom: 0;
 }
-.statblock.pathfinder-2e-misc-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line.name) {
-  margin: 0;
-}
-.statblock.pathfinder-2e-misc-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline) > :is(.property, .line:has(.property-name)) {
-  margin-left: 1em;
-}
-.statblock.pathfinder-2e-misc-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline) > :is(.property, .line) .property-name {
-  margin-left: -1em;
-}
 .statblock.pathfinder-2e-misc-layout .statblock-content > .column > .statblock-item-container:has(.tapered-rule) {
-  margin-block: 0.25rem;
+  margin-block: 0.25em;
 }
 .statblock.pathfinder-2e-misc-layout .statblock-content > .column > .statblock-item-inline:has(.name) + .statblock-item-container:has(.tapered-rule) {
   margin-top: 0;
 }
-.statblock.pathfinder-2e-misc-layout .statblock-content > .column > .statblock-item-inline:has(.rare_01,
-.rare_02,
-.rare_03,
-.rare_04,
-.alignment,
-.size,
-.xp,
-.kingdom_xp,
-.trait_01,
-.trait_02,
-.trait_03,
-.trait_04,
-.trait_05,
-.trait_06,
-.trait_07) {
+.statblock.pathfinder-2e-misc-layout .statblock-content > .column > .statblock-item-inline:has(.rare_01, .rare_02, .rare_03, .rare_04, .alignment, .size, .xp, .kingdom_xp, .trait_01, .trait_02, .trait_03, .trait_04, .trait_05, .trait_06, .trait_07) {
   row-gap: var(--statblock-traits-gap);
   margin-bottom: 0.5em;
 }
-
+.statblock.pathfinder-2e-plane-layout .statblock-content {
+  background-color: var(--statblock-background-color);
+  border: var(--statblock-border-size) var(--statblock-border-color) solid;
+  box-shadow: none;
+  color: var(--statblock-property-font-color);
+  display: flex;
+  font-family: var(--statblock-content-font);
+  font-size: var(--statblock-content-font-size);
+  margin: 0.5em 2px;
+  padding: 0.5em;
+  gap: 1rem;
+}
+.statblock.pathfinder-2e-plane-layout .statblock-content .statblock-detached {
+  position: absolute;
+  top: -9999px;
+}
+.statblock.pathfinder-2e-plane-layout .statblock-content .statblock-item-container {
+  margin: 0;
+  padding: 0;
+}
+.statblock.pathfinder-2e-plane-layout .statblock-content .statblock-item-inline {
+  align-content: flex-start;
+  align-items: baseline;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 0;
+}
+.statblock.pathfinder-2e-plane-layout .statblock-content > .column {
+  width: var(--statblock-column-width);
+}
+.statblock.pathfinder-2e-plane-layout .statblock-content > .column > .property-container > .line:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-plane-layout .statblock-content > .column > .property-container > .line > .property-name {
+  margin-left: -1em;
+}
+.statblock.pathfinder-2e-plane-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-plane-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property > .property-name {
+  margin-left: -1em;
+}
+.statblock.pathfinder-2e-plane-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property) {
+  margin-block: 0.25em;
+}
+.statblock.pathfinder-2e-plane-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property):last-child {
+  margin-bottom: 0;
+}
+.statblock.pathfinder-2e-plane-layout .statblock-content > .column > .statblock-item-container:has(.tapered-rule) {
+  margin-block: 0.25em;
+}
+.statblock.pathfinder-2e-plane-layout .statblock-content > .column > .statblock-item-inline:has(.name) + .statblock-item-container:has(.tapered-rule) {
+  margin-top: 0;
+}
+.statblock.pathfinder-2e-plane-layout .statblock-content > .column > .statblock-item-inline:has(.rare_01, .rare_02, .rare_03, .rare_04, .alignment, .size, .xp, .kingdom_xp, .trait_01, .trait_02, .trait_03, .trait_04, .trait_05, .trait_06, .trait_07) {
+  row-gap: var(--statblock-traits-gap);
+  margin-bottom: 0.5em;
+}
 .statblock.pathfinder-2e-quest-layout .statblock-content {
   background-color: var(--statblock-background-color);
   border: var(--statblock-border-size) var(--statblock-border-color) solid;
@@ -1102,48 +1772,35 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 }
 .statblock.pathfinder-2e-quest-layout .statblock-content > .column {
   width: var(--statblock-column-width);
-  /* Hazard Block Specific */
+}
+.statblock.pathfinder-2e-quest-layout .statblock-content > .column > .property-container > .line:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-quest-layout .statblock-content > .column > .property-container > .line > .property-name {
+  margin-left: -1em;
+}
+.statblock.pathfinder-2e-quest-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-quest-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property > .property-name {
+  margin-left: -1em;
 }
 .statblock.pathfinder-2e-quest-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property) {
-  margin-block: 0.25rem;
+  margin-block: 0.25em;
 }
 .statblock.pathfinder-2e-quest-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property):last-child {
   margin-bottom: 0;
 }
-.statblock.pathfinder-2e-quest-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line.name) {
-  margin: 0;
-}
-.statblock.pathfinder-2e-quest-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline) > :is(.property, .line:has(.property-name)) {
-  margin-left: 1em;
-}
-.statblock.pathfinder-2e-quest-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline) > :is(.property, .line) .property-name {
-  margin-left: -1em;
-}
 .statblock.pathfinder-2e-quest-layout .statblock-content > .column > .statblock-item-container:has(.tapered-rule) {
-  margin-block: 0.25rem;
+  margin-block: 0.25em;
 }
 .statblock.pathfinder-2e-quest-layout .statblock-content > .column > .statblock-item-inline:has(.name) + .statblock-item-container:has(.tapered-rule) {
   margin-top: 0;
 }
-.statblock.pathfinder-2e-quest-layout .statblock-content > .column > .statblock-item-inline:has(.rare_01,
-.rare_02,
-.rare_03,
-.rare_04,
-.alignment,
-.size,
-.xp,
-.kingdom_xp,
-.trait_01,
-.trait_02,
-.trait_03,
-.trait_04,
-.trait_05,
-.trait_06,
-.trait_07) {
+.statblock.pathfinder-2e-quest-layout .statblock-content > .column > .statblock-item-inline:has(.rare_01, .rare_02, .rare_03, .rare_04, .alignment, .size, .xp, .kingdom_xp, .trait_01, .trait_02, .trait_03, .trait_04, .trait_05, .trait_06, .trait_07) {
   row-gap: var(--statblock-traits-gap);
   margin-bottom: 0.5em;
 }
-
 .statblock.pathfinder-2e-settlement-layout .statblock-content {
   background-color: var(--statblock-background-color);
   border: var(--statblock-border-size) var(--statblock-border-color) solid;
@@ -1176,48 +1833,96 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 }
 .statblock.pathfinder-2e-settlement-layout .statblock-content > .column {
   width: var(--statblock-column-width);
-  /* Hazard Block Specific */
+}
+.statblock.pathfinder-2e-settlement-layout .statblock-content > .column > .property-container > .line:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-settlement-layout .statblock-content > .column > .property-container > .line > .property-name {
+  margin-left: -1em;
+}
+.statblock.pathfinder-2e-settlement-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-settlement-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property > .property-name {
+  margin-left: -1em;
 }
 .statblock.pathfinder-2e-settlement-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property) {
-  margin-block: 0.25rem;
+  margin-block: 0.25em;
 }
 .statblock.pathfinder-2e-settlement-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property):last-child {
   margin-bottom: 0;
 }
-.statblock.pathfinder-2e-settlement-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line.name) {
-  margin: 0;
-}
-.statblock.pathfinder-2e-settlement-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline) > :is(.property, .line:has(.property-name)) {
-  margin-left: 1em;
-}
-.statblock.pathfinder-2e-settlement-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline) > :is(.property, .line) .property-name {
-  margin-left: -1em;
-}
 .statblock.pathfinder-2e-settlement-layout .statblock-content > .column > .statblock-item-container:has(.tapered-rule) {
-  margin-block: 0.25rem;
+  margin-block: 0.25em;
 }
 .statblock.pathfinder-2e-settlement-layout .statblock-content > .column > .statblock-item-inline:has(.name) + .statblock-item-container:has(.tapered-rule) {
   margin-top: 0;
 }
-.statblock.pathfinder-2e-settlement-layout .statblock-content > .column > .statblock-item-inline:has(.rare_01,
-.rare_02,
-.rare_03,
-.rare_04,
-.alignment,
-.size,
-.xp,
-.kingdom_xp,
-.trait_01,
-.trait_02,
-.trait_03,
-.trait_04,
-.trait_05,
-.trait_06,
-.trait_07) {
+.statblock.pathfinder-2e-settlement-layout .statblock-content > .column > .statblock-item-inline:has(.rare_01, .rare_02, .rare_03, .rare_04, .alignment, .size, .xp, .kingdom_xp, .trait_01, .trait_02, .trait_03, .trait_04, .trait_05, .trait_06, .trait_07) {
   row-gap: var(--statblock-traits-gap);
   margin-bottom: 0.5em;
 }
-
+.statblock.pathfinder-2e-affliction-layout .statblock-content {
+  background-color: var(--statblock-background-color);
+  border: var(--statblock-border-size) var(--statblock-border-color) solid;
+  box-shadow: none;
+  color: var(--statblock-property-font-color);
+  display: flex;
+  font-family: var(--statblock-content-font);
+  font-size: var(--statblock-content-font-size);
+  margin: 0.5em 2px;
+  padding: 0.5em;
+  gap: 1rem;
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-content .statblock-detached {
+  position: absolute;
+  top: -9999px;
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-content .statblock-item-container {
+  margin: 0;
+  padding: 0;
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-content .statblock-item-inline {
+  align-content: flex-start;
+  align-items: baseline;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 0;
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-content > .column {
+  width: var(--statblock-column-width);
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-content > .column > .property-container > .line:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-content > .column > .property-container > .line > .property-name {
+  margin-left: -1em;
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property:has(> .property-name) {
+  margin-left: 1em;
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-content > .column .traits-container > .statblock-trait-prop > .property > .property-name {
+  margin-left: -1em;
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property) {
+  margin-block: 0.25em;
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-content > .column > :is(.statblock-item-container, .statblock-item-inline):has(.line, .property):last-child {
+  margin-bottom: 0;
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-content > .column > .statblock-item-container:has(.tapered-rule) {
+  margin-block: 0.25em;
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-content > .column > .statblock-item-inline:has(.name) + .statblock-item-container:has(.tapered-rule) {
+  margin-top: 0;
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-content > .column > .statblock-item-inline:has(.rare_01, .rare_02, .rare_03, .rare_04, .alignment, .size, .xp, .kingdom_xp, .trait_01, .trait_02, .trait_03, .trait_04, .trait_05, .trait_06, .trait_07) {
+  row-gap: var(--statblock-traits-gap);
+  margin-bottom: 0.5em;
+}
 .statblock.basic-pathfinder-2e-layout .bar {
   height: 1px;
   background: rgb(51, 51, 51);
@@ -1233,7 +1938,21 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   clip-path: unset !important;
   -webkit-clip-path: unset;
 }
-
+.statblock.pathfinder-2e-creature-layout .bar {
+  height: 1px;
+  background: rgb(51, 51, 51);
+  border: 1px solid rgb(51, 51, 51);
+  z-index: 1;
+  width: fit-content;
+}
+.statblock.pathfinder-2e-creature-layout div.tapered-rule {
+  width: auto;
+  margin: 0;
+  height: 1px;
+  background: rgb(51, 51, 51);
+  clip-path: unset !important;
+  -webkit-clip-path: unset;
+}
 .statblock.pathfinder-2e-action-layout .bar {
   height: 1px;
   background: rgb(51, 51, 51);
@@ -1249,7 +1968,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   clip-path: unset !important;
   -webkit-clip-path: unset;
 }
-
 .statblock.pathfinder-2e-hazard-layout .bar {
   height: 1px;
   background: rgb(51, 51, 51);
@@ -1265,7 +1983,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   clip-path: unset !important;
   -webkit-clip-path: unset;
 }
-
 .statblock.pathfinder-2e-influence-layout .bar {
   height: 1px;
   background: rgb(51, 51, 51);
@@ -1281,7 +1998,21 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   clip-path: unset !important;
   -webkit-clip-path: unset;
 }
-
+.statblock.pathfinder-2e-item-layout .bar {
+  height: 1px;
+  background: rgb(51, 51, 51);
+  border: 1px solid rgb(51, 51, 51);
+  z-index: 1;
+  width: fit-content;
+}
+.statblock.pathfinder-2e-item-layout div.tapered-rule {
+  width: auto;
+  margin: 0;
+  height: 1px;
+  background: rgb(51, 51, 51);
+  clip-path: unset !important;
+  -webkit-clip-path: unset;
+}
 .statblock.pathfinder-2e-misc-layout .bar {
   height: 1px;
   background: rgb(51, 51, 51);
@@ -1297,7 +2028,21 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   clip-path: unset !important;
   -webkit-clip-path: unset;
 }
-
+.statblock.pathfinder-2e-plane-layout .bar {
+  height: 1px;
+  background: rgb(51, 51, 51);
+  border: 1px solid rgb(51, 51, 51);
+  z-index: 1;
+  width: fit-content;
+}
+.statblock.pathfinder-2e-plane-layout div.tapered-rule {
+  width: auto;
+  margin: 0;
+  height: 1px;
+  background: rgb(51, 51, 51);
+  clip-path: unset !important;
+  -webkit-clip-path: unset;
+}
 .statblock.pathfinder-2e-quest-layout .bar {
   height: 1px;
   background: rgb(51, 51, 51);
@@ -1313,7 +2058,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   clip-path: unset !important;
   -webkit-clip-path: unset;
 }
-
 .statblock.pathfinder-2e-settlement-layout .bar {
   height: 1px;
   background: rgb(51, 51, 51);
@@ -1329,7 +2073,21 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   clip-path: unset !important;
   -webkit-clip-path: unset;
 }
-
+.statblock.pathfinder-2e-affliction-layout .bar {
+  height: 1px;
+  background: rgb(51, 51, 51);
+  border: 1px solid rgb(51, 51, 51);
+  z-index: 1;
+  width: fit-content;
+}
+.statblock.pathfinder-2e-affliction-layout div.tapered-rule {
+  width: auto;
+  margin: 0;
+  height: 1px;
+  background: rgb(51, 51, 51);
+  clip-path: unset !important;
+  -webkit-clip-path: unset;
+}
 .statblock.basic-pathfinder-2e-layout .flex-container {
   align-items: center;
   display: flex;
@@ -1371,7 +2129,47 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   font-size: 1.25em;
   color: var(--statblock-section-heading-font-color);
 }
-
+.statblock.pathfinder-2e-creature-layout .flex-container {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+.statblock.pathfinder-2e-creature-layout .heading {
+  align-items: center;
+  color: var(--statblock-heading-font-color);
+  display: flex;
+  font-family: var(--statblock-heading-font);
+  font-size: 1.35em;
+  font-variant: small-caps;
+  font-weight: 700;
+  justify-content: space-between;
+  letter-spacing: 1px;
+  line-height: 1;
+  margin: 0;
+}
+.statblock.pathfinder-2e-creature-layout .section-header {
+  border: none;
+  color: var(--statblock-section-heading-font-color);
+  font-size: var(--statblock-section-heading-font-size);
+  font-variant: var(--statblock-section-heading-font-variant);
+  font-weight: var(--statblock-section-heading-font-weight);
+  letter-spacing: 1px;
+  margin-bottom: 0.3em;
+}
+.statblock.pathfinder-2e-creature-layout h3.section-header {
+  display: none;
+}
+.statblock.pathfinder-2e-creature-layout h3,
+.statblock.pathfinder-2e-creature-layout .markdown-rendered h3,
+.statblock.pathfinder-2e-creature-layout .HyperMD-header-3,
+.statblock.pathfinder-2e-creature-layout .inline-title[data-level="3"],
+.statblock.pathfinder-2e-creature-layout .HyperMD-list-line .cm-header-3 {
+  font-variant: petite-caps;
+  letter-spacing: 1px;
+  line-height: 1;
+  font-size: 1.25em;
+  color: var(--statblock-section-heading-font-color);
+}
 .statblock.pathfinder-2e-action-layout .flex-container {
   align-items: center;
   display: flex;
@@ -1413,7 +2211,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   font-size: 1.25em;
   color: var(--statblock-section-heading-font-color);
 }
-
 .statblock.pathfinder-2e-hazard-layout .flex-container {
   align-items: center;
   display: flex;
@@ -1455,7 +2252,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   font-size: 1.25em;
   color: var(--statblock-section-heading-font-color);
 }
-
 .statblock.pathfinder-2e-influence-layout .flex-container {
   align-items: center;
   display: flex;
@@ -1497,7 +2293,47 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   font-size: 1.25em;
   color: var(--statblock-section-heading-font-color);
 }
-
+.statblock.pathfinder-2e-item-layout .flex-container {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+.statblock.pathfinder-2e-item-layout .heading {
+  align-items: center;
+  color: var(--statblock-heading-font-color);
+  display: flex;
+  font-family: var(--statblock-heading-font);
+  font-size: 1.35em;
+  font-variant: small-caps;
+  font-weight: 700;
+  justify-content: space-between;
+  letter-spacing: 1px;
+  line-height: 1;
+  margin: 0;
+}
+.statblock.pathfinder-2e-item-layout .section-header {
+  border: none;
+  color: var(--statblock-section-heading-font-color);
+  font-size: var(--statblock-section-heading-font-size);
+  font-variant: var(--statblock-section-heading-font-variant);
+  font-weight: var(--statblock-section-heading-font-weight);
+  letter-spacing: 1px;
+  margin-bottom: 0.3em;
+}
+.statblock.pathfinder-2e-item-layout h3.section-header {
+  display: none;
+}
+.statblock.pathfinder-2e-item-layout h3,
+.statblock.pathfinder-2e-item-layout .markdown-rendered h3,
+.statblock.pathfinder-2e-item-layout .HyperMD-header-3,
+.statblock.pathfinder-2e-item-layout .inline-title[data-level="3"],
+.statblock.pathfinder-2e-item-layout .HyperMD-list-line .cm-header-3 {
+  font-variant: petite-caps;
+  letter-spacing: 1px;
+  line-height: 1;
+  font-size: 1.25em;
+  color: var(--statblock-section-heading-font-color);
+}
 .statblock.pathfinder-2e-misc-layout .flex-container {
   align-items: center;
   display: flex;
@@ -1539,7 +2375,47 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   font-size: 1.25em;
   color: var(--statblock-section-heading-font-color);
 }
-
+.statblock.pathfinder-2e-plane-layout .flex-container {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+.statblock.pathfinder-2e-plane-layout .heading {
+  align-items: center;
+  color: var(--statblock-heading-font-color);
+  display: flex;
+  font-family: var(--statblock-heading-font);
+  font-size: 1.35em;
+  font-variant: small-caps;
+  font-weight: 700;
+  justify-content: space-between;
+  letter-spacing: 1px;
+  line-height: 1;
+  margin: 0;
+}
+.statblock.pathfinder-2e-plane-layout .section-header {
+  border: none;
+  color: var(--statblock-section-heading-font-color);
+  font-size: var(--statblock-section-heading-font-size);
+  font-variant: var(--statblock-section-heading-font-variant);
+  font-weight: var(--statblock-section-heading-font-weight);
+  letter-spacing: 1px;
+  margin-bottom: 0.3em;
+}
+.statblock.pathfinder-2e-plane-layout h3.section-header {
+  display: none;
+}
+.statblock.pathfinder-2e-plane-layout h3,
+.statblock.pathfinder-2e-plane-layout .markdown-rendered h3,
+.statblock.pathfinder-2e-plane-layout .HyperMD-header-3,
+.statblock.pathfinder-2e-plane-layout .inline-title[data-level="3"],
+.statblock.pathfinder-2e-plane-layout .HyperMD-list-line .cm-header-3 {
+  font-variant: petite-caps;
+  letter-spacing: 1px;
+  line-height: 1;
+  font-size: 1.25em;
+  color: var(--statblock-section-heading-font-color);
+}
 .statblock.pathfinder-2e-quest-layout .flex-container {
   align-items: center;
   display: flex;
@@ -1581,7 +2457,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   font-size: 1.25em;
   color: var(--statblock-section-heading-font-color);
 }
-
 .statblock.pathfinder-2e-settlement-layout .flex-container {
   align-items: center;
   display: flex;
@@ -1623,7 +2498,47 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   font-size: 1.25em;
   color: var(--statblock-section-heading-font-color);
 }
-
+.statblock.pathfinder-2e-affliction-layout .flex-container {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+.statblock.pathfinder-2e-affliction-layout .heading {
+  align-items: center;
+  color: var(--statblock-heading-font-color);
+  display: flex;
+  font-family: var(--statblock-heading-font);
+  font-size: 1.35em;
+  font-variant: small-caps;
+  font-weight: 700;
+  justify-content: space-between;
+  letter-spacing: 1px;
+  line-height: 1;
+  margin: 0;
+}
+.statblock.pathfinder-2e-affliction-layout .section-header {
+  border: none;
+  color: var(--statblock-section-heading-font-color);
+  font-size: var(--statblock-section-heading-font-size);
+  font-variant: var(--statblock-section-heading-font-variant);
+  font-weight: var(--statblock-section-heading-font-weight);
+  letter-spacing: 1px;
+  margin-bottom: 0.3em;
+}
+.statblock.pathfinder-2e-affliction-layout h3.section-header {
+  display: none;
+}
+.statblock.pathfinder-2e-affliction-layout h3,
+.statblock.pathfinder-2e-affliction-layout .markdown-rendered h3,
+.statblock.pathfinder-2e-affliction-layout .HyperMD-header-3,
+.statblock.pathfinder-2e-affliction-layout .inline-title[data-level="3"],
+.statblock.pathfinder-2e-affliction-layout .HyperMD-list-line .cm-header-3 {
+  font-variant: petite-caps;
+  letter-spacing: 1px;
+  line-height: 1;
+  font-size: 1.25em;
+  color: var(--statblock-section-heading-font-color);
+}
 .statblock.basic-pathfinder-2e-layout a,
 .statblock.basic-pathfinder-2e-layout a:-webkit-any-link,
 .statblock.basic-pathfinder-2e-layout a.internal-link {
@@ -1641,17 +2556,17 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.basic-pathfinder-2e-layout em,
 .statblock.basic-pathfinder-2e-layout .cm-em {
   font-style: italic;
+}
+:not(.property-name) .statblock.basic-pathfinder-2e-layout i,
+:not(.property-name) .statblock.basic-pathfinder-2e-layout em,
+:not(.property-name) .statblock.basic-pathfinder-2e-layout .cm-em {
   color: rgb(77, 27, 105);
   font-weight: 500;
 }
 .statblock.basic-pathfinder-2e-layout ul {
-  /* Corrects the UL/LI Coloration */
   display: block;
   list-style-type: disc;
-  margin-block-start: 1em;
-  margin-block-end: 1em;
-  margin-inline-start: 0;
-  margin-inline-end: 0;
+  margin: 0 0.5em;
   padding-inline-start: 40px;
 }
 .statblock.basic-pathfinder-2e-layout .markdown-rendered ul,
@@ -1685,7 +2600,66 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   text-align: start;
   text-align-last: start;
 }
-
+.statblock.pathfinder-2e-creature-layout a,
+.statblock.pathfinder-2e-creature-layout a:-webkit-any-link,
+.statblock.pathfinder-2e-creature-layout a.internal-link {
+  color: rgb(61, 102, 142);
+  text-decoration: underline;
+}
+.statblock.pathfinder-2e-creature-layout b,
+.statblock.pathfinder-2e-creature-layout strong,
+.statblock.pathfinder-2e-creature-layout .cm-strong {
+  font-weight: var(--statblock-property-name-font-weight);
+  color: var(--statblock-property-name-font-color);
+}
+.statblock.pathfinder-2e-creature-layout i,
+.statblock.pathfinder-2e-creature-layout em,
+.statblock.pathfinder-2e-creature-layout .cm-em {
+  font-style: italic;
+}
+:not(.property-name) .statblock.pathfinder-2e-creature-layout i,
+:not(.property-name) .statblock.pathfinder-2e-creature-layout em,
+:not(.property-name) .statblock.pathfinder-2e-creature-layout .cm-em {
+  color: rgb(77, 27, 105);
+  font-weight: 500;
+}
+.statblock.pathfinder-2e-creature-layout ul {
+  display: block;
+  list-style-type: disc;
+  margin: 0 0.5em;
+  padding-inline-start: 40px;
+}
+.statblock.pathfinder-2e-creature-layout .markdown-rendered ul,
+.statblock.pathfinder-2e-creature-layout .markdown-rendered ol {
+  padding-inline-start: 2em;
+}
+.statblock.pathfinder-2e-creature-layout li {
+  color: var(--statblock-content-font);
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+.statblock.pathfinder-2e-creature-layout .markdown-source-view ol > li,
+.statblock.pathfinder-2e-creature-layout .markdown-source-view ul > li,
+.statblock.pathfinder-2e-creature-layout .markdown-preview-view ol > li,
+.statblock.pathfinder-2e-creature-layout .markdown-preview-view ul > li,
+.statblock.pathfinder-2e-creature-layout .markdown-rendered ul > li,
+.statblock.pathfinder-2e-creature-layout .mod-cm6 .HyperMD-list-line.cm-line {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.statblock.pathfinder-2e-creature-layout ol > li::marker,
+.statblock.pathfinder-2e-creature-layout ul > li::marker,
+.statblock.pathfinder-2e-creature-layout .cm-s-obsidian .cm-formatting-list {
+  color: var(--statblock-property-name-font-color);
+}
+.statblock.pathfinder-2e-creature-layout ::marker {
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+  text-transform: none;
+  text-indent: 0;
+  text-align: start;
+  text-align-last: start;
+}
 .statblock.pathfinder-2e-action-layout a,
 .statblock.pathfinder-2e-action-layout a:-webkit-any-link,
 .statblock.pathfinder-2e-action-layout a.internal-link {
@@ -1703,17 +2677,17 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-action-layout em,
 .statblock.pathfinder-2e-action-layout .cm-em {
   font-style: italic;
+}
+:not(.property-name) .statblock.pathfinder-2e-action-layout i,
+:not(.property-name) .statblock.pathfinder-2e-action-layout em,
+:not(.property-name) .statblock.pathfinder-2e-action-layout .cm-em {
   color: rgb(77, 27, 105);
   font-weight: 500;
 }
 .statblock.pathfinder-2e-action-layout ul {
-  /* Corrects the UL/LI Coloration */
   display: block;
   list-style-type: disc;
-  margin-block-start: 1em;
-  margin-block-end: 1em;
-  margin-inline-start: 0;
-  margin-inline-end: 0;
+  margin: 0 0.5em;
   padding-inline-start: 40px;
 }
 .statblock.pathfinder-2e-action-layout .markdown-rendered ul,
@@ -1747,7 +2721,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   text-align: start;
   text-align-last: start;
 }
-
 .statblock.pathfinder-2e-hazard-layout a,
 .statblock.pathfinder-2e-hazard-layout a:-webkit-any-link,
 .statblock.pathfinder-2e-hazard-layout a.internal-link {
@@ -1765,17 +2738,17 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-hazard-layout em,
 .statblock.pathfinder-2e-hazard-layout .cm-em {
   font-style: italic;
+}
+:not(.property-name) .statblock.pathfinder-2e-hazard-layout i,
+:not(.property-name) .statblock.pathfinder-2e-hazard-layout em,
+:not(.property-name) .statblock.pathfinder-2e-hazard-layout .cm-em {
   color: rgb(77, 27, 105);
   font-weight: 500;
 }
 .statblock.pathfinder-2e-hazard-layout ul {
-  /* Corrects the UL/LI Coloration */
   display: block;
   list-style-type: disc;
-  margin-block-start: 1em;
-  margin-block-end: 1em;
-  margin-inline-start: 0;
-  margin-inline-end: 0;
+  margin: 0 0.5em;
   padding-inline-start: 40px;
 }
 .statblock.pathfinder-2e-hazard-layout .markdown-rendered ul,
@@ -1809,7 +2782,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   text-align: start;
   text-align-last: start;
 }
-
 .statblock.pathfinder-2e-influence-layout a,
 .statblock.pathfinder-2e-influence-layout a:-webkit-any-link,
 .statblock.pathfinder-2e-influence-layout a.internal-link {
@@ -1827,17 +2799,17 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-influence-layout em,
 .statblock.pathfinder-2e-influence-layout .cm-em {
   font-style: italic;
+}
+:not(.property-name) .statblock.pathfinder-2e-influence-layout i,
+:not(.property-name) .statblock.pathfinder-2e-influence-layout em,
+:not(.property-name) .statblock.pathfinder-2e-influence-layout .cm-em {
   color: rgb(77, 27, 105);
   font-weight: 500;
 }
 .statblock.pathfinder-2e-influence-layout ul {
-  /* Corrects the UL/LI Coloration */
   display: block;
   list-style-type: disc;
-  margin-block-start: 1em;
-  margin-block-end: 1em;
-  margin-inline-start: 0;
-  margin-inline-end: 0;
+  margin: 0 0.5em;
   padding-inline-start: 40px;
 }
 .statblock.pathfinder-2e-influence-layout .markdown-rendered ul,
@@ -1871,7 +2843,67 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   text-align: start;
   text-align-last: start;
 }
-
+.statblock.pathfinder-2e-item-layout a,
+.statblock.pathfinder-2e-item-layout a:-webkit-any-link,
+.statblock.pathfinder-2e-item-layout a.internal-link {
+  color: rgb(61, 102, 142);
+  font-weight: var(--statblock-property-name-font-weight);
+  text-decoration: none;
+}
+.statblock.pathfinder-2e-item-layout b,
+.statblock.pathfinder-2e-item-layout strong,
+.statblock.pathfinder-2e-item-layout .cm-strong {
+  font-weight: var(--statblock-property-name-font-weight);
+  color: var(--statblock-property-name-font-color);
+}
+.statblock.pathfinder-2e-item-layout i,
+.statblock.pathfinder-2e-item-layout em,
+.statblock.pathfinder-2e-item-layout .cm-em {
+  font-style: italic;
+}
+:not(.property-name) .statblock.pathfinder-2e-item-layout i,
+:not(.property-name) .statblock.pathfinder-2e-item-layout em,
+:not(.property-name) .statblock.pathfinder-2e-item-layout .cm-em {
+  color: rgb(77, 27, 105);
+  font-weight: 500;
+}
+.statblock.pathfinder-2e-item-layout ul {
+  display: block;
+  list-style-type: disc;
+  margin: 0 0.5em;
+  padding-inline-start: 40px;
+}
+.statblock.pathfinder-2e-item-layout .markdown-rendered ul,
+.statblock.pathfinder-2e-item-layout .markdown-rendered ol {
+  padding-inline-start: 2em;
+}
+.statblock.pathfinder-2e-item-layout li {
+  color: var(--statblock-content-font);
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+.statblock.pathfinder-2e-item-layout .markdown-source-view ol > li,
+.statblock.pathfinder-2e-item-layout .markdown-source-view ul > li,
+.statblock.pathfinder-2e-item-layout .markdown-preview-view ol > li,
+.statblock.pathfinder-2e-item-layout .markdown-preview-view ul > li,
+.statblock.pathfinder-2e-item-layout .markdown-rendered ul > li,
+.statblock.pathfinder-2e-item-layout .mod-cm6 .HyperMD-list-line.cm-line {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.statblock.pathfinder-2e-item-layout ol > li::marker,
+.statblock.pathfinder-2e-item-layout ul > li::marker,
+.statblock.pathfinder-2e-item-layout .cm-s-obsidian .cm-formatting-list {
+  color: var(--statblock-property-name-font-color);
+}
+.statblock.pathfinder-2e-item-layout ::marker {
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+  text-transform: none;
+  text-indent: 0;
+  text-align: start;
+  text-align-last: start;
+}
 .statblock.pathfinder-2e-misc-layout a,
 .statblock.pathfinder-2e-misc-layout a:-webkit-any-link,
 .statblock.pathfinder-2e-misc-layout a.internal-link {
@@ -1889,17 +2921,17 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-misc-layout em,
 .statblock.pathfinder-2e-misc-layout .cm-em {
   font-style: italic;
+}
+:not(.property-name) .statblock.pathfinder-2e-misc-layout i,
+:not(.property-name) .statblock.pathfinder-2e-misc-layout em,
+:not(.property-name) .statblock.pathfinder-2e-misc-layout .cm-em {
   color: rgb(77, 27, 105);
   font-weight: 500;
 }
 .statblock.pathfinder-2e-misc-layout ul {
-  /* Corrects the UL/LI Coloration */
   display: block;
   list-style-type: disc;
-  margin-block-start: 1em;
-  margin-block-end: 1em;
-  margin-inline-start: 0;
-  margin-inline-end: 0;
+  margin: 0 0.5em;
   padding-inline-start: 40px;
 }
 .statblock.pathfinder-2e-misc-layout .markdown-rendered ul,
@@ -1933,7 +2965,67 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   text-align: start;
   text-align-last: start;
 }
-
+.statblock.pathfinder-2e-plane-layout a,
+.statblock.pathfinder-2e-plane-layout a:-webkit-any-link,
+.statblock.pathfinder-2e-plane-layout a.internal-link {
+  color: rgb(61, 102, 142);
+  font-weight: var(--statblock-property-name-font-weight);
+  text-decoration: none;
+}
+.statblock.pathfinder-2e-plane-layout b,
+.statblock.pathfinder-2e-plane-layout strong,
+.statblock.pathfinder-2e-plane-layout .cm-strong {
+  font-weight: var(--statblock-property-name-font-weight);
+  color: var(--statblock-property-name-font-color);
+}
+.statblock.pathfinder-2e-plane-layout i,
+.statblock.pathfinder-2e-plane-layout em,
+.statblock.pathfinder-2e-plane-layout .cm-em {
+  font-style: italic;
+}
+:not(.property-name) .statblock.pathfinder-2e-plane-layout i,
+:not(.property-name) .statblock.pathfinder-2e-plane-layout em,
+:not(.property-name) .statblock.pathfinder-2e-plane-layout .cm-em {
+  color: rgb(77, 27, 105);
+  font-weight: 500;
+}
+.statblock.pathfinder-2e-plane-layout ul {
+  display: block;
+  list-style-type: disc;
+  margin: 0 0.5em;
+  padding-inline-start: 40px;
+}
+.statblock.pathfinder-2e-plane-layout .markdown-rendered ul,
+.statblock.pathfinder-2e-plane-layout .markdown-rendered ol {
+  padding-inline-start: 2em;
+}
+.statblock.pathfinder-2e-plane-layout li {
+  color: var(--statblock-content-font);
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+.statblock.pathfinder-2e-plane-layout .markdown-source-view ol > li,
+.statblock.pathfinder-2e-plane-layout .markdown-source-view ul > li,
+.statblock.pathfinder-2e-plane-layout .markdown-preview-view ol > li,
+.statblock.pathfinder-2e-plane-layout .markdown-preview-view ul > li,
+.statblock.pathfinder-2e-plane-layout .markdown-rendered ul > li,
+.statblock.pathfinder-2e-plane-layout .mod-cm6 .HyperMD-list-line.cm-line {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.statblock.pathfinder-2e-plane-layout ol > li::marker,
+.statblock.pathfinder-2e-plane-layout ul > li::marker,
+.statblock.pathfinder-2e-plane-layout .cm-s-obsidian .cm-formatting-list {
+  color: var(--statblock-property-name-font-color);
+}
+.statblock.pathfinder-2e-plane-layout ::marker {
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+  text-transform: none;
+  text-indent: 0;
+  text-align: start;
+  text-align-last: start;
+}
 .statblock.pathfinder-2e-quest-layout a,
 .statblock.pathfinder-2e-quest-layout a:-webkit-any-link,
 .statblock.pathfinder-2e-quest-layout a.internal-link {
@@ -1951,17 +3043,17 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-quest-layout em,
 .statblock.pathfinder-2e-quest-layout .cm-em {
   font-style: italic;
+}
+:not(.property-name) .statblock.pathfinder-2e-quest-layout i,
+:not(.property-name) .statblock.pathfinder-2e-quest-layout em,
+:not(.property-name) .statblock.pathfinder-2e-quest-layout .cm-em {
   color: rgb(77, 27, 105);
   font-weight: 500;
 }
 .statblock.pathfinder-2e-quest-layout ul {
-  /* Corrects the UL/LI Coloration */
   display: block;
   list-style-type: disc;
-  margin-block-start: 1em;
-  margin-block-end: 1em;
-  margin-inline-start: 0;
-  margin-inline-end: 0;
+  margin: 0 0.5em;
   padding-inline-start: 40px;
 }
 .statblock.pathfinder-2e-quest-layout .markdown-rendered ul,
@@ -1995,7 +3087,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   text-align: start;
   text-align-last: start;
 }
-
 .statblock.pathfinder-2e-settlement-layout a,
 .statblock.pathfinder-2e-settlement-layout a:-webkit-any-link,
 .statblock.pathfinder-2e-settlement-layout a.internal-link {
@@ -2013,17 +3104,17 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-settlement-layout em,
 .statblock.pathfinder-2e-settlement-layout .cm-em {
   font-style: italic;
+}
+:not(.property-name) .statblock.pathfinder-2e-settlement-layout i,
+:not(.property-name) .statblock.pathfinder-2e-settlement-layout em,
+:not(.property-name) .statblock.pathfinder-2e-settlement-layout .cm-em {
   color: rgb(77, 27, 105);
   font-weight: 500;
 }
 .statblock.pathfinder-2e-settlement-layout ul {
-  /* Corrects the UL/LI Coloration */
   display: block;
   list-style-type: disc;
-  margin-block-start: 1em;
-  margin-block-end: 1em;
-  margin-inline-start: 0;
-  margin-inline-end: 0;
+  margin: 0 0.5em;
   padding-inline-start: 40px;
 }
 .statblock.pathfinder-2e-settlement-layout .markdown-rendered ul,
@@ -2057,7 +3148,67 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   text-align: start;
   text-align-last: start;
 }
-
+.statblock.pathfinder-2e-affliction-layout a,
+.statblock.pathfinder-2e-affliction-layout a:-webkit-any-link,
+.statblock.pathfinder-2e-affliction-layout a.internal-link {
+  color: rgb(61, 102, 142);
+  font-weight: var(--statblock-property-name-font-weight);
+  text-decoration: none;
+}
+.statblock.pathfinder-2e-affliction-layout b,
+.statblock.pathfinder-2e-affliction-layout strong,
+.statblock.pathfinder-2e-affliction-layout .cm-strong {
+  font-weight: var(--statblock-property-name-font-weight);
+  color: var(--statblock-property-name-font-color);
+}
+.statblock.pathfinder-2e-affliction-layout i,
+.statblock.pathfinder-2e-affliction-layout em,
+.statblock.pathfinder-2e-affliction-layout .cm-em {
+  font-style: italic;
+}
+:not(.property-name) .statblock.pathfinder-2e-affliction-layout i,
+:not(.property-name) .statblock.pathfinder-2e-affliction-layout em,
+:not(.property-name) .statblock.pathfinder-2e-affliction-layout .cm-em {
+  color: rgb(77, 27, 105);
+  font-weight: 500;
+}
+.statblock.pathfinder-2e-affliction-layout ul {
+  display: block;
+  list-style-type: disc;
+  margin: 0 0.5em;
+  padding-inline-start: 40px;
+}
+.statblock.pathfinder-2e-affliction-layout .markdown-rendered ul,
+.statblock.pathfinder-2e-affliction-layout .markdown-rendered ol {
+  padding-inline-start: 2em;
+}
+.statblock.pathfinder-2e-affliction-layout li {
+  color: var(--statblock-content-font);
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+.statblock.pathfinder-2e-affliction-layout .markdown-source-view ol > li,
+.statblock.pathfinder-2e-affliction-layout .markdown-source-view ul > li,
+.statblock.pathfinder-2e-affliction-layout .markdown-preview-view ol > li,
+.statblock.pathfinder-2e-affliction-layout .markdown-preview-view ul > li,
+.statblock.pathfinder-2e-affliction-layout .markdown-rendered ul > li,
+.statblock.pathfinder-2e-affliction-layout .mod-cm6 .HyperMD-list-line.cm-line {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.statblock.pathfinder-2e-affliction-layout ol > li::marker,
+.statblock.pathfinder-2e-affliction-layout ul > li::marker,
+.statblock.pathfinder-2e-affliction-layout .cm-s-obsidian .cm-formatting-list {
+  color: var(--statblock-property-name-font-color);
+}
+.statblock.pathfinder-2e-affliction-layout ::marker {
+  unicode-bidi: isolate;
+  font-variant-numeric: tabular-nums;
+  text-transform: none;
+  text-indent: 0;
+  text-align: start;
+  text-align-last: start;
+}
 .statblock.basic-pathfinder-2e-layout .line {
   line-height: var(--statblock-property-line-height);
   display: block;
@@ -2066,12 +3217,34 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.basic-pathfinder-2e-layout .statblock-rendered-text-content {
   color: var(--statblock-property-name-font-color);
   font-weight: var(--statblock-property-name-font-weight);
+  font-style: normal;
 }
 .statblock.basic-pathfinder-2e-layout .statblock-markdown,
 .statblock.basic-pathfinder-2e-layout .property {
   line-height: var(--statblock-property-line-height);
 }
-
+.statblock.basic-pathfinder-2e-layout .property-name strong > em {
+  color: var(--active-traits-name-font-color);
+  font-weight: var(--statblock-traits-name-font-weight);
+}
+.statblock.pathfinder-2e-creature-layout .line {
+  line-height: var(--statblock-property-line-height);
+  display: block;
+  color: var(--statblock-property-font-color);
+}
+.statblock.pathfinder-2e-creature-layout .statblock-rendered-text-content {
+  color: var(--statblock-property-name-font-color);
+  font-weight: var(--statblock-property-name-font-weight);
+  font-style: normal;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-markdown,
+.statblock.pathfinder-2e-creature-layout .property {
+  line-height: var(--statblock-property-line-height);
+}
+.statblock.pathfinder-2e-creature-layout .property-name strong > em {
+  color: var(--active-traits-name-font-color);
+  font-weight: var(--statblock-traits-name-font-weight);
+}
 .statblock.pathfinder-2e-action-layout .line {
   line-height: var(--statblock-property-line-height);
   display: block;
@@ -2080,12 +3253,16 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-action-layout .statblock-rendered-text-content {
   color: var(--statblock-property-name-font-color);
   font-weight: var(--statblock-property-name-font-weight);
+  font-style: normal;
 }
 .statblock.pathfinder-2e-action-layout .statblock-markdown,
 .statblock.pathfinder-2e-action-layout .property {
   line-height: var(--statblock-property-line-height);
 }
-
+.statblock.pathfinder-2e-action-layout .property-name strong > em {
+  color: var(--active-traits-name-font-color);
+  font-weight: var(--statblock-traits-name-font-weight);
+}
 .statblock.pathfinder-2e-hazard-layout .line {
   line-height: var(--statblock-property-line-height);
   display: block;
@@ -2094,12 +3271,16 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-hazard-layout .statblock-rendered-text-content {
   color: var(--statblock-property-name-font-color);
   font-weight: var(--statblock-property-name-font-weight);
+  font-style: normal;
 }
 .statblock.pathfinder-2e-hazard-layout .statblock-markdown,
 .statblock.pathfinder-2e-hazard-layout .property {
   line-height: var(--statblock-property-line-height);
 }
-
+.statblock.pathfinder-2e-hazard-layout .property-name strong > em {
+  color: var(--active-traits-name-font-color);
+  font-weight: var(--statblock-traits-name-font-weight);
+}
 .statblock.pathfinder-2e-influence-layout .line {
   line-height: var(--statblock-property-line-height);
   display: block;
@@ -2108,12 +3289,34 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-influence-layout .statblock-rendered-text-content {
   color: var(--statblock-property-name-font-color);
   font-weight: var(--statblock-property-name-font-weight);
+  font-style: normal;
 }
 .statblock.pathfinder-2e-influence-layout .statblock-markdown,
 .statblock.pathfinder-2e-influence-layout .property {
   line-height: var(--statblock-property-line-height);
 }
-
+.statblock.pathfinder-2e-influence-layout .property-name strong > em {
+  color: var(--active-traits-name-font-color);
+  font-weight: var(--statblock-traits-name-font-weight);
+}
+.statblock.pathfinder-2e-item-layout .line {
+  line-height: var(--statblock-property-line-height);
+  display: block;
+  color: var(--statblock-property-font-color);
+}
+.statblock.pathfinder-2e-item-layout .statblock-rendered-text-content {
+  color: var(--statblock-property-name-font-color);
+  font-weight: var(--statblock-property-name-font-weight);
+  font-style: normal;
+}
+.statblock.pathfinder-2e-item-layout .statblock-markdown,
+.statblock.pathfinder-2e-item-layout .property {
+  line-height: var(--statblock-property-line-height);
+}
+.statblock.pathfinder-2e-item-layout .property-name strong > em {
+  color: var(--active-traits-name-font-color);
+  font-weight: var(--statblock-traits-name-font-weight);
+}
 .statblock.pathfinder-2e-misc-layout .line {
   line-height: var(--statblock-property-line-height);
   display: block;
@@ -2122,12 +3325,34 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-misc-layout .statblock-rendered-text-content {
   color: var(--statblock-property-name-font-color);
   font-weight: var(--statblock-property-name-font-weight);
+  font-style: normal;
 }
 .statblock.pathfinder-2e-misc-layout .statblock-markdown,
 .statblock.pathfinder-2e-misc-layout .property {
   line-height: var(--statblock-property-line-height);
 }
-
+.statblock.pathfinder-2e-misc-layout .property-name strong > em {
+  color: var(--active-traits-name-font-color);
+  font-weight: var(--statblock-traits-name-font-weight);
+}
+.statblock.pathfinder-2e-plane-layout .line {
+  line-height: var(--statblock-property-line-height);
+  display: block;
+  color: var(--statblock-property-font-color);
+}
+.statblock.pathfinder-2e-plane-layout .statblock-rendered-text-content {
+  color: var(--statblock-property-name-font-color);
+  font-weight: var(--statblock-property-name-font-weight);
+  font-style: normal;
+}
+.statblock.pathfinder-2e-plane-layout .statblock-markdown,
+.statblock.pathfinder-2e-plane-layout .property {
+  line-height: var(--statblock-property-line-height);
+}
+.statblock.pathfinder-2e-plane-layout .property-name strong > em {
+  color: var(--active-traits-name-font-color);
+  font-weight: var(--statblock-traits-name-font-weight);
+}
 .statblock.pathfinder-2e-quest-layout .line {
   line-height: var(--statblock-property-line-height);
   display: block;
@@ -2136,12 +3361,16 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-quest-layout .statblock-rendered-text-content {
   color: var(--statblock-property-name-font-color);
   font-weight: var(--statblock-property-name-font-weight);
+  font-style: normal;
 }
 .statblock.pathfinder-2e-quest-layout .statblock-markdown,
 .statblock.pathfinder-2e-quest-layout .property {
   line-height: var(--statblock-property-line-height);
 }
-
+.statblock.pathfinder-2e-quest-layout .property-name strong > em {
+  color: var(--active-traits-name-font-color);
+  font-weight: var(--statblock-traits-name-font-weight);
+}
 .statblock.pathfinder-2e-settlement-layout .line {
   line-height: var(--statblock-property-line-height);
   display: block;
@@ -2150,14 +3379,50 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-settlement-layout .statblock-rendered-text-content {
   color: var(--statblock-property-name-font-color);
   font-weight: var(--statblock-property-name-font-weight);
+  font-style: normal;
 }
 .statblock.pathfinder-2e-settlement-layout .statblock-markdown,
 .statblock.pathfinder-2e-settlement-layout .property {
   line-height: var(--statblock-property-line-height);
 }
-
+.statblock.pathfinder-2e-settlement-layout .property-name strong > em {
+  color: var(--active-traits-name-font-color);
+  font-weight: var(--statblock-traits-name-font-weight);
+}
+.statblock.pathfinder-2e-affliction-layout .line {
+  line-height: var(--statblock-property-line-height);
+  display: block;
+  color: var(--statblock-property-font-color);
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-rendered-text-content {
+  color: var(--statblock-property-name-font-color);
+  font-weight: var(--statblock-property-name-font-weight);
+  font-style: normal;
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-markdown,
+.statblock.pathfinder-2e-affliction-layout .property {
+  line-height: var(--statblock-property-line-height);
+}
+.statblock.pathfinder-2e-affliction-layout .property-name strong > em {
+  color: var(--active-traits-name-font-color);
+  font-weight: var(--statblock-traits-name-font-weight);
+}
+.statblock.pathfinder-2e-creature-layout .property-name,
+.statblock.pathfinder-2e-creature-layout .property-name:empty {
+  margin-right: 0;
+}
+.statblock.pathfinder-2e-creature-layout .saves-container .saves.line .save-name,
+.statblock.pathfinder-2e-creature-layout .saves-container .attributes.line .save-name {
+  text-transform: capitalize;
+  font-weight: var(--statblock-property-name-font-weight);
+}
+.statblock.pathfinder-2e-creature-layout .saves-container .save-entry.save-note-entry .save-name {
+  display: none;
+}
+.statblock.pathfinder-2e-creature-layout .saves-container .save-entry:has(+ .save-entry.save-note-entry) .save-value::after {
+  content: "; ";
+}
 .statblock.basic-pathfinder-2e-layout .statblock-item-inline:has(.statblock-inline-item .name) {
-  /* Formatting of the statblock heading */
   display: flex;
   flex-direction: row;
   margin-inline: 0.25em;
@@ -2186,9 +3451,36 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   max-width: unset;
   padding: var(--statblock-header-image-padding);
 }
-
+.statblock.pathfinder-2e-creature-layout .statblock-item-inline:has(.statblock-inline-item .name) {
+  display: flex;
+  flex-direction: row;
+  margin-inline: 0.25em;
+  gap: 0.25em;
+  align-items: center;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container:has(.name) {
+  flex: 1;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container .name p,
+.statblock.pathfinder-2e-creature-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container .level p {
+  align-self: flex-start;
+  font-size: 1.3em;
+  font-weight: 900;
+  line-height: 1.5em;
+  text-transform: uppercase;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container .name span.property-name,
+.statblock.pathfinder-2e-creature-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container .level span.property-name {
+  display: none;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-item-inline:has(.statblock-inline-item .name) .pathfinder-2e-quest-icon {
+  display: block;
+  height: var(--statblock-header-image-height);
+  width: unset;
+  max-width: unset;
+  padding: var(--statblock-header-image-padding);
+}
 .statblock.pathfinder-2e-action-layout .statblock-item-inline:has(.statblock-inline-item .name) {
-  /* Formatting of the statblock heading */
   display: flex;
   flex-direction: row;
   margin-inline: 0.25em;
@@ -2217,9 +3509,7 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   max-width: unset;
   padding: var(--statblock-header-image-padding);
 }
-
 .statblock.pathfinder-2e-hazard-layout .statblock-item-inline:has(.statblock-inline-item .name) {
-  /* Formatting of the statblock heading */
   display: flex;
   flex-direction: row;
   margin-inline: 0.25em;
@@ -2248,9 +3538,7 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   max-width: unset;
   padding: var(--statblock-header-image-padding);
 }
-
 .statblock.pathfinder-2e-influence-layout .statblock-item-inline:has(.statblock-inline-item .name) {
-  /* Formatting of the statblock heading */
   display: flex;
   flex-direction: row;
   margin-inline: 0.25em;
@@ -2279,9 +3567,36 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   max-width: unset;
   padding: var(--statblock-header-image-padding);
 }
-
+.statblock.pathfinder-2e-item-layout .statblock-item-inline:has(.statblock-inline-item .name) {
+  display: flex;
+  flex-direction: row;
+  margin-inline: 0.25em;
+  gap: 0.25em;
+  align-items: center;
+}
+.statblock.pathfinder-2e-item-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container:has(.name) {
+  flex: 1;
+}
+.statblock.pathfinder-2e-item-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container .name p,
+.statblock.pathfinder-2e-item-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container .level p {
+  align-self: flex-start;
+  font-size: 1.3em;
+  font-weight: 900;
+  line-height: 1.5em;
+  text-transform: uppercase;
+}
+.statblock.pathfinder-2e-item-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container .name span.property-name,
+.statblock.pathfinder-2e-item-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container .level span.property-name {
+  display: none;
+}
+.statblock.pathfinder-2e-item-layout .statblock-item-inline:has(.statblock-inline-item .name) .pathfinder-2e-quest-icon {
+  display: block;
+  height: var(--statblock-header-image-height);
+  width: unset;
+  max-width: unset;
+  padding: var(--statblock-header-image-padding);
+}
 .statblock.pathfinder-2e-misc-layout .statblock-item-inline:has(.statblock-inline-item .name) {
-  /* Formatting of the statblock heading */
   display: flex;
   flex-direction: row;
   margin-inline: 0.25em;
@@ -2310,9 +3625,36 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   max-width: unset;
   padding: var(--statblock-header-image-padding);
 }
-
+.statblock.pathfinder-2e-plane-layout .statblock-item-inline:has(.statblock-inline-item .name) {
+  display: flex;
+  flex-direction: row;
+  margin-inline: 0.25em;
+  gap: 0.25em;
+  align-items: center;
+}
+.statblock.pathfinder-2e-plane-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container:has(.name) {
+  flex: 1;
+}
+.statblock.pathfinder-2e-plane-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container .name p,
+.statblock.pathfinder-2e-plane-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container .level p {
+  align-self: flex-start;
+  font-size: 1.3em;
+  font-weight: 900;
+  line-height: 1.5em;
+  text-transform: uppercase;
+}
+.statblock.pathfinder-2e-plane-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container .name span.property-name,
+.statblock.pathfinder-2e-plane-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container .level span.property-name {
+  display: none;
+}
+.statblock.pathfinder-2e-plane-layout .statblock-item-inline:has(.statblock-inline-item .name) .pathfinder-2e-quest-icon {
+  display: block;
+  height: var(--statblock-header-image-height);
+  width: unset;
+  max-width: unset;
+  padding: var(--statblock-header-image-padding);
+}
 .statblock.pathfinder-2e-quest-layout .statblock-item-inline:has(.statblock-inline-item .name) {
-  /* Formatting of the statblock heading */
   display: flex;
   flex-direction: row;
   margin-inline: 0.25em;
@@ -2341,9 +3683,7 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   max-width: unset;
   padding: var(--statblock-header-image-padding);
 }
-
 .statblock.pathfinder-2e-settlement-layout .statblock-item-inline:has(.statblock-inline-item .name) {
-  /* Formatting of the statblock heading */
   display: flex;
   flex-direction: row;
   margin-inline: 0.25em;
@@ -2372,7 +3712,35 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   max-width: unset;
   padding: var(--statblock-header-image-padding);
 }
-
+.statblock.pathfinder-2e-affliction-layout .statblock-item-inline:has(.statblock-inline-item .name) {
+  display: flex;
+  flex-direction: row;
+  margin-inline: 0.25em;
+  gap: 0.25em;
+  align-items: center;
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container:has(.name) {
+  flex: 1;
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container .name p,
+.statblock.pathfinder-2e-affliction-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container .level p {
+  align-self: flex-start;
+  font-size: 1.3em;
+  font-weight: 900;
+  line-height: 1.5em;
+  text-transform: uppercase;
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container .name span.property-name,
+.statblock.pathfinder-2e-affliction-layout .statblock-item-inline:has(.statblock-inline-item .name) .statblock-inline-item.property-container .level span.property-name {
+  display: none;
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-item-inline:has(.statblock-inline-item .name) .pathfinder-2e-quest-icon {
+  display: block;
+  height: var(--statblock-header-image-height);
+  width: unset;
+  max-width: unset;
+  padding: var(--statblock-header-image-padding);
+}
 .statblock.basic-pathfinder-2e-layout img {
   display: inline;
   position: relative;
@@ -2408,7 +3776,41 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.basic-pathfinder-2e-layout .statblock-inline-item .image .pointer {
   cursor: pointer;
 }
-
+.statblock.pathfinder-2e-creature-layout img {
+  display: inline;
+  position: relative;
+  border: none;
+  transform: rotateY(180deg);
+}
+.statblock.pathfinder-2e-creature-layout .image-container {
+  text-align: center;
+}
+.statblock.pathfinder-2e-creature-layout .token > a {
+  display: inline;
+}
+.statblock.pathfinder-2e-creature-layout .image {
+  width: var(--statblock-image-width);
+  height: var(--statblock-image-height);
+  display: inline;
+  max-height: fit-content;
+  max-width: fit-content;
+  transform: rotateY(180deg);
+}
+.statblock.pathfinder-2e-creature-layout .statblock-inline-item .image {
+  width: fit-content;
+  height: fit-content;
+}
+.statblock.pathfinder-2e-creature-layout .statblock-inline-item .image img {
+  border: none;
+  display: inline;
+  position: relative;
+  align-self: center;
+  object-fit: contain;
+  transform: rotateY(180deg);
+}
+.statblock.pathfinder-2e-creature-layout .statblock-inline-item .image .pointer {
+  cursor: pointer;
+}
 .statblock.pathfinder-2e-action-layout img {
   display: inline;
   position: relative;
@@ -2444,7 +3846,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-action-layout .statblock-inline-item .image .pointer {
   cursor: pointer;
 }
-
 .statblock.pathfinder-2e-hazard-layout img {
   display: inline;
   position: relative;
@@ -2480,7 +3881,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-hazard-layout .statblock-inline-item .image .pointer {
   cursor: pointer;
 }
-
 .statblock.pathfinder-2e-influence-layout img {
   display: inline;
   position: relative;
@@ -2516,7 +3916,41 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-influence-layout .statblock-inline-item .image .pointer {
   cursor: pointer;
 }
-
+.statblock.pathfinder-2e-item-layout img {
+  display: inline;
+  position: relative;
+  border: none;
+  transform: rotateY(180deg);
+}
+.statblock.pathfinder-2e-item-layout .image-container {
+  text-align: center;
+}
+.statblock.pathfinder-2e-item-layout .token > a {
+  display: inline;
+}
+.statblock.pathfinder-2e-item-layout .image {
+  width: var(--statblock-image-width);
+  height: var(--statblock-image-height);
+  display: inline;
+  max-height: fit-content;
+  max-width: fit-content;
+  transform: rotateY(180deg);
+}
+.statblock.pathfinder-2e-item-layout .statblock-inline-item .image {
+  width: fit-content;
+  height: fit-content;
+}
+.statblock.pathfinder-2e-item-layout .statblock-inline-item .image img {
+  border: none;
+  display: inline;
+  position: relative;
+  align-self: center;
+  object-fit: contain;
+  transform: rotateY(180deg);
+}
+.statblock.pathfinder-2e-item-layout .statblock-inline-item .image .pointer {
+  cursor: pointer;
+}
 .statblock.pathfinder-2e-misc-layout img {
   display: inline;
   position: relative;
@@ -2552,7 +3986,41 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-misc-layout .statblock-inline-item .image .pointer {
   cursor: pointer;
 }
-
+.statblock.pathfinder-2e-plane-layout img {
+  display: inline;
+  position: relative;
+  border: none;
+  transform: rotateY(180deg);
+}
+.statblock.pathfinder-2e-plane-layout .image-container {
+  text-align: center;
+}
+.statblock.pathfinder-2e-plane-layout .token > a {
+  display: inline;
+}
+.statblock.pathfinder-2e-plane-layout .image {
+  width: var(--statblock-image-width);
+  height: var(--statblock-image-height);
+  display: inline;
+  max-height: fit-content;
+  max-width: fit-content;
+  transform: rotateY(180deg);
+}
+.statblock.pathfinder-2e-plane-layout .statblock-inline-item .image {
+  width: fit-content;
+  height: fit-content;
+}
+.statblock.pathfinder-2e-plane-layout .statblock-inline-item .image img {
+  border: none;
+  display: inline;
+  position: relative;
+  align-self: center;
+  object-fit: contain;
+  transform: rotateY(180deg);
+}
+.statblock.pathfinder-2e-plane-layout .statblock-inline-item .image .pointer {
+  cursor: pointer;
+}
 .statblock.pathfinder-2e-quest-layout img {
   display: inline;
   position: relative;
@@ -2588,7 +4056,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-quest-layout .statblock-inline-item .image .pointer {
   cursor: pointer;
 }
-
 .statblock.pathfinder-2e-settlement-layout img {
   display: inline;
   position: relative;
@@ -2624,7 +4091,41 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-settlement-layout .statblock-inline-item .image .pointer {
   cursor: pointer;
 }
-
+.statblock.pathfinder-2e-affliction-layout img {
+  display: inline;
+  position: relative;
+  border: none;
+  transform: rotateY(180deg);
+}
+.statblock.pathfinder-2e-affliction-layout .image-container {
+  text-align: center;
+}
+.statblock.pathfinder-2e-affliction-layout .token > a {
+  display: inline;
+}
+.statblock.pathfinder-2e-affliction-layout .image {
+  width: var(--statblock-image-width);
+  height: var(--statblock-image-height);
+  display: inline;
+  max-height: fit-content;
+  max-width: fit-content;
+  transform: rotateY(180deg);
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-inline-item .image {
+  width: fit-content;
+  height: fit-content;
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-inline-item .image img {
+  border: none;
+  display: inline;
+  position: relative;
+  align-self: center;
+  object-fit: contain;
+  transform: rotateY(180deg);
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-inline-item .image .pointer {
+  cursor: pointer;
+}
 .statblock.basic-pathfinder-2e-layout .traits {
   margin: 0 0.25em 0 0;
   display: inline;
@@ -2633,19 +4134,15 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 }
 .statblock.basic-pathfinder-2e-layout .rare_01 {
   background-color: var(--statblock-color-common) !important;
-  /* common */
 }
 .statblock.basic-pathfinder-2e-layout .rare_02 {
   background-color: var(--statblock-color-uncommon) !important;
-  /* uncommon */
 }
 .statblock.basic-pathfinder-2e-layout .rare_03 {
   background-color: var(--statblock-color-rare) !important;
-  /* rare */
 }
 .statblock.basic-pathfinder-2e-layout .rare_04 {
   background-color: var(--statblock-color-unique) !important;
-  /* unique */
 }
 .statblock.basic-pathfinder-2e-layout .alignment {
   background-color: var(--statblock-color-alignment) !important;
@@ -2707,7 +4204,91 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.basic-pathfinder-2e-layout .trait_07 span.property-name {
   display: none;
 }
-
+.statblock.pathfinder-2e-creature-layout .traits {
+  margin: 0 0.25em 0 0;
+  display: inline;
+  font-weight: 900 !important;
+  font-style: normal !important;
+}
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container {
+  margin: 0;
+}
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container > .line:has(.property-name) {
+  margin: 0;
+  display: block;
+}
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container .property-name {
+  display: none;
+}
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container ul {
+  row-gap: var(--statblock-traits-gap);
+  display: flex;
+  flex-flow: row wrap;
+  place-content: start;
+  justify-content: flex-start;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container li {
+  display: block;
+  background-color: var(--statblock-color-trait);
+  margin: 0 var(--statblock-traits-gap) 0 0;
+  color: rgb(255, 255, 255) !important;
+  font-size: 12px;
+  font-style: normal !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.01em;
+  min-width: 4em;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 0;
+}
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container li:not(:has(> .alignment, > .rarity, > .size)),
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container li > span:is(.alignment, .rarity, .size) {
+  padding: 0.4em 1.1em 0.2em;
+  line-height: var(--statblock-property-line-height);
+}
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container li > span:is(.alignment, .rarity, .size) {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container li::before {
+  display: none;
+}
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container li strong,
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container li i,
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container li em,
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container li b {
+  color: rgb(255, 255, 255);
+}
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container li a,
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container li a:-webkit-any-link,
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container li a.internal-link {
+  color: rgb(255, 255, 255);
+  text-decoration: none;
+  text-transform: uppercase;
+  font-style: normal;
+}
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container li > .common {
+  background-color: var(--statblock-color-common);
+}
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container li > .uncommon {
+  background-color: var(--statblock-color-uncommon);
+}
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container li > .rare {
+  background-color: var(--statblock-color-rare);
+}
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container li > .unique {
+  background-color: var(--statblock-color-unique);
+}
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container li > .alignment {
+  background-color: var(--statblock-color-alignment);
+}
+.statblock.pathfinder-2e-creature-layout .pf2e-traits.statblock-item-container.property-container li > .size {
+  background-color: var(--statblock-color-size);
+}
 .statblock.pathfinder-2e-action-layout .traits {
   margin: 0 0.25em 0 0;
   display: inline;
@@ -2716,19 +4297,15 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 }
 .statblock.pathfinder-2e-action-layout .rare_01 {
   background-color: var(--statblock-color-common) !important;
-  /* common */
 }
 .statblock.pathfinder-2e-action-layout .rare_02 {
   background-color: var(--statblock-color-uncommon) !important;
-  /* uncommon */
 }
 .statblock.pathfinder-2e-action-layout .rare_03 {
   background-color: var(--statblock-color-rare) !important;
-  /* rare */
 }
 .statblock.pathfinder-2e-action-layout .rare_04 {
   background-color: var(--statblock-color-unique) !important;
-  /* unique */
 }
 .statblock.pathfinder-2e-action-layout .alignment {
   background-color: var(--statblock-color-alignment) !important;
@@ -2790,7 +4367,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-action-layout .trait_07 span.property-name {
   display: none;
 }
-
 .statblock.pathfinder-2e-hazard-layout .traits {
   margin: 0 0.25em 0 0;
   display: inline;
@@ -2799,19 +4375,15 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 }
 .statblock.pathfinder-2e-hazard-layout .rare_01 {
   background-color: var(--statblock-color-common) !important;
-  /* common */
 }
 .statblock.pathfinder-2e-hazard-layout .rare_02 {
   background-color: var(--statblock-color-uncommon) !important;
-  /* uncommon */
 }
 .statblock.pathfinder-2e-hazard-layout .rare_03 {
   background-color: var(--statblock-color-rare) !important;
-  /* rare */
 }
 .statblock.pathfinder-2e-hazard-layout .rare_04 {
   background-color: var(--statblock-color-unique) !important;
-  /* unique */
 }
 .statblock.pathfinder-2e-hazard-layout .alignment {
   background-color: var(--statblock-color-alignment) !important;
@@ -2873,7 +4445,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-hazard-layout .trait_07 span.property-name {
   display: none;
 }
-
 .statblock.pathfinder-2e-influence-layout .traits {
   margin: 0 0.25em 0 0;
   display: inline;
@@ -2882,19 +4453,15 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 }
 .statblock.pathfinder-2e-influence-layout .rare_01 {
   background-color: var(--statblock-color-common) !important;
-  /* common */
 }
 .statblock.pathfinder-2e-influence-layout .rare_02 {
   background-color: var(--statblock-color-uncommon) !important;
-  /* uncommon */
 }
 .statblock.pathfinder-2e-influence-layout .rare_03 {
   background-color: var(--statblock-color-rare) !important;
-  /* rare */
 }
 .statblock.pathfinder-2e-influence-layout .rare_04 {
   background-color: var(--statblock-color-unique) !important;
-  /* unique */
 }
 .statblock.pathfinder-2e-influence-layout .alignment {
   background-color: var(--statblock-color-alignment) !important;
@@ -2956,7 +4523,84 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-influence-layout .trait_07 span.property-name {
   display: none;
 }
-
+.statblock.pathfinder-2e-item-layout .traits {
+  margin: 0 0.25em 0 0;
+  display: inline;
+  font-weight: 900 !important;
+  font-style: normal !important;
+}
+.statblock.pathfinder-2e-item-layout .rare_01 {
+  background-color: var(--statblock-color-common) !important;
+}
+.statblock.pathfinder-2e-item-layout .rare_02 {
+  background-color: var(--statblock-color-uncommon) !important;
+}
+.statblock.pathfinder-2e-item-layout .rare_03 {
+  background-color: var(--statblock-color-rare) !important;
+}
+.statblock.pathfinder-2e-item-layout .rare_04 {
+  background-color: var(--statblock-color-unique) !important;
+}
+.statblock.pathfinder-2e-item-layout .alignment {
+  background-color: var(--statblock-color-alignment) !important;
+}
+.statblock.pathfinder-2e-item-layout .size {
+  background-color: var(--statblock-color-size) !important;
+}
+.statblock.pathfinder-2e-item-layout .xp,
+.statblock.pathfinder-2e-item-layout .kingdom_xp,
+.statblock.pathfinder-2e-item-layout .trait_01,
+.statblock.pathfinder-2e-item-layout .trait_02,
+.statblock.pathfinder-2e-item-layout .trait_03,
+.statblock.pathfinder-2e-item-layout .trait_04,
+.statblock.pathfinder-2e-item-layout .trait_05,
+.statblock.pathfinder-2e-item-layout .trait_06,
+.statblock.pathfinder-2e-item-layout .trait_07 {
+  background-color: var(--statblock-color-trait) !important;
+}
+.statblock.pathfinder-2e-item-layout .rare_01,
+.statblock.pathfinder-2e-item-layout .rare_02,
+.statblock.pathfinder-2e-item-layout .rare_03,
+.statblock.pathfinder-2e-item-layout .rare_04,
+.statblock.pathfinder-2e-item-layout .alignment,
+.statblock.pathfinder-2e-item-layout .size,
+.statblock.pathfinder-2e-item-layout .xp,
+.statblock.pathfinder-2e-item-layout .kingdom_xp,
+.statblock.pathfinder-2e-item-layout .trait_01,
+.statblock.pathfinder-2e-item-layout .trait_02,
+.statblock.pathfinder-2e-item-layout .trait_03,
+.statblock.pathfinder-2e-item-layout .trait_04,
+.statblock.pathfinder-2e-item-layout .trait_05,
+.statblock.pathfinder-2e-item-layout .trait_06,
+.statblock.pathfinder-2e-item-layout .trait_07 {
+  color: rgb(255, 255, 255) !important;
+  font-size: 12px;
+  font-style: normal !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.01em;
+  min-width: 4em;
+  margin: 0 var(--statblock-traits-gap) 0 0;
+  padding: 0.4em 1.1em 0.2em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.statblock.pathfinder-2e-item-layout .rare_01 span.property-name,
+.statblock.pathfinder-2e-item-layout .rare_02 span.property-name,
+.statblock.pathfinder-2e-item-layout .rare_03 span.property-name,
+.statblock.pathfinder-2e-item-layout .rare_04 span.property-name,
+.statblock.pathfinder-2e-item-layout .alignment span.property-name,
+.statblock.pathfinder-2e-item-layout .size span.property-name,
+.statblock.pathfinder-2e-item-layout .xp span.property-name,
+.statblock.pathfinder-2e-item-layout .kingdom_xp span.property-name,
+.statblock.pathfinder-2e-item-layout .trait_01 span.property-name,
+.statblock.pathfinder-2e-item-layout .trait_02 span.property-name,
+.statblock.pathfinder-2e-item-layout .trait_03 span.property-name,
+.statblock.pathfinder-2e-item-layout .trait_04 span.property-name,
+.statblock.pathfinder-2e-item-layout .trait_05 span.property-name,
+.statblock.pathfinder-2e-item-layout .trait_06 span.property-name,
+.statblock.pathfinder-2e-item-layout .trait_07 span.property-name {
+  display: none;
+}
 .statblock.pathfinder-2e-misc-layout .traits {
   margin: 0 0.25em 0 0;
   display: inline;
@@ -2965,19 +4609,15 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 }
 .statblock.pathfinder-2e-misc-layout .rare_01 {
   background-color: var(--statblock-color-common) !important;
-  /* common */
 }
 .statblock.pathfinder-2e-misc-layout .rare_02 {
   background-color: var(--statblock-color-uncommon) !important;
-  /* uncommon */
 }
 .statblock.pathfinder-2e-misc-layout .rare_03 {
   background-color: var(--statblock-color-rare) !important;
-  /* rare */
 }
 .statblock.pathfinder-2e-misc-layout .rare_04 {
   background-color: var(--statblock-color-unique) !important;
-  /* unique */
 }
 .statblock.pathfinder-2e-misc-layout .alignment {
   background-color: var(--statblock-color-alignment) !important;
@@ -3039,7 +4679,84 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-misc-layout .trait_07 span.property-name {
   display: none;
 }
-
+.statblock.pathfinder-2e-plane-layout .traits {
+  margin: 0 0.25em 0 0;
+  display: inline;
+  font-weight: 900 !important;
+  font-style: normal !important;
+}
+.statblock.pathfinder-2e-plane-layout .rare_01 {
+  background-color: var(--statblock-color-common) !important;
+}
+.statblock.pathfinder-2e-plane-layout .rare_02 {
+  background-color: var(--statblock-color-uncommon) !important;
+}
+.statblock.pathfinder-2e-plane-layout .rare_03 {
+  background-color: var(--statblock-color-rare) !important;
+}
+.statblock.pathfinder-2e-plane-layout .rare_04 {
+  background-color: var(--statblock-color-unique) !important;
+}
+.statblock.pathfinder-2e-plane-layout .alignment {
+  background-color: var(--statblock-color-alignment) !important;
+}
+.statblock.pathfinder-2e-plane-layout .size {
+  background-color: var(--statblock-color-size) !important;
+}
+.statblock.pathfinder-2e-plane-layout .xp,
+.statblock.pathfinder-2e-plane-layout .kingdom_xp,
+.statblock.pathfinder-2e-plane-layout .trait_01,
+.statblock.pathfinder-2e-plane-layout .trait_02,
+.statblock.pathfinder-2e-plane-layout .trait_03,
+.statblock.pathfinder-2e-plane-layout .trait_04,
+.statblock.pathfinder-2e-plane-layout .trait_05,
+.statblock.pathfinder-2e-plane-layout .trait_06,
+.statblock.pathfinder-2e-plane-layout .trait_07 {
+  background-color: var(--statblock-color-trait) !important;
+}
+.statblock.pathfinder-2e-plane-layout .rare_01,
+.statblock.pathfinder-2e-plane-layout .rare_02,
+.statblock.pathfinder-2e-plane-layout .rare_03,
+.statblock.pathfinder-2e-plane-layout .rare_04,
+.statblock.pathfinder-2e-plane-layout .alignment,
+.statblock.pathfinder-2e-plane-layout .size,
+.statblock.pathfinder-2e-plane-layout .xp,
+.statblock.pathfinder-2e-plane-layout .kingdom_xp,
+.statblock.pathfinder-2e-plane-layout .trait_01,
+.statblock.pathfinder-2e-plane-layout .trait_02,
+.statblock.pathfinder-2e-plane-layout .trait_03,
+.statblock.pathfinder-2e-plane-layout .trait_04,
+.statblock.pathfinder-2e-plane-layout .trait_05,
+.statblock.pathfinder-2e-plane-layout .trait_06,
+.statblock.pathfinder-2e-plane-layout .trait_07 {
+  color: rgb(255, 255, 255) !important;
+  font-size: 12px;
+  font-style: normal !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.01em;
+  min-width: 4em;
+  margin: 0 var(--statblock-traits-gap) 0 0;
+  padding: 0.4em 1.1em 0.2em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.statblock.pathfinder-2e-plane-layout .rare_01 span.property-name,
+.statblock.pathfinder-2e-plane-layout .rare_02 span.property-name,
+.statblock.pathfinder-2e-plane-layout .rare_03 span.property-name,
+.statblock.pathfinder-2e-plane-layout .rare_04 span.property-name,
+.statblock.pathfinder-2e-plane-layout .alignment span.property-name,
+.statblock.pathfinder-2e-plane-layout .size span.property-name,
+.statblock.pathfinder-2e-plane-layout .xp span.property-name,
+.statblock.pathfinder-2e-plane-layout .kingdom_xp span.property-name,
+.statblock.pathfinder-2e-plane-layout .trait_01 span.property-name,
+.statblock.pathfinder-2e-plane-layout .trait_02 span.property-name,
+.statblock.pathfinder-2e-plane-layout .trait_03 span.property-name,
+.statblock.pathfinder-2e-plane-layout .trait_04 span.property-name,
+.statblock.pathfinder-2e-plane-layout .trait_05 span.property-name,
+.statblock.pathfinder-2e-plane-layout .trait_06 span.property-name,
+.statblock.pathfinder-2e-plane-layout .trait_07 span.property-name {
+  display: none;
+}
 .statblock.pathfinder-2e-quest-layout .traits {
   margin: 0 0.25em 0 0;
   display: inline;
@@ -3048,19 +4765,15 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 }
 .statblock.pathfinder-2e-quest-layout .rare_01 {
   background-color: var(--statblock-color-common) !important;
-  /* common */
 }
 .statblock.pathfinder-2e-quest-layout .rare_02 {
   background-color: var(--statblock-color-uncommon) !important;
-  /* uncommon */
 }
 .statblock.pathfinder-2e-quest-layout .rare_03 {
   background-color: var(--statblock-color-rare) !important;
-  /* rare */
 }
 .statblock.pathfinder-2e-quest-layout .rare_04 {
   background-color: var(--statblock-color-unique) !important;
-  /* unique */
 }
 .statblock.pathfinder-2e-quest-layout .alignment {
   background-color: var(--statblock-color-alignment) !important;
@@ -3122,7 +4835,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-quest-layout .trait_07 span.property-name {
   display: none;
 }
-
 .statblock.pathfinder-2e-settlement-layout .traits {
   margin: 0 0.25em 0 0;
   display: inline;
@@ -3131,19 +4843,15 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 }
 .statblock.pathfinder-2e-settlement-layout .rare_01 {
   background-color: var(--statblock-color-common) !important;
-  /* common */
 }
 .statblock.pathfinder-2e-settlement-layout .rare_02 {
   background-color: var(--statblock-color-uncommon) !important;
-  /* uncommon */
 }
 .statblock.pathfinder-2e-settlement-layout .rare_03 {
   background-color: var(--statblock-color-rare) !important;
-  /* rare */
 }
 .statblock.pathfinder-2e-settlement-layout .rare_04 {
   background-color: var(--statblock-color-unique) !important;
-  /* unique */
 }
 .statblock.pathfinder-2e-settlement-layout .alignment {
   background-color: var(--statblock-color-alignment) !important;
@@ -3205,56 +4913,150 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
 .statblock.pathfinder-2e-settlement-layout .trait_07 span.property-name {
   display: none;
 }
-
+.statblock.pathfinder-2e-affliction-layout .traits {
+  margin: 0 0.25em 0 0;
+  display: inline;
+  font-weight: 900 !important;
+  font-style: normal !important;
+}
+.statblock.pathfinder-2e-affliction-layout .rare_01 {
+  background-color: var(--statblock-color-common) !important;
+}
+.statblock.pathfinder-2e-affliction-layout .rare_02 {
+  background-color: var(--statblock-color-uncommon) !important;
+}
+.statblock.pathfinder-2e-affliction-layout .rare_03 {
+  background-color: var(--statblock-color-rare) !important;
+}
+.statblock.pathfinder-2e-affliction-layout .rare_04 {
+  background-color: var(--statblock-color-unique) !important;
+}
+.statblock.pathfinder-2e-affliction-layout .alignment {
+  background-color: var(--statblock-color-alignment) !important;
+}
+.statblock.pathfinder-2e-affliction-layout .size {
+  background-color: var(--statblock-color-size) !important;
+}
+.statblock.pathfinder-2e-affliction-layout .xp,
+.statblock.pathfinder-2e-affliction-layout .kingdom_xp,
+.statblock.pathfinder-2e-affliction-layout .trait_01,
+.statblock.pathfinder-2e-affliction-layout .trait_02,
+.statblock.pathfinder-2e-affliction-layout .trait_03,
+.statblock.pathfinder-2e-affliction-layout .trait_04,
+.statblock.pathfinder-2e-affliction-layout .trait_05,
+.statblock.pathfinder-2e-affliction-layout .trait_06,
+.statblock.pathfinder-2e-affliction-layout .trait_07 {
+  background-color: var(--statblock-color-trait) !important;
+}
+.statblock.pathfinder-2e-affliction-layout .rare_01,
+.statblock.pathfinder-2e-affliction-layout .rare_02,
+.statblock.pathfinder-2e-affliction-layout .rare_03,
+.statblock.pathfinder-2e-affliction-layout .rare_04,
+.statblock.pathfinder-2e-affliction-layout .alignment,
+.statblock.pathfinder-2e-affliction-layout .size,
+.statblock.pathfinder-2e-affliction-layout .xp,
+.statblock.pathfinder-2e-affliction-layout .kingdom_xp,
+.statblock.pathfinder-2e-affliction-layout .trait_01,
+.statblock.pathfinder-2e-affliction-layout .trait_02,
+.statblock.pathfinder-2e-affliction-layout .trait_03,
+.statblock.pathfinder-2e-affliction-layout .trait_04,
+.statblock.pathfinder-2e-affliction-layout .trait_05,
+.statblock.pathfinder-2e-affliction-layout .trait_06,
+.statblock.pathfinder-2e-affliction-layout .trait_07 {
+  color: rgb(255, 255, 255) !important;
+  font-size: 12px;
+  font-style: normal !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.01em;
+  min-width: 4em;
+  margin: 0 var(--statblock-traits-gap) 0 0;
+  padding: 0.4em 1.1em 0.2em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.statblock.pathfinder-2e-affliction-layout .rare_01 span.property-name,
+.statblock.pathfinder-2e-affliction-layout .rare_02 span.property-name,
+.statblock.pathfinder-2e-affliction-layout .rare_03 span.property-name,
+.statblock.pathfinder-2e-affliction-layout .rare_04 span.property-name,
+.statblock.pathfinder-2e-affliction-layout .alignment span.property-name,
+.statblock.pathfinder-2e-affliction-layout .size span.property-name,
+.statblock.pathfinder-2e-affliction-layout .xp span.property-name,
+.statblock.pathfinder-2e-affliction-layout .kingdom_xp span.property-name,
+.statblock.pathfinder-2e-affliction-layout .trait_01 span.property-name,
+.statblock.pathfinder-2e-affliction-layout .trait_02 span.property-name,
+.statblock.pathfinder-2e-affliction-layout .trait_03 span.property-name,
+.statblock.pathfinder-2e-affliction-layout .trait_04 span.property-name,
+.statblock.pathfinder-2e-affliction-layout .trait_05 span.property-name,
+.statblock.pathfinder-2e-affliction-layout .trait_06 span.property-name,
+.statblock.pathfinder-2e-affliction-layout .trait_07 span.property-name {
+  display: none;
+}
 .statblock.basic-pathfinder-2e-layout .dice-roller-result {
   font-weight: var(--statblock-font-weight);
 }
 .statblock.basic-pathfinder-2e-layout .roller-result {
   font-weight: var(--statblock-font-weight);
 }
-
+.statblock.pathfinder-2e-creature-layout .dice-roller-result {
+  font-weight: var(--statblock-font-weight);
+}
+.statblock.pathfinder-2e-creature-layout .roller-result {
+  font-weight: var(--statblock-font-weight);
+}
 .statblock.pathfinder-2e-action-layout .dice-roller-result {
   font-weight: var(--statblock-font-weight);
 }
 .statblock.pathfinder-2e-action-layout .roller-result {
   font-weight: var(--statblock-font-weight);
 }
-
 .statblock.pathfinder-2e-hazard-layout .dice-roller-result {
   font-weight: var(--statblock-font-weight);
 }
 .statblock.pathfinder-2e-hazard-layout .roller-result {
   font-weight: var(--statblock-font-weight);
 }
-
 .statblock.pathfinder-2e-influence-layout .dice-roller-result {
   font-weight: var(--statblock-font-weight);
 }
 .statblock.pathfinder-2e-influence-layout .roller-result {
   font-weight: var(--statblock-font-weight);
 }
-
+.statblock.pathfinder-2e-item-layout .dice-roller-result {
+  font-weight: var(--statblock-font-weight);
+}
+.statblock.pathfinder-2e-item-layout .roller-result {
+  font-weight: var(--statblock-font-weight);
+}
 .statblock.pathfinder-2e-misc-layout .dice-roller-result {
   font-weight: var(--statblock-font-weight);
 }
 .statblock.pathfinder-2e-misc-layout .roller-result {
   font-weight: var(--statblock-font-weight);
 }
-
+.statblock.pathfinder-2e-plane-layout .dice-roller-result {
+  font-weight: var(--statblock-font-weight);
+}
+.statblock.pathfinder-2e-plane-layout .roller-result {
+  font-weight: var(--statblock-font-weight);
+}
 .statblock.pathfinder-2e-quest-layout .dice-roller-result {
   font-weight: var(--statblock-font-weight);
 }
 .statblock.pathfinder-2e-quest-layout .roller-result {
   font-weight: var(--statblock-font-weight);
 }
-
 .statblock.pathfinder-2e-settlement-layout .dice-roller-result {
   font-weight: var(--statblock-font-weight);
 }
 .statblock.pathfinder-2e-settlement-layout .roller-result {
   font-weight: var(--statblock-font-weight);
 }
-
+.statblock.pathfinder-2e-affliction-layout .dice-roller-result {
+  font-weight: var(--statblock-font-weight);
+}
+.statblock.pathfinder-2e-affliction-layout .roller-result {
+  font-weight: var(--statblock-font-weight);
+}
 @media screen and (max-width: 400px) {
   .statblock.basic-pathfinder-2e-layout .statblock-content > :global(.column) {
     width: 75vw;
@@ -3278,7 +5080,29 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   align-items: center;
   flex-flow: column nowrap;
 }
-
+@media screen and (max-width: 400px) {
+  .statblock.pathfinder-2e-creature-layout .statblock-content > :global(.column) {
+    width: 75vw;
+  }
+}
+.statblock.pathfinder-2e-creature-layout .spell-line .spells {
+  font-style: var(--statblock-spells-font-style);
+}
+.statblock.pathfinder-2e-creature-layout .statblock-table-header {
+  font-weight: var(--statblock-table-header-font-weight);
+}
+.statblock.pathfinder-2e-creature-layout .table {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.statblock.pathfinder-2e-creature-layout .table-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column nowrap;
+}
 @media screen and (max-width: 400px) {
   .statblock.pathfinder-2e-action-layout .statblock-content > :global(.column) {
     width: 75vw;
@@ -3302,7 +5126,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   align-items: center;
   flex-flow: column nowrap;
 }
-
 @media screen and (max-width: 400px) {
   .statblock.pathfinder-2e-hazard-layout .statblock-content > :global(.column) {
     width: 75vw;
@@ -3326,7 +5149,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   align-items: center;
   flex-flow: column nowrap;
 }
-
 @media screen and (max-width: 400px) {
   .statblock.pathfinder-2e-influence-layout .statblock-content > :global(.column) {
     width: 75vw;
@@ -3350,7 +5172,29 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   align-items: center;
   flex-flow: column nowrap;
 }
-
+@media screen and (max-width: 400px) {
+  .statblock.pathfinder-2e-item-layout .statblock-content > :global(.column) {
+    width: 75vw;
+  }
+}
+.statblock.pathfinder-2e-item-layout .spell-line .spells {
+  font-style: var(--statblock-spells-font-style);
+}
+.statblock.pathfinder-2e-item-layout .statblock-table-header {
+  font-weight: var(--statblock-table-header-font-weight);
+}
+.statblock.pathfinder-2e-item-layout .table {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.statblock.pathfinder-2e-item-layout .table-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column nowrap;
+}
 @media screen and (max-width: 400px) {
   .statblock.pathfinder-2e-misc-layout .statblock-content > :global(.column) {
     width: 75vw;
@@ -3374,7 +5218,29 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   align-items: center;
   flex-flow: column nowrap;
 }
-
+@media screen and (max-width: 400px) {
+  .statblock.pathfinder-2e-plane-layout .statblock-content > :global(.column) {
+    width: 75vw;
+  }
+}
+.statblock.pathfinder-2e-plane-layout .spell-line .spells {
+  font-style: var(--statblock-spells-font-style);
+}
+.statblock.pathfinder-2e-plane-layout .statblock-table-header {
+  font-weight: var(--statblock-table-header-font-weight);
+}
+.statblock.pathfinder-2e-plane-layout .table {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.statblock.pathfinder-2e-plane-layout .table-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column nowrap;
+}
 @media screen and (max-width: 400px) {
   .statblock.pathfinder-2e-quest-layout .statblock-content > :global(.column) {
     width: 75vw;
@@ -3398,7 +5264,6 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   align-items: center;
   flex-flow: column nowrap;
 }
-
 @media screen and (max-width: 400px) {
   .statblock.pathfinder-2e-settlement-layout .statblock-content > :global(.column) {
     width: 75vw;
@@ -3417,6 +5282,29 @@ body.pathfinder-2e-settlement-layout-theme-kingmaker .statblock.pathfinder-2e-se
   flex-wrap: wrap;
 }
 .statblock.pathfinder-2e-settlement-layout .table-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column nowrap;
+}
+@media screen and (max-width: 400px) {
+  .statblock.pathfinder-2e-affliction-layout .statblock-content > :global(.column) {
+    width: 75vw;
+  }
+}
+.statblock.pathfinder-2e-affliction-layout .spell-line .spells {
+  font-style: var(--statblock-spells-font-style);
+}
+.statblock.pathfinder-2e-affliction-layout .statblock-table-header {
+  font-weight: var(--statblock-table-header-font-weight);
+}
+.statblock.pathfinder-2e-affliction-layout .table {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.statblock.pathfinder-2e-affliction-layout .table-item {
   display: flex;
   justify-content: center;
   align-items: center;

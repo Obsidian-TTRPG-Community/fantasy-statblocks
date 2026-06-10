@@ -1,0 +1,181 @@
+{
+    "blocks": [
+        {
+            "type": "group",
+            "id": "ebba4bf9d878",
+            "properties": [],
+            "nested": [
+                {
+                    "type": "heading",
+                    "id": "89998949fb0b",
+                    "properties": [
+                        "name"
+                    ],
+                    "size": 1,
+                    "fallback": "-",
+                    "conditioned": true
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "id": "7ba8a9d9d968",
+            "properties": [],
+            "nested": [
+                {
+                    "type": "property",
+                    "id": "982ba9097959",
+                    "properties": [
+                        "tier"
+                    ],
+                    "fallback": "",
+                    "callback": "return monster.tier + \" \" + monster.type;",
+                    "conditioned": true,
+                    "display": "Tier"
+                }
+            ],
+            "cls": "daggerheart-adversary-tier"
+        },
+        {
+            "type": "group",
+            "id": "48780938f9a8",
+            "properties": [],
+            "nested": [
+                {
+                    "type": "text",
+                    "id": "a8196bebf98a",
+                    "properties": [
+                        "description"
+                    ],
+                    "text": null,
+                    "fallback": "-",
+                    "conditioned": true
+                }
+            ],
+            "heading": "",
+            "cls": "daggerheart-adversary-description"
+        },
+        {
+            "type": "group",
+            "id": "eb5b3a8a9ac9",
+            "properties": [],
+            "nested": [
+                {
+                    "type": "property",
+                    "id": "a8988bca599a",
+                    "properties": [
+                        "motives_and_tactics"
+                    ],
+                    "fallback": "-",
+                    "display": "Motives & Tactics:"
+                }
+            ],
+            "hasRule": true,
+            "cls": "daggerheart-adversary-motives"
+        },
+        {
+            "type": "group",
+            "id": "c90a4a79fb0b",
+            "properties": [],
+            "nested": [
+                {
+                    "type": "inline",
+                    "id": "ab385a3b1869",
+                    "properties": [],
+                    "nested": [
+                        {
+                            "type": "property",
+                            "id": "781b3bdbd86b",
+                            "properties": [
+                                "difficulty"
+                            ],
+                            "fallback": "-",
+                            "display": "Difficulty:",
+                            "conditioned": true
+                        },
+                        {
+                            "type": "property",
+                            "id": "5ae888f87b98",
+                            "properties": [
+                                "thresholds"
+                            ],
+                            "fallback": "-",
+                            "display": "Thresholds"
+                        },
+                        {
+                            "type": "property",
+                            "id": "eb3bf8ebdb2a",
+                            "properties": [
+                                "hp"
+                            ],
+                            "fallback": "-",
+                            "display": "HP:"
+                        },
+                        {
+                            "type": "property",
+                            "id": "08a959d9282b",
+                            "properties": [
+                                "stress"
+                            ],
+                            "fallback": "-",
+                            "display": "Stress:"
+                        }
+                    ]
+                },
+                {
+                    "type": "inline",
+                    "id": "694abb2acaf9",
+                    "properties": [],
+                    "nested": [
+                        {
+                            "type": "property",
+                            "id": "58a80a396ba9",
+                            "properties": [
+                                "atk"
+                            ],
+                            "fallback": "-",
+                            "display": "ATK:"
+                        },
+                        {
+                            "type": "property",
+                            "id": "cb48eb0918aa",
+                            "properties": [
+                                "attack"
+                            ],
+                            "fallback": "-",
+                            "display": "Attack:",
+                            "callback": "return monster.attack + \" - \" + monster.range + \" - \" + monster.damage;"
+                        }
+                    ],
+                    "hasRule": true
+                },
+                {
+                    "type": "property",
+                    "id": "0a99fa7a9b3b",
+                    "properties": [
+                        "experience"
+                    ],
+                    "fallback": "-",
+                    "display": "Experience:",
+                    "conditioned": true
+                }
+            ],
+            "hasRule": false
+        },
+        {
+            "type": "traits",
+            "id": "eb590bb8cb9b",
+            "properties": [
+                "feats"
+            ],
+            "fallback": "-",
+            "heading": "Features",
+            "conditioned": true,
+            "headingProp": false,
+            "callback": "return property.text;"
+        }
+    ],
+    "id": "daggerheart-adversary",
+    "name": "Daggerheart Adversary",
+    "edited": false
+}

@@ -1,37 +1,39 @@
 import {
     App,
     ButtonComponent,
-    debounce,
-    Modal,
     normalizePath,
     Notice,
     PluginSettingTab,
-    prepareSimpleSearch,
+    setIcon,
     Setting,
     TFolder
 } from "obsidian";
 
 import type StatBlockPlugin from "src/main";
-import StatblockCreator from "./StatblockCreator.svelte";
+import LayoutEditor from "./layout/LayoutEditor.svelte";
 
 import fastCopy from "fast-copy";
 
-import Importer from "src/importers/importer";
-import { FolderSuggestionModal } from "src/util/folder";
-import { EditMonsterModal, ViewMonsterModal } from "./modal";
-import { Layout5e } from "src/layouts/basic 5e/basic5e";
-import type { DefaultLayout, Layout } from "types/layout";
-import { DefaultLayouts } from "src/layouts";
-import { nanoid, stringify } from "src/util/util";
-import { DICE_ROLLER_SOURCE } from "src/main";
+import { ExpectedValue } from "@javalent/dice-roller";
+import { FolderInputSuggest } from "@javalent/utilities";
 import type { Monster } from "index";
-import { ExpectedValue } from "obsidian-overload";
 import BrowseCommunityModal from "src/community/BrowseModal";
+import Importer from "src/importers/importer";
+import { DefaultLayouts } from "src/layouts";
+import { Layout5e } from "src/layouts/basic 5e/basic5e";
+import type { DefaultLayout, Layout } from "src/layouts/layout.types";
+import { DICE_ROLLER_SOURCE } from "src/main";
+import FantasyStatblockModal from "src/modal/modal";
+import { nanoid } from "src/util/util";
+import { Watcher } from "src/watcher/watcher";
+import Creatures from "./creatures/Creatures.svelte";
+import { EditMonsterModal } from "./modal";
 
 export default class StatblockSettingTab extends PluginSettingTab {
     importer: Importer;
-    results: Monster[] = [];
-    filter: Setting;
+    results: Partial<Monster>[] = [];
+    filter!: Setting;
+    $UI!: Creatures;
     constructor(app: App, private plugin: StatBlockPlugin) {
         super(app, plugin);
         this.importer = new Importer(this.plugin);
@@ -87,6 +89,15 @@ export default class StatblockSettingTab extends PluginSettingTab {
                     e.createSpan({
                         text: "This can cause issues sometimes when using sync services."
                     });
+                    e.createEl("br");
+                    const warning = e.createDiv();
+                    setIcon(warning.createDiv(), "warning");
+                    warning.createSpan({
+                        attr: {
+                            style: "color: var(--text-error)"
+                        },
+                        text: "This setting is currently disabled."
+                    });
                 })
             )
             .addToggle((t) =>
@@ -102,7 +113,7 @@ export default class StatblockSettingTab extends PluginSettingTab {
     generateTopSettings(container: HTMLDivElement) {
         container.empty();
         new Setting(container).setHeading().setName("General Settings");
-        new Setting(container)
+        /* new Setting(container)
             .setName("Enable Export to PNG")
             .setDesc(
                 createFragment((e) => {
@@ -115,18 +126,18 @@ export default class StatblockSettingTab extends PluginSettingTab {
                     });
                 })
             )
-            .setDisabled(!this.plugin.canUseDiceRoller)
+            .setDisabled(!this.plugin.diceRollerInstalled)
             .addToggle((t) =>
                 t.setValue(this.plugin.settings.useDice).onChange(async (v) => {
                     this.plugin.settings.useDice = v;
                     await this.plugin.saveSettings();
                 })
-            );
+            ); */
         new Setting(container)
             .setName("Integrate Dice Roller")
             .setDesc(
                 createFragment((e) => {
-                    if (this.plugin.canUseDiceRoller) {
+                    if (this.plugin.diceRollerInstalled) {
                         e.createSpan({
                             text: "Add Dice Roller dice to statblocks by default. Use "
                         });
@@ -141,7 +152,7 @@ export default class StatblockSettingTab extends PluginSettingTab {
                     }
                 })
             )
-            .setDisabled(!this.plugin.canUseDiceRoller)
+            .setDisabled(!this.plugin.diceRollerInstalled)
             .addToggle((t) =>
                 t.setValue(this.plugin.settings.useDice).onChange(async (v) => {
                     this.plugin.settings.useDice = v;
@@ -152,7 +163,7 @@ export default class StatblockSettingTab extends PluginSettingTab {
             .setName("Render Dice Rolls")
             .setDesc(
                 createFragment((e) => {
-                    if (this.plugin.canUseDiceRoller) {
+                    if (this.plugin.diceRollerInstalled) {
                         e.createSpan({
                             text: "Roll graphical dice inside statblocks by default. Use "
                         });
@@ -167,24 +178,24 @@ export default class StatblockSettingTab extends PluginSettingTab {
                     }
                 })
             )
-            .setDisabled(!this.plugin.canUseDiceRoller)
+            .setDisabled(!this.plugin.diceRollerInstalled)
             .addToggle((t) =>
                 t
                     .setValue(this.plugin.settings.renderDice)
                     .onChange(async (v) => {
                         this.plugin.settings.renderDice = v;
-                        if (this.plugin.canUseDiceRoller) {
-                            this.app.plugins
-                                .getPlugin("obsidian-dice-roller")
-                                ?.api.registerSource(DICE_ROLLER_SOURCE, {
+                        if (this.plugin.diceRollerInstalled) {
+                            window.DiceRoller.registerSource(
+                                DICE_ROLLER_SOURCE,
+                                {
                                     showDice: true,
                                     shouldRender:
                                         this.plugin.settings.renderDice,
                                     showFormula: false,
                                     showParens: false,
-                                    expectedValue: ExpectedValue.Average,
-                                    text: null
-                                });
+                                    expectedValue: ExpectedValue.Average
+                                }
+                            );
                         }
                         await this.plugin.saveSettings();
                     })
@@ -211,20 +222,24 @@ export default class StatblockSettingTab extends PluginSettingTab {
                     })
             );
         new Setting(container)
-            .setName("Disable 5e SRD")
+            .setName("Enable 5e SRD")
             .setDesc(
                 createFragment((e) => {
                     e.createSpan({
-                        text: "Disable the Dungeons & Dragons 5th Edition System Reference Document monsters."
+                        text: "Use the Dungeons & Dragons 5th Edition System Reference Document monsters."
                     });
                 })
             )
             .addToggle((t) =>
                 t
-                    .setValue(this.plugin.settings.disableSRD)
+                    .setValue(!this.plugin.settings.disableSRD)
                     .onChange(async (v) => {
-                        this.plugin.settings.disableSRD = v;
+                        this.plugin.settings.disableSRD = !v;
                         await this.plugin.saveSettings();
+                        this.plugin.app.workspace.trigger(
+                            "fantasy-statblocks:srd-change",
+                            v
+                        );
                     })
             );
     }
@@ -235,7 +250,7 @@ export default class StatblockSettingTab extends PluginSettingTab {
         );
         new Setting(additionalContainer).setHeading().setName("Note Parsing");
         new Setting(additionalContainer)
-            .setName("Parse Frontmatter for Creatures")
+            .setName("Automatically Parse Frontmatter for Creatures")
             .setDesc(
                 createFragment((e) => {
                     e.createSpan({
@@ -253,7 +268,7 @@ export default class StatblockSettingTab extends PluginSettingTab {
                     async (v) => {
                         this.plugin.settings.autoParse = v;
                         if (v) {
-                            this.plugin.watcher.start();
+                            Watcher.start();
                         }
                         await this.plugin.saveSettings();
                     }
@@ -271,7 +286,7 @@ export default class StatblockSettingTab extends PluginSettingTab {
             .addToggle((t) =>
                 t.setValue(this.plugin.settings.debug).onChange(async (v) => {
                     this.plugin.settings.debug = v;
-                    this.plugin.watcher.setDebug();
+                    Watcher.setDebug();
                     await this.plugin.saveSettings();
                 })
             );
@@ -291,16 +306,14 @@ export default class StatblockSettingTab extends PluginSettingTab {
                     );
 
                 text.setPlaceholder("/");
-                const modal = new FolderSuggestionModal(this.app, text, [
+                const modal = new FolderInputSuggest(this.app, text, [
                     ...(folders as TFolder[])
                 ]);
 
-                modal.onClose = async () => {
-                    const v = text.inputEl.value?.trim()
-                        ? text.inputEl.value.trim()
-                        : "/";
-                    path = normalizePath(v);
-                };
+                modal.onSelect(async ({ item }) => {
+                    path = normalizePath(item.path);
+                    text.setValue(item.path);
+                });
 
                 text.inputEl.onblur = async () => {
                     const v = text.inputEl.value?.trim()
@@ -314,7 +327,7 @@ export default class StatblockSettingTab extends PluginSettingTab {
                     if (!path || !path.length) return;
                     this.plugin.settings.paths.push(normalizePath(path));
                     await this.plugin.saveSettings();
-                    await this.plugin.watcher.reparseVault();
+                    await Watcher.reparseVault();
                     await this.generateParseSettings(containerEl);
                 });
             });
@@ -327,7 +340,7 @@ export default class StatblockSettingTab extends PluginSettingTab {
                         this.plugin.settings.paths.filter((p) => p != path);
 
                     await this.plugin.saveSettings();
-                    await this.plugin.watcher.reparseVault();
+                    await Watcher.reparseVault();
                     await this.generateParseSettings(containerEl);
                 })
             );
@@ -365,10 +378,10 @@ export default class StatblockSettingTab extends PluginSettingTab {
         });
         inputFile.onchange = async () => {
             const { files } = inputFile;
-            if (!files.length) return;
+            if (!files?.length) return;
             try {
                 const { files } = inputFile;
-                if (!files.length) return;
+                if (!files?.length) return;
                 for (const file of Array.from(files)) {
                     await new Promise<void>((resolve, reject) => {
                         const reader = new FileReader();
@@ -376,7 +389,7 @@ export default class StatblockSettingTab extends PluginSettingTab {
                         reader.onload = async (event) => {
                             try {
                                 const layout: Layout = JSON.parse(
-                                    event.target.result as string
+                                    event.target?.result as string
                                 );
                                 if (!layout) {
                                     reject(
@@ -392,9 +405,7 @@ export default class StatblockSettingTab extends PluginSettingTab {
                                     );
                                     return;
                                 }
-                                if (!layout?.id) {
-                                    layout.id = nanoid();
-                                }
+
                                 if (!layout?.blocks) {
                                     reject(
                                         new Error(
@@ -403,6 +414,12 @@ export default class StatblockSettingTab extends PluginSettingTab {
                                     );
                                     return;
                                 }
+                                if (!layout.diceParsing) {
+                                    layout.diceParsing = [];
+                                }
+
+                                layout.id = nanoid();
+
                                 if (
                                     !this.plugin.settings.alwaysImport &&
                                     layout.blocks.find(
@@ -429,7 +446,7 @@ export default class StatblockSettingTab extends PluginSettingTab {
                     });
                 }
                 await this.plugin.saveSettings();
-                inputFile.value = null;
+                inputFile.value = "";
                 this.buildCustomLayouts(layoutContainer, containerEl);
             } catch (e) {}
         };
@@ -440,7 +457,7 @@ export default class StatblockSettingTab extends PluginSettingTab {
             b.buttonEl.appendChild(inputFile);
             b.onClick(() => inputFile.click());
         });
-        const setting = new Setting(statblockCreatorContainer)
+        new Setting(statblockCreatorContainer)
             .setName("Add New Layout")
             .addButton((b) =>
                 b
@@ -450,9 +467,9 @@ export default class StatblockSettingTab extends PluginSettingTab {
                         const modal = new CreateStatblockModal(this.plugin);
                         modal.onClose = async () => {
                             if (!modal.saved) return;
-                            this.plugin.settings.layouts.push(
-                                this.getDuplicate(modal.layout)
-                            );
+                            const l = this.getDuplicate(modal.layout);
+                            this.plugin.settings.layouts.push(l);
+                            this.plugin.manager.addLayout(l);
                             await this.plugin.saveSettings();
                             this.buildCustomLayouts(
                                 layoutContainer,
@@ -489,15 +506,15 @@ export default class StatblockSettingTab extends PluginSettingTab {
                 "Change the default statblock layout used, if not specified."
             )
             .addDropdown(async (d) => {
-                for (const layout of this.plugin.layouts) {
+                for (const layout of this.plugin.manager.getAllLayouts()) {
                     d.addOption(layout.id, layout.name);
                 }
 
                 if (
                     !this.plugin.settings.default ||
-                    !this.plugin.layouts.find(
-                        ({ id }) => id == this.plugin.settings.default
-                    )
+                    !this.plugin.manager
+                        .getAllLayouts()
+                        .find(({ id }) => id == this.plugin.settings.default)
                 ) {
                     this.plugin.settings.default = Layout5e.id;
                     await this.plugin.saveSettings();
@@ -507,6 +524,7 @@ export default class StatblockSettingTab extends PluginSettingTab {
 
                 d.onChange(async (v) => {
                     this.plugin.settings.default = v;
+                    this.plugin.manager.setDefaultLayout(v);
                     await this.plugin.saveSettings();
                 });
             });
@@ -527,12 +545,16 @@ export default class StatblockSettingTab extends PluginSettingTab {
 
         this.buildCustomLayouts(layoutContainer, containerEl);
     }
-    getDuplicate(layout: Layout) {
-        if (!this.plugin.layouts.find((l) => l.name == layout.name))
+    getDuplicate(layout: Layout): Layout {
+        if (
+            !this.plugin.manager
+                .getAllLayouts()
+                .find((l) => l.name == layout.name)
+        )
             return layout;
-        const names = this.plugin.layouts
-            .filter((l) => l.name.contains(`${layout.name} Copy`))
-            .map((l) => l.name);
+        const names = this.plugin.manager
+            .getSortedLayoutNames()
+            .filter((name) => name.contains(`${layout.name} Copy`));
 
         let temp = `${layout.name} Copy`;
 
@@ -579,21 +601,27 @@ export default class StatblockSettingTab extends PluginSettingTab {
     ) {
         layoutContainer.empty();
 
-        if (this.plugin.settings.defaultLayouts.some((f) => f.removed)) {
+        if (this.plugin.manager.getAllDefaultLayouts().some((f) => f.removed)) {
             new Setting(layoutContainer)
                 .setName("Restore Default Layouts")
                 .addButton((b) => {
                     b.setIcon("rotate-ccw").onClick(async () => {
-                        for (const layout of this.plugin.settings
-                            .defaultLayouts) {
-                            delete layout.removed;
+                        for (const layout of Object.values(
+                            this.plugin.settings.defaultLayouts
+                        )) {
+                            layout.removed = false;
+                            if (!layout.edited) {
+                                delete this.plugin.settings.defaultLayouts[
+                                    layout.id
+                                ];
+                            }
                         }
                         await this.plugin.saveSettings();
                         this.generateLayouts(outerContainer);
                     });
                 });
         }
-        for (const layout of this.plugin.settings.defaultLayouts) {
+        for (const layout of this.plugin.manager.getAllDefaultLayouts()) {
             if (layout.removed) continue;
 
             const setting = new Setting(layoutContainer)
@@ -610,13 +638,8 @@ export default class StatblockSettingTab extends PluginSettingTab {
                                 if (!modal.saved) return;
 
                                 (modal.layout as DefaultLayout).edited = true;
-                                this.plugin.settings.defaultLayouts.splice(
-                                    this.plugin.settings.defaultLayouts.indexOf(
-                                        layout
-                                    ),
-                                    1,
-                                    modal.layout
-                                );
+                                this.plugin.settings.defaultLayouts[layout.id] =
+                                    modal.layout;
 
                                 await this.plugin.saveSettings();
                                 this.plugin.manager.updateDefaultLayout(
@@ -633,12 +656,8 @@ export default class StatblockSettingTab extends PluginSettingTab {
                     b.setIcon("undo").onClick(async () => {
                         const defLayout = DefaultLayouts.find(
                             ({ id }) => id == layout.id
-                        );
-                        this.plugin.settings.defaultLayouts.splice(
-                            this.plugin.settings.defaultLayouts.indexOf(layout),
-                            1,
-                            fastCopy(defLayout)
-                        );
+                        )!;
+                        delete this.plugin.settings.defaultLayouts[layout.id];
                         await this.plugin.saveSettings();
                         this.plugin.manager.updateDefaultLayout(
                             layout.id,
@@ -685,6 +704,8 @@ export default class StatblockSettingTab extends PluginSettingTab {
                         .setTooltip("Delete")
                         .onClick(async () => {
                             layout.removed = true;
+                            this.plugin.settings.defaultLayouts[layout.id] =
+                                layout;
                             await this.plugin.saveSettings();
                             this.generateLayouts(outerContainer);
                         });
@@ -805,10 +826,10 @@ export default class StatblockSettingTab extends PluginSettingTab {
 
         inputAppFile.onchange = async () => {
             const { files } = inputAppFile;
-            if (!files.length) return;
+            if (!files?.length) return;
             try {
                 const { files } = inputAppFile;
-                if (!files.length) return;
+                if (!files?.length) return;
                 const monsters = await this.importer.import(files, "appfile");
                 if (monsters && monsters.length) {
                     await this.plugin.saveMonsters(monsters);
@@ -840,10 +861,10 @@ export default class StatblockSettingTab extends PluginSettingTab {
 
         inputImprovedInitiative.onchange = async () => {
             const { files } = inputImprovedInitiative;
-            if (!files.length) return;
+            if (!files?.length) return;
             try {
                 const { files } = inputImprovedInitiative;
-                if (!files.length) return;
+                if (!files?.length) return;
                 const monsters = await this.importer.import(files, "improved");
                 if (monsters && monsters.length) {
                     await this.plugin.saveMonsters(monsters);
@@ -875,10 +896,10 @@ export default class StatblockSettingTab extends PluginSettingTab {
 
         inputCritterDB.onchange = async () => {
             const { files } = inputCritterDB;
-            if (!files.length) return;
+            if (!files?.length) return;
             try {
                 const { files } = inputCritterDB;
-                if (!files.length) return;
+                if (!files?.length) return;
                 const monsters = await this.importer.import(files, "critter");
                 if (monsters && monsters.length) {
                     await this.plugin.saveMonsters(monsters);
@@ -910,7 +931,7 @@ export default class StatblockSettingTab extends PluginSettingTab {
 
         input5eTools.onchange = async () => {
             const { files } = input5eTools;
-            if (!files.length) return;
+            if (!files?.length) return;
             const monsters = await this.importer.import(files, "5e");
             if (monsters && monsters.length) {
                 await this.plugin.saveMonsters(monsters);
@@ -939,7 +960,7 @@ export default class StatblockSettingTab extends PluginSettingTab {
         });
         inputTetra.onchange = async () => {
             const { files } = inputTetra;
-            if (!files.length) return;
+            if (!files?.length) return;
             const monsters = await this.importer.import(files, "tetra");
             if (monsters && monsters.length) {
                 await this.plugin.saveMonsters(monsters);
@@ -954,6 +975,66 @@ export default class StatblockSettingTab extends PluginSettingTab {
             b.buttonEl.appendChild(inputTetra);
             b.onClick(() => inputTetra.click());
         });
+        const importPF2EMonsterTools = new Setting(importAdditional)
+            .setName("Import PF2eMonsterTools Data")
+            .setDesc("Only import content that you own.");
+        const inputPF2EMonsterTools = createEl("input", {
+            attr: {
+                type: "file",
+                name: "PF2eMonsterTool",
+                accept: ".json, .monster",
+                multiple: true
+            }
+        });
+        inputPF2EMonsterTools.onchange = async () => {
+            const { files } = inputPF2EMonsterTools;
+            if (!files?.length) return;
+            const monsters = await this.importer.import(files, "PF2eMonsterTool");
+            if (monsters && monsters.length) {
+                await this.plugin.saveMonsters(monsters);
+            }
+            this.display();
+        };
+        importPF2EMonsterTools.addButton((b) => {
+            b.setButtonText("Choose File(s)").setTooltip(
+                "Import PF2EMonsterTools Data"
+            );
+            b.buttonEl.addClass("statblock-file-upload");
+            b.buttonEl.appendChild(inputPF2EMonsterTools);
+            b.onClick(() => inputPF2EMonsterTools.click());
+        });
+        // import Pathbuilder
+        const importPathbuilder = new Setting(importAdditional)
+            .setName("Import Pathbuilder Data")
+            .setDesc("Import a PC or NPC exported from Pathbuilder2e.");
+        const inputPathbuilder = createEl("input", {
+            attr: {
+                type: "file",
+                name: "pathbuilder",
+                accept: ".json",
+                multiple: true
+            }
+        });
+        inputPathbuilder.onchange = async () => {
+            const { files } = inputPathbuilder;
+            if (!files.length) return;
+            const monsters = await this.importer.import(files, "pathbuilder");
+            if (monsters && monsters.length) {
+                await this.plugin.saveMonsters(monsters);
+            }
+            this.display();
+        };
+        importPathbuilder.addButton((b) => {
+            b.setButtonText("Choose File(s)").setTooltip(
+                "Import Pathbuilder Data"
+            );
+            b.buttonEl.addClass("statblock-file-upload");
+            b.buttonEl.appendChild(inputPathbuilder);
+            b.onClick(() => inputPathbuilder.click());
+        });
+
+
+
         const importGeneric = new Setting(importAdditional)
             .setName("Import Generic Data")
             .setDesc(
@@ -977,7 +1058,7 @@ export default class StatblockSettingTab extends PluginSettingTab {
         });
         inputGeneric.onchange = async () => {
             const { files } = inputGeneric;
-            if (!files.length) return;
+            if (!files?.length) return;
             const monsters = await this.importer.import(files, "generic");
             if (monsters && monsters.length) {
                 await this.plugin.saveMonsters(monsters);
@@ -993,7 +1074,7 @@ export default class StatblockSettingTab extends PluginSettingTab {
     }
     generateMonsters(containerEl: HTMLDivElement) {
         containerEl.empty();
-        new Setting(containerEl).setHeading().setName("Homebrew Creatures");
+        new Setting(containerEl).setHeading().setName("Bestiary");
         const additionalContainer = containerEl.createDiv(
             "statblock-additional-container statblock-monsters"
         );
@@ -1009,204 +1090,25 @@ export default class StatblockSettingTab extends PluginSettingTab {
                 });
             });
 
-        const ancestor = this.containerEl.closest(".statblock-settings");
+        const ancestor = this.containerEl.closest(".statblock-settings")!;
         const { backgroundColor, paddingTop } = getComputedStyle(ancestor);
 
-        const filters = additionalContainer.createDiv({
-            cls: "statblock-monster-filter",
-            attr: {
-                style: `--statblock-filter-offset: ${paddingTop}; --statblock-filter-bg: ${backgroundColor}`
+        this.$UI = new Creatures({
+            target: additionalContainer,
+            props: {
+                plugin: this.plugin,
+                backgroundColor,
+                paddingTop
             }
         });
-        this.filter = new Setting(filters)
-            .setClass("statblock-filter-container")
-
-            .addSearch((t) => {
-                t.setPlaceholder("Search Monsters").onChange(
-                    debounce((v) => {
-                        this.showSearchResults(additional, v);
-                    }, 100)
-                );
-            })
-            .addExtraButton((b) => {
-                b.setIcon("trash")
-                    .setTooltip("Delete All Filtered Monsters")
-                    .onClick(() => {
-                        const modal = new ConfirmModal(
-                            this.results.length,
-                            this.plugin.app
-                        );
-                        modal.onClose = async () => {
-                            if (modal.saved) {
-                                await this.plugin.deleteMonsters(
-                                    ...(this.results?.map((m) => m.name) ?? [])
-                                );
-                                this.generateMonsters(containerEl);
-                            }
-                        };
-                        modal.open();
-                    });
-            });
-        this.setFilterDesc();
-        const sourcesSetting = filters.createEl("details");
-        sourcesSetting.createEl("summary", { text: "Filter Sources" });
-        const list = sourcesSetting.createEl(
-            "ul",
-            "contains-task-list task-list-inline markdown-preview-view"
-        );
-
-        for (let source of this.plugin.sources) {
-            const li = list.createEl("li", "task-list-item");
-            li.createEl("input", {
-                attr: {
-                    id: "input_" + source,
-                    checked: true
-                },
-                type: "checkbox",
-                cls: "task-list-item-checkbox"
-            }).onclick = (evt) => {
-                const target = evt.target as HTMLInputElement;
-                if (target.checked) {
-                    this.displayed.add(source);
-                } else {
-                    this.displayed.delete(source);
-                }
-                this.showSearchResults(additional, "");
-            };
-            li.createEl("label", {
-                attr: {
-                    for: "input_" + source
-                },
-                text: source
-            });
-        }
-        const additional = additionalContainer.createDiv("additional");
-        if (!this.plugin.data.size) {
-            additional
-                .createDiv({
-                    attr: {
-                        style: "display: flex; justify-content: center; padding-bottom: 18px;"
-                    }
-                })
-                .createSpan({
-                    text: "No saved creatures! Create one to see it here."
-                });
-            return;
-        }
-        setTimeout(() => this.showSearchResults(additional, ""));
     }
-    setFilterDesc() {
-        this.filter.setDesc(
-            createFragment((e) => {
-                e.createSpan({
-                    text: `Managing ${
-                        this.plugin.settings.monsters.length
-                    } homebrew creature${
-                        this.plugin.settings.monsters.length == 1 ? "" : "s"
-                    }.`
-                });
-                e.createEl("p", {
-                    attr: {
-                        style: "margin: 0;"
-                    }
-                }).createEl("small", {
-                    text: `Displaying: ${this.results.length} homebrew creatures.`
-                });
-            })
-        );
-    }
-    showSearchResults(additional: HTMLDivElement, search: string) {
-        additional.empty();
-        for (const item of this.performFuzzySearch(search)) {
-            const content = new Setting(additional).setName(item.name);
-            let desc: string,
-                needTooltip = false;
-            if (Array.isArray(item.source)) {
-                let source = item.source.slice(0, 4);
-                if (item.source.length > 4) {
-                    source.push(`and ${item.source.length - 4} more`);
-                    needTooltip = true;
-                }
-                desc = stringify(source, 0, ", ", false);
-            } else {
-                desc = item.source;
-            }
-            content.setDesc(desc);
-            if (needTooltip) {
-                content.descEl.setAttr(
-                    "aria-label",
-                    stringify(item.source, 0, ", ", false)
-                );
-            }
-            content
-                .addExtraButton((b) => {
-                    b.setIcon("info")
-                        .setTooltip("View")
-                        .onClick(() => {
-                            const modal = new ViewMonsterModal(
-                                this.plugin,
-                                item
-                            );
-                            modal.open();
-                        });
-                })
-                .addExtraButton((b) => {
-                    b.setIcon("pencil")
-                        .setTooltip("Edit")
-                        .onClick(() => {
-                            const modal = new EditMonsterModal(
-                                this.plugin,
-                                item
-                            );
-                            modal.open();
-                            modal.onClose = () => {
-                                this.showSearchResults(additional, search);
-                            };
-                        });
-                })
-                .addExtraButton((b) => {
-                    b.setIcon("trash")
-                        .setTooltip("Delete")
-                        .onClick(async () => {
-                            await this.plugin.deleteMonster(item.name);
-                            this.showSearchResults(additional, search);
-                        });
-                });
-        }
-        this.setFilterDesc();
-    }
-    displayed: Set<string> = new Set(this.plugin.sources);
-    performFuzzySearch(input: string) {
-        const results: Monster[] = [];
-        for (const resource of this.plugin.sorted) {
-            if (!resource.name && !resource.source) continue;
-            if (
-                typeof resource.source == "string" &&
-                !this.displayed.has(resource.source)
-            )
-                continue;
-            if (
-                Array.isArray(resource.source) &&
-                !resource.source.find((s) => this.displayed.has(s))
-            )
-                continue;
-
-            const search = prepareSimpleSearch(input);
-            let result = search(resource.name);
-            if (!result && resource.source != null) {
-                result = search(stringify(resource.source));
-            }
-            if (result) {
-                results.push(resource);
-            }
-        }
-        this.results = results.slice(0, 100);
-        return this.results;
+    override hide() {
+        this.$UI.$destroy();
     }
 }
 
-class CreateStatblockModal extends Modal {
-    creator: StatblockCreator;
+class CreateStatblockModal extends FantasyStatblockModal {
+    creator!: LayoutEditor;
     layout: Layout;
     saved: boolean = false;
     constructor(
@@ -1217,8 +1119,10 @@ class CreateStatblockModal extends Modal {
             id: nanoid()
         }
     ) {
-        super(plugin.app);
+        super(plugin);
         this.layout = fastCopy(layout);
+        this.modalEl.addClasses(["mod-sidebar-layout", "mod-settings"]);
+        this.contentEl.addClass("vertical-tabs-container");
     }
 
     onOpen() {
@@ -1227,7 +1131,7 @@ class CreateStatblockModal extends Modal {
 
     display() {
         this.titleEl.createSpan({ text: "Create Layout" });
-        this.creator = new StatblockCreator({
+        this.creator = new LayoutEditor({
             target: this.contentEl,
             props: {
                 layout: this.layout,
@@ -1245,10 +1149,10 @@ class CreateStatblockModal extends Modal {
     }
 }
 
-class ConfirmModal extends Modal {
+class ConfirmModal extends FantasyStatblockModal {
     saved: boolean = false;
-    constructor(public filtered: number, app: App) {
-        super(app);
+    constructor(public filtered: number, plugin: StatBlockPlugin) {
+        super(plugin);
     }
     onOpen() {
         this.titleEl.setText("Are you sure?");
@@ -1285,10 +1189,10 @@ async function confirm(plugin: StatBlockPlugin): Promise<boolean> {
         }
     });
 }
-class ConfirmImport extends Modal {
+class ConfirmImport extends FantasyStatblockModal {
     confirmed: boolean = false;
     constructor(public plugin: StatBlockPlugin) {
-        super(plugin.app);
+        super(plugin);
     }
     async display() {
         this.contentEl.empty();

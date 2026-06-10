@@ -2,33 +2,25 @@ import {
     addIcon,
     MarkdownPostProcessorContext,
     Notice,
+    ObsidianProtocolHandler,
     parseYaml,
     Plugin,
     WorkspaceLeaf
 } from "obsidian";
 import domtoimage from "dom-to-image";
 
-import { getBestiaryByName } from "./data/srd-bestiary";
 import StatBlockRenderer from "./view/statblock";
 import { nanoid } from "./util/util";
-import {
-    EXPORT_ICON,
-    EXPORT_SYMBOL,
-    SAVE_ICON,
-    SAVE_SYMBOL
-} from "./data/constants";
-import type { Monster, StatblockAPI, StatblockParameters } from "../index";
+import type { Monster, StatblockParameters } from "../index";
 import StatblockSettingTab from "./settings/settings";
 import fastCopy from "fast-copy";
 
-import { sort } from "fast-sort";
-import {
-    type Plugins,
-    ExpectedValue,
-    HomebrewCreature
-} from "obsidian-overload";
-import { Watcher } from "./watcher/watcher";
-import type { Layout, ParsedDice, StatblockItem } from "../types/layout";
+import type { HomebrewCreature } from "obsidian-overload";
+import type {
+    DefaultLayout,
+    Layout,
+    StatblockItem
+} from "./layouts/layout.types";
 import { Layout5e } from "./layouts/basic 5e/basic5e";
 import { StatblockSuggester } from "./suggest";
 import { DefaultLayouts } from "./layouts";
@@ -37,46 +29,15 @@ import LayoutManager from "./layouts/manager";
 import CommunityTemplateManager from "./community/manager";
 import { CREATURE_VIEW, CreatureView } from "./combatant";
 import { API } from "./api/api";
-import { Linkifier } from "./util/linkify";
-
-declare global {
-    interface Window {
-        bestiary: Map<string, Monster>;
-        FantasyStatblocks: API;
-    }
-}
-declare module "obsidian" {
-    interface App {
-        plugins: {
-            getPlugin<T extends keyof Plugins>(plugin: T): Plugins[T];
-        };
-        commands: {
-            listCommands: () => Command[];
-            executeCommandById: (id: string) => boolean;
-        };
-        customCss: {
-            getSnippetsFolder(): string;
-            enabledSnippets: Set<string>;
-            snippets: string[];
-            requestLoadSnippets(): void;
-            setCssEnabledStatus(snippet: string, enabled: boolean): void;
-        };
-    }
-    interface Workspace {
-        on(
-            name: "dice-roller:rendered-result",
-            callback: (result: number) => void
-        ): EventRef;
-        on(name: "dice-roller:unload", callback: () => void): EventRef;
-        on(name: "dice-roller:loaded", callback: () => void): EventRef;
-    }
-}
+import { Linkifier } from "./parser/linkify";
+import { Bestiary } from "./bestiary/bestiary";
+import { ExpectedValue } from "@javalent/dice-roller";
 
 export const DICE_ROLLER_SOURCE = "FANTASY_STATBLOCKS_PLUGIN";
 
 const DEFAULT_DATA: StatblockData = {
     monsters: [],
-    defaultLayouts: [...DefaultLayouts.map((l) => fastCopy(l))],
+    defaultLayouts: {},
     layouts: [],
     default: Layout5e.name,
     useDice: true,
@@ -97,111 +58,36 @@ const DEFAULT_DATA: StatblockData = {
     hideConditionHelp: false,
     alwaysImport: false,
     defaultLayoutsIntegrated: false,
-    atomicWrite: true,
+    atomicWrite: false,
     communityTemplateSnippets: {}
 };
 
-export default class StatBlockPlugin extends Plugin implements StatblockAPI {
+export default class StatBlockPlugin extends Plugin {
     settings: StatblockData;
-    data: Map<string, Monster>;
-    bestiary: Map<string, Monster>;
     manager = new LayoutManager();
     communityTemplates = new CommunityTemplateManager(this);
-
-    private names: string[];
-    #creatures: Monster[];
     api: API = new API(this);
-
-    getBestiaryCreatures() {
-        return this.api.getBestiaryCreatures();
-    }
-    getBestiaryNames() {
-        return this.api.getBestiaryNames();
-    }
-    hasCreature(name: string): boolean {
-        return this.api.hasCreature(name);
-    }
-    getCreatureFromBestiary(name: string): Partial<Monster> | null {
-        return this.api.getCreatureFromBestiary(name);
-    }
-
-    getExtensions(
-        monster: Partial<Monster>,
-        extended: Set<string>
-    ): Partial<Monster>[] {
-        let extensions: Partial<Monster>[] = [fastCopy(monster)];
-        if (
-            !("extends" in monster) ||
-            !(
-                Array.isArray(monster.extends) ||
-                typeof monster.extends == "string"
-            )
-        ) {
-            return extensions;
-        }
-        if (monster.extends && monster.extends.length) {
-            for (const extension of [monster.extends].flat()) {
-                if (extended.has(extension)) {
-                    console.info(
-                        "Circular extend dependency detected in " +
-                            [...extended]
-                    );
-                    continue;
-                }
-                extended.add(monster.name);
-                const extensionMonster = this.bestiary.get(extension);
-                if (!extensionMonster) continue;
-                extensions.push(
-                    ...this.getExtensions(extensionMonster, extended)
-                );
-            }
-        }
-
-        return extensions;
-    }
-
-    watcher = new Watcher(this);
-    private _sorted: Monster[] = [];
 
     getRoller(str: string) {
         if (!this.canUseDiceRoller) return;
-        const roller = this.app.plugins
-            .getPlugin("obsidian-dice-roller")
-            ?.api.getRollerSync(str, DICE_ROLLER_SOURCE);
+        const roller = window.DiceRoller.getRollerSync(str, DICE_ROLLER_SOURCE);
         return roller;
     }
     getRollerString(str: string) {
         if (!this.canUseDiceRoller) return str;
-        return this.app.plugins
-            .getPlugin("obsidian-dice-roller")
-            ?.api.getRollerString(str, DICE_ROLLER_SOURCE);
+        return window.DiceRoller.getRollerString(str, DICE_ROLLER_SOURCE);
     }
-    get canUseDiceRoller() {
-        if (this.app.plugins.getPlugin("obsidian-dice-roller") != null) {
-            if (!this.app.plugins.getPlugin("obsidian-dice-roller").api) {
-                new Notice(
-                    "Please update Dice Roller to the latest version to use with Initiative Tracker."
-                );
-            } else {
-                return true;
-            }
+    get diceRollerInstalled() {
+        if (window.DiceRoller != null) {
+            return true;
         }
         return false;
     }
-
-    get sorted() {
-        if (this._sorted.length != this.data.size)
-            this._sorted = sort<Monster>(Array.from(this.data.values())).asc(
-                (m) => m.name
-            );
-        return this._sorted;
-    }
-    get sources() {
-        return new Set(
-            Array.from(this.data.values())
-                .map((m) => m.source)
-                .flat()
-        );
+    get canUseDiceRoller() {
+        if (this.diceRollerInstalled) {
+            return this.settings.useDice;
+        }
+        return false;
     }
 
     get creature_view() {
@@ -210,57 +96,105 @@ export default class StatBlockPlugin extends Plugin implements StatblockAPI {
         if (leaf && leaf.view && leaf.view instanceof CreatureView)
             return leaf.view;
     }
-    async onload() {
-        console.log("Fantasy StatBlocks loaded");
-        await this.loadSettings();
-        await this.loadMonsterData();
-        await this.saveSettings();
+    async openCreatureView(newPane: boolean = false) {
+        let leaf: WorkspaceLeaf;
+        const existing = this.app.workspace.getLeavesOfType(CREATURE_VIEW);
 
-        this.manager.initialize(this.settings);
-
-        this.watcher.load();
-
-        Linkifier.load();
-        this.register(() => Linkifier.unload());
-
-        this.addCommand({
-            id: "parse-frontmatter",
-            name: "Parse Frontmatter for Creatures",
-            callback: () => {
-                this.watcher.start(true);
+        if (!newPane && existing?.length) {
+            leaf = existing.shift();
+        } else {
+            if (newPane && existing?.length) {
+                leaf = this.app.workspace.createLeafInParent(
+                    existing[0].parent,
+                    existing[0].parent.children.length
+                );
+            } else {
+                leaf = this.app.workspace.getRightLeaf(true);
             }
-        });
-        this.addCommand({
-            id: "open-creature-view",
-            name: "Open Creature Pane",
-            callback: async () => {
-                const leaf = this.app.workspace.getRightLeaf(true);
-                await leaf.setViewState({
-                    type: CREATURE_VIEW
-                });
-                this.app.workspace.revealLeaf(leaf);
-            }
-        });
-        this.addRibbonIcon("skull", "Open Creature Pane", async () => {
-            const leaf = this.app.workspace.getRightLeaf(true);
             await leaf.setViewState({
                 type: CREATURE_VIEW
             });
-            this.app.workspace.revealLeaf(leaf);
+        }
+        this.app.workspace.revealLeaf(leaf);
+        return leaf.view as CreatureView;
+    }
+
+    #creaturePaneProtocolHandler: ObsidianProtocolHandler = (data) => {
+        const name = data?.creature ?? data?.name ?? "";
+
+        if (Bestiary.hasCreature(name)) {
+            const creature = Bestiary.get(name);
+            if (!this.creature_view) {
+                this.openCreatureView().then((v) => v.render(creature));
+            } else {
+                this.creature_view.render(creature);
+            }
+        }
+    };
+    async onload() {
+        console.log("Fantasy StatBlocks loaded");
+        this.app.workspace.trigger("fantasy-statblocks:loaded", null);
+
+        await this.loadSettings();
+        await this.saveSettings();
+
+        this.manager.initialize(this.settings);
+        this.register(() => this.manager.unload());
+
+        Bestiary.initialize(this);
+        Linkifier.initialize(this.app.metadataCache, this.app);
+
+        this.register(() => Linkifier.unload());
+
+        this.registerHoverLinkSource(this.manifest.id, {
+            display: this.manifest.name,
+            defaultMod: false
         });
 
-        addIcon(
-            "dropzone-grip",
-            `<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="grip-lines-vertical" class="svg-inline--fa fa-grip-lines-vertical fa-w-8" role="img" viewBox="0 0 256 512"><path fill="currentColor" d="M96 496V16c0-8.8-7.2-16-16-16H48c-8.8 0-16 7.2-16 16v480c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16zm128 0V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v480c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16z"/></svg>`
-            /*  `<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="grip-vertical" class="svg-inline--fa fa-grip-vertical fa-w-10" role="img" viewBox="0 0 320 512"><path fill="currentColor" d="M96 32H32C14.33 32 0 46.33 0 64v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160H32c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zM288 32h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32zm0 160h-64c-17.67 0-32 14.33-32 32v64c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32v-64c0-17.67-14.33-32-32-32z"/></svg>`*/
-        );
-        addIcon(
-            "statblock-conditioned",
-            `<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" data-prefix="far" data-icon="question-circle" class="svg-inline--fa fa-question-circle fa-w-16" role="img" viewBox="0 0 512 512"><path fill="currentColor" d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 448c-110.532 0-200-89.431-200-200 0-110.495 89.472-200 200-200 110.491 0 200 89.471 200 200 0 110.53-89.431 200-200 200zm107.244-255.2c0 67.052-72.421 68.084-72.421 92.863V300c0 6.627-5.373 12-12 12h-45.647c-6.627 0-12-5.373-12-12v-8.659c0-35.745 27.1-50.034 47.579-61.516 17.561-9.845 28.324-16.541 28.324-29.579 0-17.246-21.999-28.693-39.784-28.693-23.189 0-33.894 10.977-48.942 29.969-4.057 5.12-11.46 6.071-16.666 2.124l-27.824-21.098c-5.107-3.872-6.251-11.066-2.644-16.363C184.846 131.491 214.94 112 261.794 112c49.071 0 101.45 38.304 101.45 88.8zM298 368c0 23.159-18.841 42-42 42s-42-18.841-42-42 18.841-42 42-42 42 18.841 42 42z"/></svg>`
-        );
-        addIcon(
-            "dice-roller-dice",
-            `<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="dice" class="svg-inline--fa fa-dice fa-w-20" role="img" viewBox="0 0 640 512"><path fill="currentColor" d="M592 192H473.26c12.69 29.59 7.12 65.2-17 89.32L320 417.58V464c0 26.51 21.49 48 48 48h224c26.51 0 48-21.49 48-48V240c0-26.51-21.49-48-48-48zM480 376c-13.25 0-24-10.75-24-24 0-13.26 10.75-24 24-24s24 10.74 24 24c0 13.25-10.75 24-24 24zm-46.37-186.7L258.7 14.37c-19.16-19.16-50.23-19.16-69.39 0L14.37 189.3c-19.16 19.16-19.16 50.23 0 69.39L189.3 433.63c19.16 19.16 50.23 19.16 69.39 0L433.63 258.7c19.16-19.17 19.16-50.24 0-69.4zM96 248c-13.25 0-24-10.75-24-24 0-13.26 10.75-24 24-24s24 10.74 24 24c0 13.25-10.75 24-24 24zm128 128c-13.25 0-24-10.75-24-24 0-13.26 10.75-24 24-24s24 10.74 24 24c0 13.25-10.75 24-24 24zm0-128c-13.25 0-24-10.75-24-24 0-13.26 10.75-24 24-24s24 10.74 24 24c0 13.25-10.75 24-24 24zm0-128c-13.25 0-24-10.75-24-24 0-13.26 10.75-24 24-24s24 10.74 24 24c0 13.25-10.75 24-24 24zm128 128c-13.25 0-24-10.75-24-24 0-13.26 10.75-24 24-24s24 10.74 24 24c0 13.25-10.75 24-24 24z"/></svg>`
+        this.addCommand({
+            id: "open-creature-view",
+            name: "Open Creature pane",
+            checkCallback: (checking) => {
+                const existing =
+                    this.app.workspace.getLeavesOfType(CREATURE_VIEW);
+                if (!existing.length) {
+                    if (!checking) {
+                        this.openCreatureView();
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+        this.addCommand({
+            id: "reveal-creature-view",
+            name: "Reveal Creature pane",
+            checkCallback: (checking) => {
+                const existing =
+                    this.app.workspace.getLeavesOfType(CREATURE_VIEW);
+                if (existing.length) {
+                    if (!checking) {
+                        this.openCreatureView();
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+        this.addCommand({
+            id: "open-new-creature-view",
+            name: "Open new Creature pane",
+            callback: () => {
+                this.openCreatureView(true);
+            }
+        });
+        this.addRibbonIcon("skull", "Open Creature pane", async (evt) => {
+            this.openCreatureView(evt.getModifierState("Meta"));
+        });
+
+        this.registerObsidianProtocolHandler(
+            "creature-pane",
+            this.#creaturePaneProtocolHandler.bind(this)
         );
 
         addIcon(
@@ -269,36 +203,6 @@ export default class StatBlockPlugin extends Plugin implements StatblockAPI {
         );
 
         this.addSettingTab(new StatblockSettingTab(this.app, this));
-
-        addIcon(SAVE_SYMBOL, SAVE_ICON);
-        addIcon(EXPORT_SYMBOL, EXPORT_ICON);
-
-        this.bestiary = new Map([
-            ...getBestiaryByName(this.settings.disableSRD),
-            ...this.data
-        ]);
-
-        Object.defineProperty(window, "bestiary", {
-            configurable: true,
-            get: () => {
-                new Notice(
-                    createFragment((e) => {
-                        e.createSpan({
-                            text: "The Fantasy Statblocks bestiary will be deprecated in a future version. Use "
-                        });
-                        e.createEl("code", {
-                            text: "FantasyStatblocks.getBestiary()"
-                        });
-                        e.createSpan({ text: " instead." });
-                    })
-                );
-                return this.bestiary;
-            }
-        });
-
-        this.register(() =>
-            Object.defineProperty(window, "bestiary", { value: null })
-        );
 
         (window["FantasyStatblocks"] = this.api) &&
             this.register(() => delete window["FantasyStatblocks"]);
@@ -314,16 +218,19 @@ export default class StatBlockPlugin extends Plugin implements StatblockAPI {
             CREATURE_VIEW,
             (leaf: WorkspaceLeaf) => new CreatureView(leaf, this)
         );
-        this.registerEvent(
-            this.app.workspace.on("dice-roller:unload", () => {
-                //why did i do this?
-                /* this.settings.useDice = false; */
-            })
-        );
         if (this.canUseDiceRoller) {
-            this.app.plugins
-                .getPlugin("obsidian-dice-roller")
-                ?.api.registerSource(DICE_ROLLER_SOURCE, {
+            window.DiceRoller.registerSource(DICE_ROLLER_SOURCE, {
+                showDice: true,
+                shouldRender: this.settings.renderDice,
+                showFormula: false,
+                showParens: false,
+                expectedValue: ExpectedValue.Average,
+                text: null
+            });
+        }
+        this.registerEvent(
+            this.app.workspace.on("dice-roller:loaded", () => {
+                window.DiceRoller.registerSource(DICE_ROLLER_SOURCE, {
                     showDice: true,
                     shouldRender: this.settings.renderDice,
                     showFormula: false,
@@ -331,50 +238,16 @@ export default class StatBlockPlugin extends Plugin implements StatblockAPI {
                     expectedValue: ExpectedValue.Average,
                     text: null
                 });
-        }
-        this.registerEvent(
-            this.app.workspace.on("dice-roller:loaded", () => {
-                this.app.plugins
-                    .getPlugin("obsidian-dice-roller")
-                    ?.api.registerSource(DICE_ROLLER_SOURCE, {
-                        showDice: true,
-                        shouldRender: this.settings.renderDice,
-                        showFormula: false,
-                        showParens: false,
-                        expectedValue: ExpectedValue.Average,
-                        text: null
-                    });
             })
         );
     }
+
     async loadSettings() {
         const settings: StatblockData = await this.loadData();
-
-        if (settings != undefined && !("version" in settings)) {
-            //1.X settings;
-            this.settings = { ...DEFAULT_DATA };
-            this.settings.monsters = settings;
-
-            await this.loadMonsterData();
-
-            new Notice(
-                "5e Statblocks is now TTRPG Statblocks. Check out the ReadMe for more information!"
-            );
-        } else {
-            if (
-                settings &&
-                settings?.version?.major >= 2 &&
-                settings?.version?.minor >= 25 &&
-                !settings?.notifiedOfFantasy
-            ) {
-                new Notice("TTRPG Statblocks is now Fantasy Statblocks!");
-                settings.notifiedOfFantasy = true;
-            }
-            this.settings = {
-                ...DEFAULT_DATA,
-                ...settings
-            };
-        }
+        this.settings = {
+            ...DEFAULT_DATA,
+            ...settings
+        };
         if (!this.settings.defaultLayoutsIntegrated) {
             for (const layout of this.settings.layouts) {
                 layout.id = nanoid();
@@ -387,30 +260,20 @@ export default class StatBlockPlugin extends Plugin implements StatblockAPI {
 
             this.settings.defaultLayoutsIntegrated = true;
         }
-        if (this.settings.defaultLayouts.length != DefaultLayouts.length) {
-            for (const layout of DefaultLayouts) {
-                if (this.settings.defaultLayouts.find((l) => l.id == layout.id))
-                    continue;
-                this.settings.defaultLayouts.push(fastCopy(layout));
+        if (Array.isArray(this.settings.defaultLayouts)) {
+            const map: Record<string, DefaultLayout> = {};
+            for (const layout of this.settings
+                .defaultLayouts as DefaultLayout[]) {
+                if (layout.removed || layout.edited) {
+                    map[layout.id] = layout;
+                }
             }
-            for (const layout of this.settings.defaultLayouts) {
-                if (DefaultLayouts.find((l) => l.id == layout.id)) continue;
-                this.settings.layouts.push(layout);
-                this.settings.defaultLayouts.splice(
-                    this.settings.defaultLayouts.indexOf(layout),
-                    1
-                );
-            }
-            this.settings.layouts = this.settings.layouts.filter(
-                (layout) =>
-                    !this.settings.defaultLayouts.find((l) => l.id == layout.id)
-            );
+            this.settings.defaultLayouts = map;
         }
         for (const layout of DefaultLayouts) {
-            if (!layout.version) continue;
-            const existing = this.settings.defaultLayouts.find(
-                (l) => l.id === layout.id
-            );
+            if (!(layout.id in this.settings.defaultLayouts)) continue;
+            if (layout.version == null) continue;
+            const existing = this.settings.defaultLayouts[layout.id];
             if (existing.version >= layout.version) continue;
             if (existing.edited) {
                 existing.updatable = true;
@@ -442,19 +305,17 @@ export default class StatBlockPlugin extends Plugin implements StatblockAPI {
         };
     }
     async saveSettings() {
-        this.settings.monsters = this._transformData(this.data);
-        this.bestiary = new Map([
-            ...getBestiaryByName(this.settings.disableSRD),
-            ...this.data
-        ]);
-
+        this.app.workspace.trigger(
+            "fantasy-statblocks:settings-change",
+            this.settings
+        );
         await this.saveData(this.settings);
     }
     async loadData(): Promise<StatblockData> {
         return (await super.loadData()) as StatblockData;
     }
     async saveData(settings: StatblockData) {
-        if (this.settings.atomicWrite) {
+        /* if (this.settings.atomicWrite) {
             try {
                 await this.app.vault.adapter.write(
                     `${this.manifest.dir}/temp.json`,
@@ -471,101 +332,58 @@ export default class StatBlockPlugin extends Plugin implements StatblockAPI {
             } catch (e) {
                 super.saveData(settings);
             }
-        } else {
-            super.saveData(settings);
-        }
+        } else { */
+        super.saveData(settings);
+        /* } */
     }
 
-    async loadMonsterData() {
-        const data = this.settings.monsters;
-
-        if (!data) this.data = new Map();
-
-        this.data = new Map(
-            data?.map(([name, monster]) => {
-                return [name, fastCopy(monster)];
-            }) ?? []
-        );
-    }
-
-    async saveMonster(
-        monster: Monster,
-        sortFields: boolean = true,
-        save: boolean = true
-    ) {
+    async saveMonster(monster: Monster, save: boolean = true) {
         if (!monster.name) return;
-        this.data.set(monster.name, monster);
-        this.bestiary.set(monster.name, monster);
-        this.api.setChanged(true);
+        if (Bestiary.isLocal(monster.name)) {
+            //already exists, replace it
+            const index = this.settings.monsters.findIndex(
+                ([name]) => name === monster.name
+            );
+            if (index >= 0) {
+                this.settings.monsters.splice(index, 1, [
+                    monster.name,
+                    monster
+                ]);
+            } else {
+                this.settings.monsters.push([monster.name, monster]);
+            }
+        } else {
+            this.settings.monsters.push([monster.name, monster]);
+        }
+        Bestiary.addLocalCreature(monster);
 
         if (save) {
             await this.saveSettings();
         }
-
-        if (sortFields)
-            this._sorted = sort<Monster>(Array.from(this.data.values())).asc(
-                (m) => m.name
-            );
     }
     async saveMonsters(monsters: Monster[]) {
         for (let monster of monsters) {
-            await this.saveMonster(monster, false, false);
+            await this.saveMonster(monster, false);
         }
-        this._sorted = sort<Monster>(Array.from(this.data.values())).asc(
-            (m) => m.name
-        );
         await this.saveSettings();
     }
 
     async updateMonster(oldMonster: Monster, newMonster: Monster) {
-        this.data.delete(oldMonster.name);
+        await this.deleteMonsters(oldMonster.name);
         await this.saveMonster(newMonster);
     }
 
     async deleteMonsters(...monsters: string[]) {
-        for (const monster of monsters) {
-            if (!this.data.has(monster)) continue;
-            this.data.delete(monster);
-            this.bestiary.delete(monster);
-            this.api.setChanged(true);
+        for (let monster of monsters) {
+            Bestiary.removeLocalCreature(monster);
         }
-        await this.saveSettings();
-
-        this._sorted = sort<Monster>(Array.from(this.data.values())).asc(
-            (m) => m.name
+        this.settings.monsters = this.settings.monsters.filter(
+            ([name]) => !monsters.includes(name)
         );
+        await this.saveSettings();
     }
 
-    async deleteMonster(monster: string, sortFields = true, save = true) {
-        if (!this.data.has(monster)) return;
-        this.data.delete(monster);
-        this.bestiary.delete(monster);
-
-        if (getBestiaryByName(this.settings.disableSRD).has(monster)) {
-            this.bestiary.set(
-                monster,
-                getBestiaryByName(this.settings.disableSRD).get(monster)
-            );
-        }
-        this.api.setChanged(true);
-
-        if (save) await this.saveSettings();
-
-        if (sortFields)
-            this._sorted = sort<Monster>(Array.from(this.data.values())).asc(
-                (m) => m.name
-            );
-    }
-
-    private _transformData(
-        data: Map<string, Monster>
-    ): Array<[string, Monster]> {
-        return [...(data ?? [])].map(([name, monster]) => {
-            return [name, fastCopy(monster)];
-        });
-    }
     onunload() {
-        this.watcher.unload();
         console.log("Fantasy StatBlocks unloaded");
 
         this.app.workspace
@@ -598,77 +416,6 @@ export default class StatBlockPlugin extends Plugin implements StatblockAPI {
                 );
                 console.error(e);
             });
-    }
-
-    parseForDice(property: string) {
-        const roller = (prop: ParsedDice) => {
-            if (typeof prop !== "string") return prop;
-
-            let text: string;
-            let original: string;
-
-            if (/\d+\s\(\d+d\d+(?:\s*[+\-]\s*\d+)?\)/.test(prop)) {
-                let [, base, dice] =
-                    prop.match(/(\d+)\s\((\d+d\d+(?:\s*[+\-]\s*\d+)?)\)/) ?? [];
-                if (!isNaN(Number(base)) && dice) {
-                    text = dice;
-                }
-            } else if (/. [\+\-]\d+/.test(prop)) {
-                let [, save, sign, number] =
-                    prop.match(/(.) ([\+\-])(\d+)/) ?? [];
-                let mult = 1;
-                if (sign === "-") {
-                    mult = -1;
-                }
-                if (!isNaN(Number(number))) {
-                    text = `1d20+${mult * Number(number)}`;
-                    original = `${save} ${sign}${number}`;
-                }
-            } else if (/[\+\-]\d+ to hit/.test(prop)) {
-                let [, sign, number] = prop.match(/([\+\-])(\d+)/) ?? [];
-
-                let mult = 1;
-                if (sign === "-") {
-                    mult = -1;
-                }
-                if (!isNaN(Number(number))) {
-                    text = `1d20+${mult * Number(number)}`;
-                    original = prop;
-                }
-            }
-            return { text, original };
-        };
-
-        /**
-         * Rolling to hit: +15 to hit
-         */
-        let regexes = [
-            /([\+\-]\d+ to hit)/,
-            /(\d+\s\(\d+d\d+(?:\s*[+\-]\s*\d+)?\))/,
-            /. [\+\-]\d+/
-        ];
-        let split: ParsedDice[] = [property];
-
-        for (const regex of regexes) {
-            let temp: ParsedDice[] = [];
-            for (const prop of split) {
-                if (typeof prop !== "string") {
-                    temp.push(prop);
-                    continue;
-                }
-                const splitProp = prop.split(regex);
-                for (const prop of splitProp) {
-                    if (!regex.test(prop)) {
-                        temp.push(prop);
-                    } else {
-                        temp.push(roller(prop));
-                    }
-                }
-            }
-            split = [...temp];
-        }
-
-        return split;
     }
 
     get layouts() {
@@ -718,26 +465,8 @@ ${e.stack
 \`\`\``);
         }
     }
-
+    //backwards-compat
     render(creature: HomebrewCreature, el: HTMLElement, display?: string) {
-        const monster: Monster = Object.assign<
-            Partial<Monster>,
-            HomebrewCreature
-        >(
-            {},
-            fastCopy(this.bestiary.get(creature.name) ?? {}),
-            //@ts-ignore
-            fastCopy(creature)
-        ) as Monster;
-        if (!monster) return null;
-        if (display) {
-            monster.name = display;
-        }
-        return new StatBlockRenderer({
-            container: el,
-            monster,
-            plugin: this,
-            context: "STATBLOCK_RENDERER"
-        });
+        this.api.render(creature, el, display);
     }
 }

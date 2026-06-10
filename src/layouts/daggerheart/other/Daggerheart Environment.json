@@ -1,0 +1,112 @@
+{
+    "blocks": [
+        {
+            "type": "group",
+            "id": "9beb08f99a5a",
+            "properties": [],
+            "nested": [
+                {
+                    "type": "heading",
+                    "id": "89998949fb0b",
+                    "properties": [
+                        "name"
+                    ],
+                    "size": 1,
+                    "fallback": "-",
+                    "conditioned": true
+                },
+                {
+                    "type": "property",
+                    "id": "982ba9097959",
+                    "properties": [
+                        "tier"
+                    ],
+                    "fallback": "",
+                    "callback": "return monster.tier + \" \" + monster.type;",
+                    "conditioned": true,
+                    "display": "Tier"
+                },
+                {
+                    "type": "text",
+                    "id": "a8196bebf98a",
+                    "properties": [
+                        "description"
+                    ],
+                    "text": null,
+                    "fallback": "-",
+                    "conditioned": true
+                },
+                {
+                    "type": "property",
+                    "id": "a8988bca599a",
+                    "properties": [
+                        "impulses"
+                    ],
+                    "fallback": "-",
+                    "display": "Impulses:",
+                    "conditioned": true
+                },
+                {
+                    "type": "group",
+                    "id": "c90a4a79fb0b",
+                    "properties": [],
+                    "nested": [
+                        {
+                            "type": "inline",
+                            "id": "ab385a3b1869",
+                            "properties": [],
+                            "nested": [
+                                {
+                                    "type": "property",
+                                    "id": "781b3bdbd86b",
+                                    "properties": [
+                                        "difficulty"
+                                    ],
+                                    "fallback": "-",
+                                    "display": "Difficulty:",
+                                    "conditioned": true
+                                }
+                            ]
+                        },
+                        {
+                            "type": "inline",
+                            "id": "694abb2acaf9",
+                            "properties": [],
+                            "nested": [
+                                {
+                                    "type": "property",
+                                    "id": "58a80a396ba9",
+                                    "properties": [
+                                        "potential_adversaries"
+                                    ],
+                                    "fallback": "-",
+                                    "display": "Potential Adversaries:",
+                                    "conditioned": true
+                                }
+                            ],
+                            "hasRule": true
+                        }
+                    ],
+                    "hasRule": false
+                },
+                {
+                    "type": "traits",
+                    "id": "eb590bb8cb9b",
+                    "properties": [
+                        "feats"
+                    ],
+                    "fallback": "-",
+                    "heading": "Features",
+                    "conditioned": true,
+                    "headingProp": false,
+                    "callback": "return property.text;"
+                }
+            ],
+            "heading": "",
+            "cls": "daggerheart-environment"
+        }
+    ],
+    "id": "daggerheart-environment",
+    "name": "Daggerheart Environment",
+    "edited": false
+}

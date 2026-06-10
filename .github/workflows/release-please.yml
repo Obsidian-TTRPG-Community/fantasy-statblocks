@@ -25,6 +25,7 @@ jobs:
               id: release
               with:
                   command: manifest
+                  release-type: node
 
     upload-build:
         runs-on: ubuntu-latest
@@ -87,7 +88,6 @@ jobs:
                   asset_path: ./styles.css
                   asset_name: styles.css
                   asset_content_type: text/css
-
     notify:
         needs: upload-build
         uses: javalent/workflows/.github/workflows/notify.yml@main
@@ -95,16 +95,3 @@ jobs:
         with:
             name: Fantasy Statblocks
             repo: fantasy-statblocks
-            
-    publish:
-        needs: release-please
-        if: ${{ needs.release-please.outputs.release_created }}
-        uses: javalent/workflows/.github/workflows/publish.yml@main
-        secrets: inherit
-
-    upgrade-overload:
-        needs: publish
-        uses: javalent/obsidian-overload/.github/workflows/upgrade.yml@main
-        secrets: inherit
-        with:
-            module: fantasy-statblocks

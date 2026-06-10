@@ -3,6 +3,7 @@ import {
     ButtonComponent,
     Modal,
     TFile,
+    getFrontMatterInfo,
     parseYaml,
     stringifyYaml
 } from "obsidian";
@@ -22,13 +23,12 @@ import type {
     JavaScriptItem,
     Layout,
     LayoutItem,
-    SavesItem,
-    StatblockItem,
-    TraitsItem
-} from "types/layout";
-import type Collapse from "./ui/Collapse.svelte";
+    StatblockItem
+} from "src/layouts/layout.types";
 import { append } from "src/util/util";
-import { Linkifier } from "src/util/linkify";
+import { Linkifier } from "src/parser/linkify";
+import { Bestiary } from "src/bestiary/bestiary";
+import copy from "fast-copy";
 
 type RendererParameters = {
     container: HTMLElement;
@@ -45,34 +45,29 @@ type RendererParameters = {
 );
 
 export default class StatBlockRenderer extends MarkdownRenderChild {
-    topBar: HTMLDivElement;
-    bottomBar: HTMLDivElement;
+    topBar!: HTMLDivElement;
+    bottomBar!: HTMLDivElement;
     loaded: boolean = false;
-    statblockEl: HTMLDivElement;
-    contentEl: HTMLDivElement;
+    statblockEl!: HTMLDivElement;
+    contentEl!: HTMLDivElement;
     container: HTMLElement;
-    monster: Monster;
+    monster!: Monster;
     plugin: StatBlockPlugin;
-    params: Partial<StatblockParameters>;
+    params!: Partial<StatblockParameters>;
     context: string;
-    layout: Layout;
-    constructor(public rendererParameters: RendererParameters) {
+    layout!: Layout;
+    constructor(
+        public rendererParameters: RendererParameters,
+        public icons = true
+    ) {
         super(rendererParameters.container);
 
         this.container = rendererParameters.container;
         this.plugin = rendererParameters.plugin;
         this.context = rendererParameters.context ?? "";
-        if ("params" in rendererParameters) {
-            this.params = rendererParameters.params;
-            this.monster = Object.assign(
-                {},
-                this.plugin.bestiary.get(this.params.monster) ??
-                    this.plugin.bestiary.get(this.params.creature)
-            );
-        } else {
-            this.params = {};
-            this.monster = rendererParameters.monster;
-        }
+
+        this.setCreature(rendererParameters);
+
         this.setLayout();
 
         this.init();
@@ -85,19 +80,23 @@ export default class StatBlockRenderer extends MarkdownRenderChild {
             return;
         }
         this.layout =
-            this.plugin.layouts.find(
-                (layout) =>
-                    layout.name ==
-                        (this.params.layout ?? this.monster.layout) ||
-                    layout.name ==
-                        (this.params.statblock ?? this.monster.statblock)
-            ) ?? this.plugin.defaultLayout;
+            this.rendererParameters.layout ??
+            this.plugin.manager
+                .getAllLayouts()
+                .find(
+                    (layout) =>
+                        layout.name ==
+                            (this.params.layout ?? this.monster.layout) ||
+                        layout.name ==
+                            (this.params.statblock ?? this.monster.statblock)
+                ) ??
+            this.plugin.manager.getDefaultLayout();
     }
     get canSave() {
         return "name" in this.params;
     }
 
-    async build(): Promise<Partial<Monster>> {
+    async build(): Promise<Monster> {
         let built: Partial<Monster> = Object.assign(
             {},
             this.monster ?? {},
@@ -113,17 +112,26 @@ export default class StatBlockRenderer extends MarkdownRenderChild {
             const note = Array.isArray(built.note)
                 ? (<string[]>built.note).flat(Infinity).pop()
                 : built.note;
-            const file = await app.metadataCache.getFirstLinkpathDest(
-                `${note}`,
-                this.context ?? ""
-            );
-            if (file && file instanceof TFile) {
-                const cache = await app.metadataCache.getFileCache(file);
-                Object.assign(
-                    built,
-                    fastCopy(cache.frontmatter) ?? {},
-                    this.params
+            const file =
+                await this.plugin.app.metadataCache.getFirstLinkpathDest(
+                    `${note}`,
+                    this.context ?? ""
                 );
+            if (file && file instanceof TFile) {
+                const info = getFrontMatterInfo(
+                    await this.plugin.app.vault.cachedRead(file)
+                );
+                if (info.exists) {
+                    Object.assign(
+                        built,
+                        fastCopy(
+                            parseYaml(
+                                Linkifier.transformYamlSource(info.frontmatter)
+                            ) ?? {}
+                        ),
+                        this.params
+                    );
+                }
             }
         }
         if ("image" in built) {
@@ -132,13 +140,15 @@ export default class StatBlockRenderer extends MarkdownRenderChild {
             }
         }
 
-        const extensions = this.getExtensions(built);
-
+        const extensions = Bestiary.getExtensions(built, new Set());
         /**
          * At this point, the built creature has been fully resolved from all
          * extensions and in-memory creature definitions.
          */
-        built = Object.assign({}, ...extensions, built);
+        for (const extension of extensions.reverse()) {
+            built = Object.assign(built, extension);
+        }
+        built = Object.assign(built, this.monster ?? {}, this.params ?? {});
 
         /**
          * Traits logic:
@@ -162,86 +172,72 @@ export default class StatBlockRenderer extends MarkdownRenderChild {
                 }
                 switch (block.type) {
                     case "traits": {
+                        /**
+                         * Traits can be defined directly, as additive (+) or subtractive (-).
+                         *
+                         * Directly defined traits can be overidden by name up the extension tree.
+                         * Parameters > `creature` > `extends`
+                         * Directly defined parameter traits are *always shown*.
+                         *
+                         * Additive traits are *always* displayed, no matter where they originate.
+                         *
+                         * Subtractive traits are *always* removed, unless the trait is directly defined in the parameters.
+                         * Subtractive traits only work on directly defined traits.
+                         *
+                         */
                         const $TRAIT_MAP: Map<string, Trait> = new Map();
-                        let $ADDITIVE_TRAITS: Trait[] = [];
-                        let $DELETE_TRAITS: Set<string> = new Set();
-                        /** Add traits from the extensions group first. */
-                        for (const extension of extensions) {
-                            let traits = getTraitsList(property, extension);
-                            for (const trait of traits) {
+                        const $ADDITIVE_TRAITS: Trait[] = [];
+
+                        /**
+                         * Resolve extension traits first.
+                         */
+                        for (const creature of [...extensions]) {
+                            /**
+                             * Directly defined traits.
+                             *
+                             * Because these can be overridden, they go into a map by name.
+                             */
+                            for (const trait of getTraitsList(
+                                property,
+                                creature
+                            )) {
                                 $TRAIT_MAP.set(trait.name, trait);
                             }
 
-                            traits = getTraitsList(
-                                `${property}+` as keyof Monster,
-                                extension
-                            );
-                            for (const trait of traits) {
-                                $ADDITIVE_TRAITS.push(trait);
-                            }
-                            traits = getTraitsList(
+                            /**
+                             * Deleted traits. These are always removed.
+                             */
+                            for (const trait of getTraitsList(
                                 `${property}-` as keyof Monster,
-                                extension
-                            );
-                            for (const trait of traits) {
-                                $DELETE_TRAITS.add(trait.name);
-                            }
-                        }
-                        //next, underlying monster object
-                        let traits = getTraitsList(property, this.monster);
-                        for (const trait of traits) {
-                            if (!(property in this.params)) {
+                                creature
+                            )) {
                                 $TRAIT_MAP.delete(trait.name);
+                            }
+
+                            /**
+                             * Modifiable traits. These traits modify existing traits by name.
+                             * If the trait does not exist, it is ignored.
+                             */
+
+                            for (const trait of getTraitsList(
+                                `${property}~` as keyof Monster,
+                                creature
+                            )) {
+                                if ($TRAIT_MAP.has(trait.name)) {
+                                    $TRAIT_MAP.set(trait.name, trait);
+                                }
+                            }
+
+                            /**
+                             * Additive traits. These traits are always shown.
+                             */
+                            for (const trait of getTraitsList(
+                                `${property}+` as keyof Monster,
+                                creature
+                            )) {
                                 $ADDITIVE_TRAITS.push(trait);
-                            } else {
-                                $TRAIT_MAP.set(trait.name, trait);
                             }
                         }
-                        traits = getTraitsList(
-                            `${property}+` as keyof Monster,
-                            this.monster
-                        );
-                        for (const trait of traits) {
-                            $ADDITIVE_TRAITS.push(trait);
-                        }
-                        traits = getTraitsList(
-                            `${property}-` as keyof Monster,
-                            this.monster
-                        );
-                        for (const trait of traits) {
-                            $DELETE_TRAITS.add(trait.name);
-                        }
-
-                        /** Remove these traits first, so you don't get hit by the params */
-                        traits = getTraitsList(
-                            `${property}-` as keyof Monster,
-                            this.params
-                        );
-                        for (const trait of traits) {
-                            $DELETE_TRAITS.add(trait.name);
-                        }
-                        for (const trait of $DELETE_TRAITS) {
-                            $TRAIT_MAP.delete(trait);
-                            $ADDITIVE_TRAITS = $ADDITIVE_TRAITS.filter(
-                                (t) => t.name !== trait
-                            );
-                        }
-                        //finally, the parameters should always be added
-                        traits = getTraitsList(property, this.params);
-                        for (const trait of traits) {
-                            $TRAIT_MAP.delete(trait.name);
-                            $ADDITIVE_TRAITS.push(trait);
-                        }
-
-                        traits = getTraitsList(
-                            `${property}+` as keyof Monster,
-                            this.params
-                        );
-
-                        for (const trait of traits) {
-                            $ADDITIVE_TRAITS.push(trait);
-                        }
-
                         Object.assign(built, {
                             [property]: [
                                 ...$TRAIT_MAP.values(),
@@ -319,9 +315,12 @@ export default class StatBlockRenderer extends MarkdownRenderChild {
         }
 
         built = this.transformLinks(built);
-        this.monster = built as Monster;
 
-        return built;
+        if ("image" in built && Array.isArray(built.image)) {
+            built.image = built.image.flat(2).join("");
+        }
+
+        return built as Monster;
     }
 
     /**
@@ -369,22 +368,48 @@ export default class StatBlockRenderer extends MarkdownRenderChild {
         return ret;
     }
 
+    setCreature(
+        params:
+            | {
+                  monster: Monster;
+              }
+            | {
+                  params: Partial<StatblockParameters>;
+              }
+    ) {
+        if ("params" in params) {
+            this.params = params.params;
+            this.monster = Object.assign(
+                {},
+                Bestiary.get(this.params.monster) ??
+                    Bestiary.get(this.params.creature)
+            );
+        } else {
+            this.params = {};
+            this.monster = params.monster;
+        }
+    }
+
+    $ui!: Statblock;
     async init() {
-        const statblock = new Statblock({
+        this.containerEl.empty();
+        this.monster = (await this.build()) as Monster;
+        this.$ui = new Statblock({
             target: this.containerEl,
             props: {
                 context: this.context,
-                monster: await this.build(),
+                monster: this.monster,
                 statblock: this.layout.blocks,
-                layout: this.layout.name,
+                layout: this.layout,
                 plugin: this.plugin,
                 renderer: this,
-                canSave: this.canSave
+                canSave: this.canSave,
+                icons: this.icons ?? true
             }
         });
-        statblock.$on("save", async () => {
+        this.$ui.$on("save", async () => {
             if (
-                this.plugin.bestiary.has(this.monster.name) &&
+                Bestiary.hasCreature(this.monster.name) &&
                 !(await confirmWithModal(
                     this.plugin.app,
                     "This will overwrite an existing monster in settings. Are you sure?"
@@ -395,15 +420,32 @@ export default class StatBlockRenderer extends MarkdownRenderChild {
                 ...fastCopy(this.monster),
                 source: this.monster.source ?? "Homebrew",
                 layout: this.layout.name
-            });
+            } as Monster);
         });
 
-        statblock.$on("export", () => {
+        this.$ui.$on("export", () => {
             this.plugin.exportAsPng(
                 this.monster.name,
-                this.containerEl.firstElementChild
+                this.containerEl.firstElementChild!
             );
         });
+
+        let extensionNames = Bestiary.getExtensionNames(
+            this.monster,
+            new Set()
+        );
+        this.plugin.registerEvent(
+            this.plugin.app.workspace.on(
+                "fantasy-statblocks:bestiary:creature-added",
+                async (creature) => {
+                    if (extensionNames.includes(creature.name)) {
+                        this.monster = copy(creature);
+                        this.monster = await this.build();
+                        this.$ui.$set({ monster: this.monster });
+                    }
+                }
+            )
+        );
     }
     transformLinks(monster: Partial<Monster>): Partial<Monster> {
         const built = parseYaml(
@@ -412,30 +454,6 @@ export default class StatBlockRenderer extends MarkdownRenderChild {
             )
         );
         return built;
-    }
-    getExtensions(monster: Partial<Monster>): Partial<Monster>[] {
-        let extensions: Partial<Monster>[] = [];
-        if (
-            !("extends" in monster) ||
-            !(
-                Array.isArray(monster.extends) ||
-                typeof monster.extends == "string"
-            )
-        ) {
-            return extensions;
-        }
-        if (monster.extends && monster.extends.length) {
-            for (const extension of [monster.extends].flat()) {
-                const extensionMonster = this.plugin.bestiary.get(extension);
-                if (!extensionMonster) continue;
-                extensions.push(
-                    extensionMonster,
-                    ...this.getExtensions(extensionMonster)
-                );
-            }
-        }
-
-        return extensions;
     }
 }
 

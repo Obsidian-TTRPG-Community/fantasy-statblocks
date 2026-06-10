@@ -243,7 +243,7 @@ class TetraMonster {
             name: monster.name,
             source: "TetraCube",
             type: monster.type,
-            subtype: "",
+            subtype: monster.tag,
             size: monster.size,
             alignment: monster.alignment,
             hp: importer.getHP(monster)?.hp,
@@ -269,8 +269,18 @@ class TetraMonster {
             cr: monster.cr ?? "",
             traits: importer.getTraits(monster.abilities),
             actions: importer.getTraits(monster.actions),
+            bonus_actions: importer.getTraits(monster.bonusActions),
             reactions: importer.getTraits(monster.reactions),
-            legendary_actions: importer.getTraits(monster.legendaries),
+            legendary_description: (monster.isLegendary ?? false) ? monster.legendariesDescription : null,
+            legendary_actions: (monster.isLegendary ?? false) ? importer.getTraits(monster.legendaries) : null,
+            mythic_description: (monster.isMythic ?? false) ? monster.mythicDescription : null,
+            mythic_actions: (monster.isMythic ?? false) ? importer.getTraits(monster.mythics) : null,
+            lair_description: (monster.isLair ?? false) ? monster.lairDescription : null,
+            lair_actions: (monster.isLair ?? false) ? importer.getTraits(monster.lairs) : null,
+            lair_description_end: (monster.isLair ?? false) ? monster.lairDescriptionEnd : null,
+            regional_description: (monster.isRegional ?? false) ? monster.regionalDescription : null,
+            regional_actions: (monster.isRegional ?? false) ? importer.getTraits(monster.regionals) : null,
+            regional_description_end: (monster.isRegional ?? false) ? monster.regionalDescriptionEnd : null,
             spells: importer.getSpells(monster.abilities)
         };
         return importedMonster;

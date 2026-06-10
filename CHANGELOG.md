@@ -2,6 +2,532 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.10.3](https://github.com/javalent/fantasy-statblocks/compare/4.10.2...4.10.3) (2026-01-21)
+
+
+### Bug Fixes
+
+* Add support for additional variables with 5etools importer ([2b5bd85](https://github.com/javalent/fantasy-statblocks/commit/2b5bd859a75fc1be33a807b522d3ba45f010c3de))
+* Improvements to trait modification ([71c6336](https://github.com/javalent/fantasy-statblocks/commit/71c63363f31d11db2fc1c0ca1641981607f7311f))
+
+## [4.10.2](https://github.com/javalent/fantasy-statblocks/compare/4.10.1...4.10.2) (2025-09-27)
+
+
+### Bug Fixes
+
+* Fixes issue where a `.` in a layout name would crash plugin ([651c2cd](https://github.com/javalent/fantasy-statblocks/commit/651c2cdb2129fe482c11724ad6707114bb5b080e))
+
+## [4.10.1](https://github.com/javalent/fantasy-statblocks/compare/4.10.0...4.10.1) (2025-08-04)
+
+
+### Bug Fixes
+
+* Fixes weapon name when using the pathfinder importer ([98f9f28](https://github.com/javalent/fantasy-statblocks/commit/98f9f2892557f51ce5a244069a0836a6b7b89a7d))
+
+## [4.10.0](https://github.com/javalent/fantasy-statblocks/compare/4.9.1...4.10.0) (2025-07-19)
+
+
+### Features
+
+* Added layouts for Daggerheart Adversaries, Cards and Environments ([#490](https://github.com/javalent/fantasy-statblocks/issues/490)) ([adbc2c0](https://github.com/javalent/fantasy-statblocks/commit/adbc2c03ae5ab1eaad257c90ea9091273f1877ae))
+
+## [4.9.1](https://github.com/javalent/fantasy-statblocks/compare/4.9.0...4.9.1) (2025-05-08)
+
+
+### Bug Fixes
+
+* fixes issue where using numbers as property values instead of strings would incorrectly parse as dice (close [#488](https://github.com/javalent/fantasy-statblocks/issues/488)) ([0d83c8f](https://github.com/javalent/fantasy-statblocks/commit/0d83c8f1fc7bd130f4b490d930429aa888579489))
+
+## [4.9.0](https://github.com/javalent/fantasy-statblocks/compare/4.8.1...4.9.0) (2025-05-01)
+
+
+### Features
+
+* Add new Pathfinder 2e Creature layout ([#436](https://github.com/javalent/fantasy-statblocks/issues/436)) ([#438](https://github.com/javalent/fantasy-statblocks/issues/438)) ([9cfca6c](https://github.com/javalent/fantasy-statblocks/commit/9cfca6c5892e83be4d75faafce37d255d370ab39))
+* Allow traits for `saves` type properties ([d35a8ed](https://github.com/javalent/fantasy-statblocks/commit/d35a8ed6d374d92eae736eeff1e01f9f11393179))
+
+## [4.8.1](https://github.com/javalent/fantasy-statblocks/compare/4.8.0...4.8.1) (2024-11-21)
+
+
+### Bug Fixes
+
+* Exposes LinkStringifier and MarkdownRenderer methods on the FantasyStatblocks API ([b4571e1](https://github.com/javalent/fantasy-statblocks/commit/b4571e1fb5e5206461f56bf9726b40984878164f))
+
+## [4.8.0](https://github.com/javalent/fantasy-statblocks/compare/4.7.8...4.8.0) (2024-11-05)
+
+
+### Features
+
+* Initial implementation of pathbuilder import ([#447](https://github.com/javalent/fantasy-statblocks/issues/447)) ([a0a39b0](https://github.com/javalent/fantasy-statblocks/commit/a0a39b09ec92575e4d1c7a4fda3c70982b0e94d1))
+
+## [4.7.8](https://github.com/javalent/fantasy-statblocks/compare/4.7.7...4.7.8) (2024-09-19)
+
+
+### Bug Fixes
+
+* Fixes issue where an empty match array could cause the dice parser to fail ([be9aa85](https://github.com/javalent/fantasy-statblocks/commit/be9aa85ad8e675e3dcbe22de5fe8c3ff9fa90ef0))
+* Improves behavior of additive and reductive traits (close [#456](https://github.com/javalent/fantasy-statblocks/issues/456), close [#421](https://github.com/javalent/fantasy-statblocks/issues/421)) ([12df383](https://github.com/javalent/fantasy-statblocks/commit/12df3838d5e755fa2f5aa66cf3188b3dab7a3754))
+
+## [4.7.7](https://github.com/javalent/fantasy-statblocks/compare/4.7.6...4.7.7) (2024-09-11)
+
+
+### Bug Fixes
+
+* Fixes issue with dependency causing settings tab to not fully load ([b5f96c5](https://github.com/javalent/fantasy-statblocks/commit/b5f96c538a24d178d3e6d4cf1894e0322251bcb1))
+
+## [4.7.6](https://github.com/javalent/fantasy-statblocks/compare/4.7.5...4.7.6) (2024-09-11)
+
+
+### Bug Fixes
+
+* temp fix for failure to load ([b3e4e21](https://github.com/javalent/fantasy-statblocks/commit/b3e4e210f42a9bdf9fe8d0b69b0df42fea7b59c5))
+
+## [4.7.5](https://github.com/javalent/fantasy-statblocks/compare/4.7.4...4.7.5) (2024-09-11)
+
+
+### Bug Fixes
+
+* Disable API spec generation ([5dc8165](https://github.com/javalent/fantasy-statblocks/commit/5dc81652333cf020d2d07dcb5f284edc29110465))
+
+## [4.7.4](https://github.com/javalent/fantasy-statblocks/compare/4.7.3...4.7.4) (2024-09-11)
+
+
+### Bug Fixes
+
+* Removed deprecated global app reference ([fde858b](https://github.com/javalent/fantasy-statblocks/commit/fde858ba4f941cb6d7f4e8a8a7299b6c8b27b38c))
+* Updated several outdated dependencies ([26f5355](https://github.com/javalent/fantasy-statblocks/commit/26f53556e62a99f9c7da39b612839ceec6b452f6))
+
+## [4.7.3](https://github.com/javalent/fantasy-statblocks/compare/4.7.2...4.7.3) (2024-09-11)
+
+
+### Bug Fixes
+
+* fixes incorrect link parsing in the stringifier ([fbbf048](https://github.com/javalent/fantasy-statblocks/commit/fbbf048ba551e4a1477c5c8235b9a0930fd03347))
+
+## [4.7.2](https://github.com/javalent/fantasy-statblocks/compare/4.7.1...4.7.2) (2024-09-10)
+
+
+### Bug Fixes
+
+* Fixes stringify skipping the sixth element of a list (close [#451](https://github.com/javalent/fantasy-statblocks/issues/451)) ([7dbc4a9](https://github.com/javalent/fantasy-statblocks/commit/7dbc4a9c99fb72a8c189513f13b778277cf37f88))
+* inspect image property and fix wikilinks ([bbc4ac8](https://github.com/javalent/fantasy-statblocks/commit/bbc4ac835717c4d987bb9dfc650e0fde32a51b65))
+
+## [4.7.1](https://github.com/javalent/fantasy-statblocks/compare/4.7.0...4.7.1) (2024-09-06)
+
+
+### Bug Fixes
+
+* Subheadings should now properly stringify arrays ([5c3da30](https://github.com/javalent/fantasy-statblocks/commit/5c3da3000736eb0560fafd088edefac43057dea1))
+
+## [4.7.0](https://github.com/javalent/fantasy-statblocks/compare/4.6.0...4.7.0) (2024-09-06)
+
+
+### Features
+
+* Adds support for importing from PF2eMonsterTool ([df7f7f3](https://github.com/javalent/fantasy-statblocks/commit/df7f7f3f04ba37f019ff3c09b0e14e54786bc443))
+
+
+### Bug Fixes
+
+* Adds several missed fields to the TetraCube import ([4eb00cd](https://github.com/javalent/fantasy-statblocks/commit/4eb00cd8ec7a7708fae3c3164691a6550fdf81f5))
+* **css:** prioritize pf2e icons over system font ([#420](https://github.com/javalent/fantasy-statblocks/issues/420)) ([4de2457](https://github.com/javalent/fantasy-statblocks/commit/4de2457cdd8b2a91fb99e8a794b489e297ca9ccf))
+* Fix stringifier incorrectly matching some links ([#435](https://github.com/javalent/fantasy-statblocks/issues/435)) ([fe436d5](https://github.com/javalent/fantasy-statblocks/commit/fe436d50da8e37612b0188be1b9f306043a9491e))
+* Property lines now correctly stringify arrays ([9a27da8](https://github.com/javalent/fantasy-statblocks/commit/9a27da8633640dd1759f992063cf8e5ae3af4a1a))
+
+## [4.6.0](https://github.com/javalent/fantasy-statblocks/compare/4.5.0...4.6.0) (2024-07-05)
+
+
+### Features
+
+* Pass the current property as a parameter for trait callbacks ([#432](https://github.com/javalent/fantasy-statblocks/issues/432)) ([c9475de](https://github.com/javalent/fantasy-statblocks/commit/c9475def0df2ce3919ee4d263f461bd5da8b3a3d))
+
+## [4.5.0](https://github.com/javalent/fantasy-statblocks/compare/4.4.2...4.5.0) (2024-07-04)
+
+
+### Features
+
+* Allow markdown formatting in trait names (close [#428](https://github.com/javalent/fantasy-statblocks/issues/428)) ([#430](https://github.com/javalent/fantasy-statblocks/issues/430)) ([dec459c](https://github.com/javalent/fantasy-statblocks/commit/dec459cb1be8cbb7cb7be73cfd2362a69a534208))
+
+## [4.4.2](https://github.com/javalent/fantasy-statblocks/compare/4.4.1...4.4.2) (2024-05-09)
+
+
+### Bug Fixes
+
+* Fixes "Default Layout" setting not being respected until restart ([8f24d0d](https://github.com/javalent/fantasy-statblocks/commit/8f24d0dc90b403c958edb5e1f43877e4cae3a314))
+
+## [4.4.1](https://github.com/javalent/fantasy-statblocks/compare/4.4.0...4.4.1) (2024-05-07)
+
+
+### Bug Fixes
+
+* Fixes extends behavior not preferring in-note parameters ([72cc62e](https://github.com/javalent/fantasy-statblocks/commit/72cc62ea5f61a4ab8854c23a5f70a9bcbf372226))
+* Fixes issue with watcher not being able to parse some files ([1d625f7](https://github.com/javalent/fantasy-statblocks/commit/1d625f79971ecaf8afc1a3c0f81d37f3bc9d2176))
+
+## [4.4.0](https://github.com/javalent/fantasy-statblocks/compare/4.3.5...4.4.0) (2024-05-06)
+
+
+### Features
+
+* Adds new methods to the API to transform Statblock Links back to Obsidian links ([fb80517](https://github.com/javalent/fantasy-statblocks/commit/fb805170330ee64073f0c4ad58c53544c805fc51))
+
+## [4.3.5](https://github.com/javalent/fantasy-statblocks/compare/4.3.4...4.3.5) (2024-05-05)
+
+
+### Bug Fixes
+
+* Fix issue where some creatures wouldn't be able to export as PNG ([92ffc68](https://github.com/javalent/fantasy-statblocks/commit/92ffc68488f964546f28db19a49378539ccc89bd))
+* Linkifying spells now ignores `*` ([26a1898](https://github.com/javalent/fantasy-statblocks/commit/26a189896221a3acdf721e1df3410fe3a5e1ea8c))
+
+## [4.3.4](https://github.com/javalent/fantasy-statblocks/compare/4.3.3...4.3.4) (2024-05-03)
+
+
+### Bug Fixes
+
+* Fixes issue where non-string properties would try to replace links ([0ee0330](https://github.com/javalent/fantasy-statblocks/commit/0ee03309987bde67e34671929b852300dc70d0d6))
+* Fixes issue where the default fallback for non-conditional blocks would cause a list to render (close [#409](https://github.com/javalent/fantasy-statblocks/issues/409)) ([de5b6bf](https://github.com/javalent/fantasy-statblocks/commit/de5b6bff8fa86f463aecb57da858f4e5b42c7ab4))
+
+## [4.3.3](https://github.com/javalent/fantasy-statblocks/compare/4.3.2...4.3.3) (2024-05-01)
+
+
+### Bug Fixes
+
+* Dice callbacks should now correctly execute even if parse dice is off ([1602e6c](https://github.com/javalent/fantasy-statblocks/commit/1602e6ca02effbacf12fb3c8a060b51dde2e60e6))
+* Fixes incorrect inheritance of certain properties (closes [#400](https://github.com/javalent/fantasy-statblocks/issues/400)) ([e83b300](https://github.com/javalent/fantasy-statblocks/commit/e83b30011bea0fa3002ee630ec2f423cc4723c52))
+* Fixes issue where margins around spells would be incorrect if multiple spell blocks were rendered (close [#337](https://github.com/javalent/fantasy-statblocks/issues/337)) ([d90e8e1](https://github.com/javalent/fantasy-statblocks/commit/d90e8e196b6c8a51067a0a1b18a9f81ba22c0f57))
+* Fixes issue where the Bestiary could resolve prematurely ([7668707](https://github.com/javalent/fantasy-statblocks/commit/7668707ab337457dd74c478edf38494f93f1fb2a))
+* Removing a dice parser now saves properly (close [#382](https://github.com/javalent/fantasy-statblocks/issues/382)) ([4219b98](https://github.com/javalent/fantasy-statblocks/commit/4219b983d84b96268a4a09252ab8d8e766b1b257))
+* Temporarily disable the Atomic Write functionality pending more investigation into data loss issues. ([97d38bc](https://github.com/javalent/fantasy-statblocks/commit/97d38bc1dcb579f16231a935aa6948b8394e5acc))
+* Updates how default layouts are stored in the data file to reduce data file operations ([e1eb126](https://github.com/javalent/fantasy-statblocks/commit/e1eb1267959d70ebf3942927a5fbfa0f2516c582))
+
+## [4.3.2](https://github.com/javalent/fantasy-statblocks/compare/4.3.1...4.3.2) (2024-04-30)
+
+
+### Bug Fixes
+
+* Check for `hit_dice` property in `hp` dice callback for the Basic 5e Layout ([fb2bbe6](https://github.com/javalent/fantasy-statblocks/commit/fb2bbe6672c23681c8ab970a6d926aacccbcee93))
+* Fixes instance where specifying a dice callback would override the dice settings for a statblock ([d60f6de](https://github.com/javalent/fantasy-statblocks/commit/d60f6def9c442d1077b2fdf318b256c95c35700d))
+* Remove unused components ([133c36e](https://github.com/javalent/fantasy-statblocks/commit/133c36eaec4c0e920933e00e410415ca47d18ebe))
+
+## [4.3.1](https://github.com/javalent/fantasy-statblocks/compare/4.3.0...4.3.1) (2024-04-29)
+
+
+### Bug Fixes
+
+* Better scoping for BnB css ([297e2be](https://github.com/javalent/fantasy-statblocks/commit/297e2be8415979ce86b9cfe127e53a76a59880df))
+
+## [4.3.0](https://github.com/javalent/fantasy-statblocks/compare/4.2.4...4.3.0) (2024-04-27)
+
+
+### Features
+
+* Text content is now rendered as markdown by default. The "Render as Markdown" option has been removed. ([fb58048](https://github.com/javalent/fantasy-statblocks/commit/fb580482d1764b1132d6661d5ffcdbc961e76ffb))
+
+
+### Bug Fixes
+
+* Adds Regional Effects to the Basic 5e Statblock ([8274249](https://github.com/javalent/fantasy-statblocks/commit/82742497a697bcbdb1b4d9ef94145d91261242dc))
+
+## [4.2.4](https://github.com/javalent/fantasy-statblocks/compare/4.2.3...4.2.4) (2024-04-23)
+
+
+### Bug Fixes
+
+* Sync to new Dice Roller API ([672dc8b](https://github.com/javalent/fantasy-statblocks/commit/672dc8b979e9a637590d0e293181176ff9e77b2a))
+
+## [4.2.3](https://github.com/javalent/fantasy-statblocks/compare/4.2.2...4.2.3) (2024-04-22)
+
+
+### Bug Fixes
+
+* Fixes issue where dice integration no longer works (close [#398](https://github.com/javalent/fantasy-statblocks/issues/398)) ([447f8ab](https://github.com/javalent/fantasy-statblocks/commit/447f8ab4e68dd673f4dd89ea58fc74558df25f4f))
+* Switches to @javalent/utilities ([f25e845](https://github.com/javalent/fantasy-statblocks/commit/f25e845d3549c3b8327a02eed61b88a15dfca473))
+
+## [4.2.2](https://github.com/javalent/fantasy-statblocks/compare/4.2.1...4.2.2) (2024-04-19)
+
+
+### Bug Fixes
+
+* Deleting a monster now actually removes it from the data file before saving ([92c1402](https://github.com/javalent/fantasy-statblocks/commit/92c1402e9b70b7fb1c67400d9ab1e7cafefe90a1))
+
+## [4.2.1](https://github.com/javalent/fantasy-statblocks/compare/4.2.0...4.2.1) (2024-04-19)
+
+
+### Bug Fixes
+
+* Fixes some bugs related to trait inheritance ([1814062](https://github.com/javalent/fantasy-statblocks/commit/1814062b3927147255ae91ed7234a53a589b72ef))
+* Improve behavior of self-updating feature ([7f8b84a](https://github.com/javalent/fantasy-statblocks/commit/7f8b84ab14a53801f62413353fd39e6f9a0aa3f3))
+
+## [4.2.0](https://github.com/javalent/fantasy-statblocks/compare/4.1.7...4.2.0) (2024-04-18)
+
+
+### Features
+
+* Statblocks will now attempt to self-update when the monster they are rendering has been updated. ([b7731ef](https://github.com/javalent/fantasy-statblocks/commit/b7731efea9d3aaf13aead6966382d7a6c51951fb))
+
+
+### Bug Fixes
+
+* Deleting a monster should now save ([e81a00f](https://github.com/javalent/fantasy-statblocks/commit/e81a00fb0723617c9e847d8beea6d22953034af3))
+* Switch to new dice roller module ([09a5047](https://github.com/javalent/fantasy-statblocks/commit/09a50478836e4e602652ed86ebf4b392c2d4af07))
+
+## [4.1.7](https://github.com/javalent/fantasy-statblocks/compare/4.1.6...4.1.7) (2024-04-15)
+
+
+### Bug Fixes
+
+* Added "Delete filtered creatures" button to Bestiary in settings ([ea238e3](https://github.com/javalent/fantasy-statblocks/commit/ea238e3b5ddbbcfbf8e3d76a612ff3d208a7d1ba))
+* Fixes error where array values added to the Bestiary index would be stringified as-is ([7cc3e4b](https://github.com/javalent/fantasy-statblocks/commit/7cc3e4bf72c7da8faff03250176739df156f978d))
+
+## [4.1.6](https://github.com/javalent/fantasy-statblocks/compare/4.1.5...4.1.6) (2024-04-15)
+
+
+### Bug Fixes
+
+* Adds `extends` to the statblock editor suggest ([39067b0](https://github.com/javalent/fantasy-statblocks/commit/39067b0073d1641e38423c2d9f3e62b4ac738b43))
+
+## [4.1.5](https://github.com/javalent/fantasy-statblocks/compare/4.1.4...4.1.5) (2024-04-04)
+
+
+### Bug Fixes
+
+* Fixes "Start Encounter" IT button ([21b4cc9](https://github.com/javalent/fantasy-statblocks/commit/21b4cc9e655c7199682e21060d37bd6ca58a920b))
+
+## [4.1.4](https://github.com/javalent/fantasy-statblocks/compare/4.1.3...4.1.4) (2024-03-29)
+
+
+### Bug Fixes
+
+* Fixes 5e.tools import text replacement ([59877b3](https://github.com/javalent/fantasy-statblocks/commit/59877b32ee5b65c5c0a7edadacda42e14f8bbf49))
+
+## [4.1.3](https://github.com/javalent/fantasy-statblocks/compare/4.1.2...4.1.3) (2024-03-27)
+
+
+### Bug Fixes
+
+* Adds support for the `ac_class` property ([8e9e26b](https://github.com/javalent/fantasy-statblocks/commit/8e9e26ba428dfefe01424b21d6ded60e7fed0587))
+
+## [4.1.2](https://github.com/javalent/fantasy-statblocks/compare/4.1.1...4.1.2) (2024-03-27)
+
+
+### Bug Fixes
+
+* Adds new Creature pane commands: Reveal existing, Open new ([81a9491](https://github.com/javalent/fantasy-statblocks/commit/81a9491a9d69c8928e104485ba0eb512e12a3920))
+* Creature pane ribbon button will now open a new pane with a `mod`-click (cmd/ctrl) ([a4ba38a](https://github.com/javalent/fantasy-statblocks/commit/a4ba38a55adf4dff59eece19da6d7b876440954e))
+* Creature pane will now intelligently open new panes alongside existing ones (close [#342](https://github.com/javalent/fantasy-statblocks/issues/342)) ([3040013](https://github.com/javalent/fantasy-statblocks/commit/30400131a343addffad068bdb1729eee8af64be3))
+* Fixes 5e.tools AC import not including additional AC info (close [#340](https://github.com/javalent/fantasy-statblocks/issues/340)) ([6116540](https://github.com/javalent/fantasy-statblocks/commit/61165403859cd13ac3f3fc92c0eb8f6636df8b2a))
+* Fixes issue where traits would be bold by default (close [#376](https://github.com/javalent/fantasy-statblocks/issues/376)) ([4152ffa](https://github.com/javalent/fantasy-statblocks/commit/4152ffa99efa5844a141e25e3154f6f800c94ecd))
+* Uses Dice Roller's average calculation instead of a rudimentary approach (close [#350](https://github.com/javalent/fantasy-statblocks/issues/350)) ([5affff8](https://github.com/javalent/fantasy-statblocks/commit/5affff80f5947f4409006c462f06e98251ce7f0d))
+
+## [4.1.1](https://github.com/javalent/fantasy-statblocks/compare/4.1.0...4.1.1) (2024-03-23)
+
+
+### Bug Fixes
+
+* Adds Theme toggles to Previewer in Layout Editor ([e531fe8](https://github.com/javalent/fantasy-statblocks/commit/e531fe8d0b782587b8cb0999c30e92d9313dc4b3))
+* Fixes scoping issue for Layout CSS in dark/light mode ([6f44db0](https://github.com/javalent/fantasy-statblocks/commit/6f44db06ec33cc4fbe9ad5fdd74b0586bb5b5689))
+* Improves Previewer user experience ([05ec8c4](https://github.com/javalent/fantasy-statblocks/commit/05ec8c4f1d8b7033bfb2141330b781309b4f7d91))
+* Remove outdated beta manifest ([1567fe5](https://github.com/javalent/fantasy-statblocks/commit/1567fe5637be1dadd231010a5dc50d2b8f0226c1))
+
+## [4.1.0](https://github.com/javalent/fantasy-statblocks/compare/4.0.13...4.1.0) (2024-03-23)
+
+
+### Features
+
+* Adds Column settings in the Advanced pane of the Layout Editor ([0193fad](https://github.com/javalent/fantasy-statblocks/commit/0193fad4f1b16363245696efec488fbf5d6abb35))
+* Revamps Appearance pane of the Layout Editor ([0193fad](https://github.com/javalent/fantasy-statblocks/commit/0193fad4f1b16363245696efec488fbf5d6abb35))
+
+## [4.0.13](https://github.com/javalent/fantasy-statblocks/compare/4.0.12...4.0.13) (2024-03-20)
+
+
+### Bug Fixes
+
+* Add ability to add examples for dice parsers for future reference ([e1d365c](https://github.com/javalent/fantasy-statblocks/commit/e1d365c4d36d68a28863738b2e725820cbed99ad))
+* Adds in PF2e specific dice parsers (close [#357](https://github.com/javalent/fantasy-statblocks/issues/357)) ([1449d79](https://github.com/javalent/fantasy-statblocks/commit/1449d79e2b2e8a3411551f31e58a97a3b37e4e26))
+* **css:** add consistency to css variables for statblocks ([#369](https://github.com/javalent/fantasy-statblocks/issues/369)) ([6731d73](https://github.com/javalent/fantasy-statblocks/commit/6731d7351d68a0bcdfbbf5645d199ff85823f4fd))
+* Expose Section Heading border color in layout editor ([9fdba90](https://github.com/javalent/fantasy-statblocks/commit/9fdba9074730eefff384c28210355c9370d6769b))
+* Fixes issue where modifying a default layout could duplicate it in the settings list ([35d7ab4](https://github.com/javalent/fantasy-statblocks/commit/35d7ab42307a8b9fca147b3168f0d81d5854ecb5))
+* Fixes issue where trying to add a dice parser without any defined would crash the plugin ([0a60234](https://github.com/javalent/fantasy-statblocks/commit/0a602342a031263c15b4238251f85f8d3a3ff48d))
+* Improve Dice Parser UI in layout editor ([6115a6d](https://github.com/javalent/fantasy-statblocks/commit/6115a6d6ec77fd82a686052babaeba8253e40fa3))
+* Inherit default parsers into 5e Layout ([54d9061](https://github.com/javalent/fantasy-statblocks/commit/54d90612d3db070c706813913e5c60b21074241d))
+* Initialize Bestiary events hook before initializing file watcher ([08a1a5d](https://github.com/javalent/fantasy-statblocks/commit/08a1a5d57e7cb902cecfcb3475766c0f4977a590))
+* New layouts will inherit default dice parsers by default ([59d8950](https://github.com/javalent/fantasy-statblocks/commit/59d89500fe37a5f7b30795094a48ab6f5621063d))
+* Position 3 dot menu relative to container (close [#364](https://github.com/javalent/fantasy-statblocks/issues/364)) ([ef9c9f5](https://github.com/javalent/fantasy-statblocks/commit/ef9c9f57efa2f727265cf22efecabc06ee2ab06c))
+
+## [4.0.12](https://github.com/javalent/fantasy-statblocks/compare/4.0.11...4.0.12) (2024-03-16)
+
+
+### Bug Fixes
+
+* Attempt to speed up initial FS parsing ([51a31ae](https://github.com/javalent/fantasy-statblocks/commit/51a31aee1af24593cc9c6ff011fcea5fe598cc68))
+
+## [4.0.11](https://github.com/javalent/fantasy-statblocks/compare/4.0.10...4.0.11) (2024-03-16)
+
+
+### Bug Fixes
+
+* Fixes issue where the folder suggester wasn't interactable ([df149c8](https://github.com/javalent/fantasy-statblocks/commit/df149c8c24b03a113ba46c88789411e22e1862bb))
+
+## [4.0.10](https://github.com/javalent/fantasy-statblocks/compare/4.0.9...4.0.10) (2024-03-13)
+
+
+### Bug Fixes
+
+* Fixes issue where creatures without an explicit name could cause the Bestiary to crash ([c7ea4ee](https://github.com/javalent/fantasy-statblocks/commit/c7ea4ee57cf9ade417cdd16fb89e2a7de84ec2b8))
+* Fixes issue where importing the same layout twice and deleting one would delete both ([9c189eb](https://github.com/javalent/fantasy-statblocks/commit/9c189eb84a7186858ed5966dc7266b67657000ed))
+
+## [4.0.9](https://github.com/javalent/fantasy-statblocks/compare/4.0.8...4.0.9) (2024-03-08)
+
+
+### Bug Fixes
+
+* Improves Bestiary event registration ([a0870e3](https://github.com/javalent/fantasy-statblocks/commit/a0870e31fbfe09a1caf42fc6b9f2c7a0f60ccb1f))
+
+## [4.0.8](https://github.com/javalent/fantasy-statblocks/compare/4.0.7...4.0.8) (2024-03-08)
+
+
+### Bug Fixes
+
+* Properly return the FS Bestiary unloaders ([004e43f](https://github.com/javalent/fantasy-statblocks/commit/004e43ff60dc5d005038fe67856f31406dac2593))
+
+## [4.0.7](https://github.com/javalent/fantasy-statblocks/compare/4.0.6...4.0.7) (2024-03-08)
+
+
+### Bug Fixes
+
+* Bestiary resolved events will re-fire after the vault is re-parsed ([2c8c8c7](https://github.com/javalent/fantasy-statblocks/commit/2c8c8c77a657c3b161cb67bd4ccfc4b0e28450f5))
+* Fixes error handling in Statblock parser ([c6f7e7d](https://github.com/javalent/fantasy-statblocks/commit/c6f7e7d4858a21eeff298dba0f7e026874791894))
+* Inline Statblocks will now have their links transformed properly ([a15d5c2](https://github.com/javalent/fantasy-statblocks/commit/a15d5c2f86dda2810626a3df76ee3cc65078fa78))
+* Plugin is now properly registered with the Page Preview plugin ([c1e9237](https://github.com/javalent/fantasy-statblocks/commit/c1e9237f2f54c7e4c9e2bbbc286e9b032abf63cc))
+
+## [4.0.6](https://github.com/javalent/fantasy-statblocks/compare/4.0.5...4.0.6) (2024-03-07)
+
+
+### Bug Fixes
+
+* Fixes issue where bestiary would never resolve if Parse Frontmatter was disabled ([16bfb03](https://github.com/javalent/fantasy-statblocks/commit/16bfb0316b22f6bb9182ac2764f2182c1e5d432b))
+
+## [4.0.5](https://github.com/javalent/fantasy-statblocks/compare/4.0.4...4.0.5) (2024-03-07)
+
+
+### Bug Fixes
+
+* Update build ([c0543ed](https://github.com/javalent/fantasy-statblocks/commit/c0543ed2ffe85a336be84d5c362373a506dd4bcd))
+
+## [4.0.4](https://github.com/javalent/fantasy-statblocks/compare/4.0.0...4.0.4) (2024-03-07)
+
+
+### Miscellaneous Chores
+
+* release 4.0.4 ([0048de5](https://github.com/javalent/fantasy-statblocks/commit/0048de5bc0385bdf2bb883852e5ab0708fd79954))
+
+## [4.0.0](https://github.com/javalent/fantasy-statblocks/compare/3.19.3...4.0.0) (2024-03-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* Full transition to new Bestiary API
+* Creatures from notes are no longer saved to data.
+
+### Features
+
+* Adds ability to open note-based creatures directly from the bestiary in settings ([4669df8](https://github.com/javalent/fantasy-statblocks/commit/4669df8c73c026e1fd0fb04905b841d79cff6e14))
+* Adds proper API typings for npm module ([dbf6b7d](https://github.com/javalent/fantasy-statblocks/commit/dbf6b7db5ec4b466d458ba15cf1a47abc241200e))
+* Creatures from notes are no longer saved to data. ([1f08a96](https://github.com/javalent/fantasy-statblocks/commit/1f08a9608016da3938d7e855a3ae6f5ff7232690))
+* Full transition to new Bestiary API ([0c58550](https://github.com/javalent/fantasy-statblocks/commit/0c5855071afa9d4c8509ecea6055f75218c228ea))
+* New UI for Bestiary creatures in settings ([b6063aa](https://github.com/javalent/fantasy-statblocks/commit/b6063aa05b0b3bbbff63e18aee37a5a131c4570f))
+
+
+### Bug Fixes
+
+* Added isResolved, onResolved and onUpdated API hooks ([8d3b1e9](https://github.com/javalent/fantasy-statblocks/commit/8d3b1e959a5bf751230f98bddf6cc8ded9a0f4be))
+* Adds rotation animation for CSS ([7df6249](https://github.com/javalent/fantasy-statblocks/commit/7df624977dc8bf63f808ae3b8f9602b90eacab47))
+* Adds source field to 5e SRD bestiary ([7b3da4c](https://github.com/javalent/fantasy-statblocks/commit/7b3da4c032b693f10eae041894a19fe663963d96))
+* Clean up dead plugin code ([3df6baf](https://github.com/javalent/fantasy-statblocks/commit/3df6baf3c6e5f0503b07135b936f793f6703f6d3))
+* Correctly parses links for frontmatter creatures ([b182d8f](https://github.com/javalent/fantasy-statblocks/commit/b182d8f2de36471cf3c39557cf9eed4417d4e32b))
+* Fixes some dice parser errors ([#353](https://github.com/javalent/fantasy-statblocks/issues/353)) ([35fb8a9](https://github.com/javalent/fantasy-statblocks/commit/35fb8a9159939d28f1b013d52beb8a5057d37f87))
+* Global switch to Lucide icons ([ddc2ea4](https://github.com/javalent/fantasy-statblocks/commit/ddc2ea404e23e07a880087df871bf89ac517cf90))
+* made link stringifier stateless ([52672ce](https://github.com/javalent/fantasy-statblocks/commit/52672ce01c2ac67d13910aaf333e31177b5a9e3a))
+* Remove duplicated API methods from plugin definition ([780ab18](https://github.com/javalent/fantasy-statblocks/commit/780ab184661ff699d5a8dd858843170b820f8ae2))
+* Switch to centralized suggestion class ([2914658](https://github.com/javalent/fantasy-statblocks/commit/29146587db7d0b9f6c6272109d1c9988b2f48db5))
+
+## [3.19.3](https://github.com/javalent/fantasy-statblocks/compare/3.19.2...3.19.3) (2024-02-22)
+
+
+### Bug Fixes
+
+* Fixes appearance of parsed dice rolls in 5e ([153226e](https://github.com/javalent/fantasy-statblocks/commit/153226e1752a7a64b27fb2695198640fcac61a88))
+
+## [3.19.2](https://github.com/javalent/fantasy-statblocks/compare/3.19.1...3.19.2) (2024-02-21)
+
+
+### Bug Fixes
+
+* Fixes issue where having DR installed but not enabled in FS would erroneously run dice callbacks ([2fa84c1](https://github.com/javalent/fantasy-statblocks/commit/2fa84c1ba2c48a5b7c672724b271df466eefef05))
+
+## [3.19.1](https://github.com/javalent/fantasy-statblocks/compare/3.19.0...3.19.1) (2024-02-20)
+
+
+### Bug Fixes
+
+* Dice Callbacks will no longer try to execute if Dice Roller is not enabled ([5ec4019](https://github.com/javalent/fantasy-statblocks/commit/5ec40198276c570903d8d9d2d8a0606a9a5b9db9))
+
+## [3.19.0](https://github.com/javalent/fantasy-statblocks/compare/3.18.1...3.19.0) (2024-02-14)
+
+
+### Features
+
+* Enables Layout-specific dice parsing using Regular Expressions and callbacks ([a6f482b](https://github.com/javalent/fantasy-statblocks/commit/a6f482b67db5606bda26b45915876454a793f493))
+* Exposes some basic color settings for Layouts ([1716230](https://github.com/javalent/fantasy-statblocks/commit/17162304eff3ec4f3f251619ccd953b76b1bd057))
+* New Layout Editor experience on Desktop / Tablet ([6d017c6](https://github.com/javalent/fantasy-statblocks/commit/6d017c68af30e6f7f32aa5388dc7ea062e3d3059))
+
+
+### Bug Fixes
+
+* Properly scope Bunkers and Badasses css ([ccf0296](https://github.com/javalent/fantasy-statblocks/commit/ccf0296fd4403a3a09e274ef2d47162e406aea80))
+
+## [3.18.1](https://github.com/javalent/fantasy-statblocks/compare/3.18.0...3.18.1) (2024-02-02)
+
+
+### Bug Fixes
+
+* Expose the monster on Table ability modifier calculation callbacks ([7bad5f2](https://github.com/javalent/fantasy-statblocks/commit/7bad5f2981a587417be156f8d2f1a8c265e55a75))
+
+## [3.18.0](https://github.com/javalent/fantasy-statblocks/compare/3.17.1...3.18.0) (2024-02-01)
+
+
+### Features
+
+* Adds Obsidian protocol handler `creature-pane` to open Creature Pane via an Obsidian link. Usage: `obsidian://creature-pane?creature=&lt;name&gt;` ([dee46de](https://github.com/javalent/fantasy-statblocks/commit/dee46deabdc8a02b78d3da8118504f763f0fb9f2))
+
+## [3.17.1](https://github.com/javalent/fantasy-statblocks/compare/3.17.0...3.17.1) (2024-02-01)
+
+
+### Bug Fixes
+
+* Fixes issue where dice parsing would consume +/- values ([200f787](https://github.com/javalent/fantasy-statblocks/commit/200f787810aa747cf80195e4ae3219655f55a57c))
+
+## [3.17.0](https://github.com/javalent/fantasy-statblocks/compare/3.16.3...3.17.0) (2024-01-27)
+
+
+### Features
+
+* Extract monster subtypes from 5e.tools tags ([9f8bf4e](https://github.com/javalent/fantasy-statblocks/commit/9f8bf4e5430015513bffca71d66deb8e85e3e511))
+
+
+### Bug Fixes
+
+* bump 5e layout version ([539a049](https://github.com/javalent/fantasy-statblocks/commit/539a04908cc01950b0c581fd68fe5224f8a8d845))
+* Fixes extra whitespaces between links ([#331](https://github.com/javalent/fantasy-statblocks/issues/331)) ([9717c3c](https://github.com/javalent/fantasy-statblocks/commit/9717c3cf31ca8e32c68724b85a82b98ac9d1f7e4))
+* Fixes subheading separator in basic 5e layout (close [#331](https://github.com/javalent/fantasy-statblocks/issues/331)) ([1b21bd7](https://github.com/javalent/fantasy-statblocks/commit/1b21bd7ad3c5bfb9f99694e3a7dfe97decaef8bc))
+* Remove latin alphabet requirement for css classes (close [#338](https://github.com/javalent/fantasy-statblocks/issues/338)) ([79ada6c](https://github.com/javalent/fantasy-statblocks/commit/79ada6cabf1ffcb41d17f3450c76e0c1eba95b3e))
+
+## [3.16.3](https://github.com/javalent/fantasy-statblocks/compare/3.16.2...3.16.3) (2024-01-12)
+
+
+### Bug Fixes
+
+* don't register popover for image if no image file exists ([e0dbcb7](https://github.com/javalent/fantasy-statblocks/commit/e0dbcb7eb40db90147069d18daf5bd6d99637350))
+
 ## [3.16.2](https://github.com/javalent/fantasy-statblocks/compare/3.16.1...3.16.2) (2023-12-06)
 
 

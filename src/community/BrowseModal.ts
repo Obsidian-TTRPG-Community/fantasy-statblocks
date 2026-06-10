@@ -12,7 +12,7 @@ import type StatBlockPlugin from "src/main";
 import { nanoid } from "src/util/util";
 import StatBlockRenderer from "src/view/statblock";
 import type { Monster } from "index";
-import type { Layout } from "types/layout";
+import type { Layout } from "src/layouts/layout.types";
 import CommunityTemplateManager from "./manager";
 import {
     layoutHasJavaScript,

@@ -1,6 +1,5 @@
-import type { Component } from "obsidian";
-import type { Creature, HomebrewCreature } from "obsidian-overload";
-import type { DefaultLayout, Layout } from "types/layout";
+import type { API } from "src/api/api";
+import type { DefaultLayout, Layout } from "src/layouts/layout.types";
 
 export type ability =
     | "strength"
@@ -20,6 +19,9 @@ export type fage_ability =
     | "strength"
     | "willpower";
 
+export type AbilitySkill = { [key: string]: number }
+export type TraitAbilitySkill = Trait | AbilitySkill;
+
 export interface Monster {
     image?: string;
     name: string;
@@ -27,7 +29,7 @@ export interface Monster {
     type: string;
     subtype: string;
     alignment: string;
-    ac: number;
+    ac: string | number;
     hp: number;
     hit_dice?: string;
     speed: string;
@@ -43,8 +45,8 @@ export interface Monster {
         number,
         number
     ];
-    saves?: { [K in ability]?: number } | { [K in ability]?: number }[];
-    skillsaves?: { [key: string]: number } | { [key: string]: number }[];
+    saves?: AbilitySkill | TraitAbilitySkill[];
+    skillsaves?: AbilitySkill | TraitAbilitySkill[];
     damage_vulnerabilities: string;
     damage_resistances: string;
     damage_immunities: string;
@@ -97,6 +99,7 @@ export interface Monster {
     forceColumns?: boolean;
 
     note?: string;
+    path?: string;
     mtime?: number;
 
     /* Extensions */
@@ -105,6 +108,8 @@ export interface Monster {
     creature?: string;
     extends?: string | string[];
     bestiary: boolean;
+
+    [key: string]: any;
 }
 
 export interface StatblockParameters
@@ -134,7 +139,7 @@ export interface Trait {
 
 export interface StatblockData {
     monsters: Array<[string, Monster]>;
-    defaultLayouts: DefaultLayout[];
+    defaultLayouts: Record<string, DefaultLayout>;
     layouts: Layout[];
     default: string;
     useDice: boolean;
@@ -163,18 +168,8 @@ export interface StatblockData {
     communityTemplateSnippets?: { [layoutId: string]: string[] };
 }
 
-export interface StatblockAPI {
-    render(
-        creature: Creature,
-        statblockEl: HTMLDivElement,
-        display?: string
-    ): Component;
-    saveMonsters(homebrew: HomebrewCreature[]): unknown;
-    hasCreature(name: string): boolean;
-    getCreatureFromBestiary(name: string): Partial<Monster> | null;
-    getBestiaryNames(): string[];
-    getBestiaryCreatures(): Monster[];
-    settings: StatblockData;
-    data: Map<string, Monster>;
-    bestiary: Map<string, Monster>;
+declare global {
+    interface Window {
+        FantasyStatblocks: API;
+    }
 }

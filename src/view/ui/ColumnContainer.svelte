@@ -10,7 +10,7 @@
     import Text from "./Text.svelte";
     import { createEventDispatcher, getAllContexts, getContext } from "svelte";
     import Image from "./Image.svelte";
-    import type { StatblockItem } from "types/layout";
+    import type { Layout, StatblockItem } from "src/layouts/layout.types";
     import { /* linkifySpells, */ slugify, stringify } from "src/util/util";
     import Collapse from "./Collapse.svelte";
     import JavaScript from "./JavaScript.svelte";
@@ -18,15 +18,16 @@
     import SpellItem from "./SpellItem.svelte";
     import type StatBlockPlugin from "src/main";
     import type { Monster, Trait } from "index";
-    import { Linkifier } from "src/util/linkify";
+    import { Linkifier } from "src/parser/linkify";
     import Action from "./Action.svelte";
+    import type { Writable } from "svelte/store";
 
     const dispatch = createEventDispatcher();
 
     export let statblock: StatblockItem[];
     export let ready: boolean;
     export let classes: string[];
-
+    export let layout: Layout;
     export let columns: number;
     export const maxColumns: number = columns;
     export const detached = false;
@@ -34,7 +35,9 @@
 
     export let plugin: StatBlockPlugin;
 
-    const monster = getContext<Monster>("monster");
+    const monsterStore = getContext<Writable<Monster>>("monster");
+    let monster = $monsterStore;
+    monsterStore.subscribe((m) => (monster = m));
     const ensureColon = (header: string) => {
         if (/[^a-zA-Z0-9]$/.test(header)) return header;
         return `${header}:`;
@@ -126,7 +129,7 @@
                         container: target,
                         classes: item.cls
                             ? [...(classes ?? []), item.cls]
-                            : classes ?? []
+                            : (classes ?? [])
                     });
 
                     targets.push(...element);
@@ -188,8 +191,8 @@
                     const funct = (frame.contentWindow as any).Function;
                     let parsed: boolean = false;
                     try {
-                        const func = new funct("monster", condition);
-                        parsed = func.call(undefined, monster) ?? false;
+                        const func = new funct("monster", "plugin", condition);
+                        parsed = func.call(undefined, monster, plugin) ?? false;
                     } catch (e) {
                         console.error(e);
                         continue;
@@ -228,7 +231,7 @@
                         "statblock-item-inline",
                         ...(item.cls
                             ? [...(classes ?? []), item.cls]
-                            : classes ?? [])
+                            : (classes ?? []))
                     ]
                 });
                 for (const nested of item.nested ?? []) {
@@ -255,9 +258,7 @@
                 break;
             }
             case "layout": {
-                const layout = plugin.layouts.find(
-                    ({ id }) => id == item.layout
-                );
+                const layout = plugin.manager.getLayout(item.layout);
                 if (layout?.blocks?.length) {
                     targets.push(
                         ...getElementForStatblockItem(
@@ -265,7 +266,7 @@
                                 type: "group",
                                 nested: layout.blocks,
                                 id: item.layout,
-                                properties: null
+                                properties: []
                             },
                             {
                                 classes: [
@@ -305,58 +306,55 @@
                     item.properties[0]
                 ] as Spell[];
 
-                if (!Array.isArray(blocks) || !blocks.length) return;
-                let spellBlocks: Array<SpellBlock> = blocks.reduce(
-                    (acc, current) => {
-                        if (
-                            typeof current === "string" &&
-                            (current.charAt(current.length - 1) == ":" ||
-                                !current.includes(":"))
-                        ) {
-                            const newBlock: SpellBlock = {
-                                header: ensureColon(current),
-                                spells: []
-                            };
-                            acc.push(newBlock);
-                            return acc;
-                        }
-                        const lastBlock: SpellBlock = acc[acc.length - 1];
-                        let spell: Spell;
-                        if (typeof current == "string") {
+                if (!Array.isArray(blocks) || !blocks.length) return [];
+                let spellBlocks: Array<SpellBlock> = blocks.reduce<
+                    SpellBlock[]
+                >((acc, current) => {
+                    if (
+                        typeof current === "string" &&
+                        (current.charAt(current.length - 1) == ":" ||
+                            !current.includes(":"))
+                    ) {
+                        const newBlock: SpellBlock = {
+                            header: ensureColon(current),
+                            spells: []
+                        };
+                        acc.push(newBlock);
+                        return acc;
+                    }
+                    const lastBlock: SpellBlock = acc[acc.length - 1];
+                    let spell: Spell;
+                    if (typeof current == "string") {
+                        spell = {
+                            spells: Linkifier.linkifySpells(
+                                current,
+                                context.get("context") as string
+                            )
+                        };
+                    } else {
+                        try {
                             spell = {
+                                level: Object.keys(current).shift(),
                                 spells: Linkifier.linkifySpells(
-                                    current,
+                                    stringify(Object.values(current).shift()!),
                                     context.get("context") as string
                                 )
                             };
-                        } else {
-                            try {
-                                spell = {
-                                    level: Object.keys(current).shift(),
-                                    spells: Linkifier.linkifySpells(
-                                        stringify(
-                                            Object.values(current).shift()
-                                        ),
-                                        context.get("context") as string
-                                    )
-                                };
-                            } catch (e) {
-                                return acc;
-                            }
+                        } catch (e) {
+                            return acc;
                         }
-                        if (lastBlock) {
-                            lastBlock.spells.push(spell);
-                        } else {
-                            const missingHeaderBlock: SpellBlock = {
-                                header: `${monster.name} knows the following spells:`,
-                                spells: [spell]
-                            };
-                            acc.push(missingHeaderBlock);
-                        }
-                        return acc;
-                    },
-                    []
-                );
+                    }
+                    if (lastBlock) {
+                        lastBlock.spells.push(spell);
+                    } else {
+                        const missingHeaderBlock: SpellBlock = {
+                            header: `${monster.name} knows the following spells:`,
+                            spells: [spell]
+                        };
+                        acc.push(missingHeaderBlock);
+                    }
+                    return acc;
+                }, []);
 
                 for (
                     let blockIndex = 0;
@@ -370,7 +368,7 @@
                             props: {
                                 name:
                                     blockIndex == 0
-                                        ? item.heading ?? "Spellcasting"
+                                        ? (item.heading ?? "Spellcasting")
                                         : "",
                                 property: item.properties[0],
                                 desc: block.header,
@@ -384,12 +382,14 @@
                                 .firstElementChild as HTMLDivElement
                         );
                     }
-                    for (const spell of block.spells) {
+                    for (let i = 0; i < block.spells.length; i++) {
+                        const spell = block.spells[i];
                         const component = new SpellItem({
                             target: createDiv(),
                             props: {
                                 spell,
-                                render: item.markdown
+                                first: i === 0,
+                                last: i === block.spells.length - 1
                             }
                         });
                         targets.push(
@@ -465,7 +465,6 @@
                                 monster.name
                             ),
                             property: "trait-subheading",
-                            render: item.markdown,
                             item,
                             monster,
                             trait: monster[item.properties[0]] as Trait
@@ -484,7 +483,6 @@
                                 name: blocks[0].name,
                                 desc: blocks[0].desc,
                                 property: item.properties[0],
-                                render: item.markdown,
                                 item,
                                 monster,
                                 trait: blocks[0]
@@ -504,7 +502,6 @@
                                     name: block.name,
                                     desc: block.desc,
                                     property: item.properties[0],
-                                    render: item.markdown,
                                     item,
                                     monster,
                                     trait: block
@@ -515,10 +512,12 @@
                         }
                     }
                 } catch (e) {
+                    console.error(e);
                     return [];
                 }
                 break;
             }
+
         }
         if ("hasRule" in item && item.hasRule) {
             const rule = createDiv(
@@ -535,7 +534,7 @@
         return targets.filter((el) => el.hasChildNodes());
     };
     $: maxHeight =
-        !isNaN(Number(monster.columnHeight)) && monster.columnHeight > 0
+        !isNaN(Number(monster.columnHeight)) && monster.columnHeight! > 0
             ? monster.columnHeight
             : Infinity;
 
@@ -555,6 +554,8 @@
         if (typeof monster.columnWidth == "string") {
             columnWidth = monster.columnWidth;
         }
+    } else if (layout.columnWidth) {
+        columnWidth = `${layout.columnWidth}px`;
     }
 
     let HEIGHT_READY = false;
@@ -580,7 +581,7 @@
             }
         });
         contentContainer.$on("built", () => {
-            const columnEl = temp.querySelector(".column");
+            const columnEl = temp.querySelector(".column")!;
             for (let target of targets) {
                 heights.push(target.scrollHeight);
             }
@@ -595,7 +596,7 @@
             } else {
                 split = Math.max(
                     600,
-                    Math.min(columnEl.scrollHeight / columns, maxHeight)
+                    Math.min(columnEl.scrollHeight / columns, maxHeight!)
                 );
             }
 

@@ -1,8 +1,9 @@
-import type { Monster } from "types";
+import type { Monster } from "index";
 import copy from "fast-copy";
-import type { CachedMetadata } from "obsidian";
+import type { CachedMetadata, FrontMatterInfo } from "obsidian";
 import { transformTraits } from "src/util/util";
 import YAML from "yaml";
+import { LinkStringifier } from "src/parser/stringifier";
 
 interface FileDetails {
     path: string;
@@ -10,54 +11,48 @@ interface FileDetails {
     mtime: number;
 }
 
-export interface DebugMessage {
-    type: "debug";
+interface IWorkerData {
     debug: boolean;
+    queue: string[];
+    file: {
+        statblock: "frontmatter" | "inline";
+        content: string;
+        info: FrontMatterInfo;
+        file: FileDetails;
+    };
+    get: string;
+    done: string;
+    update: {
+        monster: Monster;
+        path: string;
+    };
+    save: void;
+    read: string;
+    content: {
+        path: string;
+        content: string;
+    };
 }
 
-export interface QueueMessage {
-    type: "queue";
-    paths: string[];
+interface WorkerMessage<T extends keyof IWorkerData> {
+    type: T;
+    data: IWorkerData[T];
 }
-export interface FileCacheMessage {
-    type: "file";
-    path: string;
-    cache: CachedMetadata;
-    file: FileDetails;
-}
-export interface GetFileCacheMessage {
-    type: "get";
-    path: string;
-}
-export interface FinishFileMessage {
-    type: "done";
-    path: string;
-}
-export interface UpdateEventMessage {
-    type: "update";
-    monster: Monster;
-    path: string;
-}
-export interface SaveMessage {
-    type: "save";
-}
-export interface ReadMessage {
-    type: "read";
-    path: string;
-}
-export interface ContentMessage {
-    type: "content";
-    path: string;
-    content: string;
-}
+
+export type WorkerData<T extends keyof IWorkerData> = IWorkerData[T];
+
+export type DebugMessage = WorkerMessage<"debug">;
+export type QueueMessage = WorkerMessage<"queue">;
+export type FileCacheMessage = WorkerMessage<"file">;
+export type GetFileCacheMessage = WorkerMessage<"get">;
+export type FinishFileMessage = WorkerMessage<"done">;
+export type UpdateEventMessage = WorkerMessage<"update">;
+export type SaveMessage = WorkerMessage<"save">;
 
 const ctx: Worker = self as any;
+
 class Parser {
     queue: string[] = [];
-    pendingContentProcessing: Map<string, FileDetails> = new Map<
-        string,
-        FileDetails
-    >();
     parsing: boolean = false;
     debug: boolean;
 
@@ -65,28 +60,20 @@ class Parser {
         //Add Files to Queue
         ctx.addEventListener("message", (event: MessageEvent<QueueMessage>) => {
             if (event.data.type == "queue") {
-                this.add(...event.data.paths);
+                this.add(...event.data.data);
 
                 if (this.debug) {
                     console.debug(
-                        `Fantasy Statblocks: Received queue message for ${event.data.paths.length} paths`
+                        `Fantasy Statblocks: Received queue message for ${event.data.data.length} paths`
                     );
                 }
             }
         });
         ctx.addEventListener("message", (event: MessageEvent<DebugMessage>) => {
             if (event.data.type == "debug") {
-                this.debug = event.data.debug;
+                this.debug = event.data.data;
             }
         });
-        ctx.addEventListener(
-            "message",
-            (event: MessageEvent<ContentMessage>) => {
-                if (event.data.type == "content") {
-                    this.processContent(event.data.path, event.data.content);
-                }
-            }
-        );
     }
     add(...paths: string[]) {
         if (this.debug) {
@@ -97,10 +84,9 @@ class Parser {
         this.queue.push(...paths);
         if (!this.parsing) this.parse();
     }
-    processContent(path: string, content: string) {
+    processContent(content: string, file: FileDetails) {
         if (this.debug)
-            console.debug(`Fantasy Statblocks: Process Content: ${path}`);
-        let fileDetails = this.pendingContentProcessing.get(path);
+            console.debug(`Fantasy Statblocks: Process Content: ${file.path}`);
         let statBlock = this.findFirstStatBlock(content);
         if (statBlock) {
             if (this.debug)
@@ -109,17 +95,19 @@ class Parser {
                         statBlock
                     )}`
                 );
-            const monster: Monster = Object.assign({}, YAML.parse(statBlock), {
-                note: path,
-                mtime: fileDetails.mtime
-            });
+
+            const frontmatter = LinkStringifier.transformSource(statBlock);
+            const monster: Monster = Object.assign(
+                {},
+                YAML.parse(frontmatter),
+                {
+                    mtime: file.mtime
+                }
+            );
             if (this.debug)
                 console.debug(`Fantasy Statblocks: ${JSON.stringify(monster)}`);
-            this.processMonster(monster, fileDetails);
+            this.processMonster(monster, file);
         }
-
-        this.pendingContentProcessing.delete(path);
-        this.checkForWorkComplete();
     }
 
     findFirstStatBlock(content: string): string {
@@ -135,56 +123,62 @@ class Parser {
         this.parsing = true;
         while (this.queue.length) {
             const path = this.queue.shift();
-            if (!path.endsWith(".md")) {
-                continue;
-            }
             if (this.debug) {
                 console.debug(
                     `Fantasy Statblocks: Parsing ${path} for statblocks (${this.queue.length} to go)`
                 );
             }
-            const { file, cache } = await this.getFileData(path);
-            this.parseFileForCreatures(file, cache);
-            ctx.postMessage<FinishFileMessage>({ type: "done", path });
+            const event = await this.getFileData(path);
+
+            if (!path.endsWith(".md")) {
+                continue;
+            }
+            if (!event.data) continue;
+
+            const { file, statblock } = event.data;
+
+            try {
+                if (statblock === "inline") {
+                    //statblock codeblock
+                    this.processContent(event.data.content, file);
+                } else {
+                    //frontmatter
+                    this.parseFrontmatter(event.data.info, file);
+                }
+            } catch (e) {
+                console.error(
+                    `There was an error parsing the Statblock in ${path}: \n\n${e.message}`
+                );
+            }
+
+            ctx.postMessage<FinishFileMessage>({ type: "done", data: path });
         }
-        this.checkForWorkComplete();
+        this.parsing = false;
+        ctx.postMessage<SaveMessage>({ type: "save", data: null });
     }
 
-    private checkForWorkComplete() {
-        if (this.pendingContentProcessing.size == 0) {
-            this.parsing = false;
-            ctx.postMessage<SaveMessage>({ type: "save" });
-        }
-    }
-    async getFileData(path: string): Promise<FileCacheMessage> {
+    async getFileData(path: string): Promise<FileCacheMessage | null> {
         return new Promise((resolve) => {
             ctx.addEventListener(
                 "message",
-                (event: MessageEvent<FileCacheMessage>) => {
+                (event: MessageEvent<FileCacheMessage | null>) => {
                     if (event.data.type == "file") {
                         resolve(event.data);
                     }
                 }
             );
-            ctx.postMessage<GetFileCacheMessage>({ path, type: "get" });
+            ctx.postMessage<GetFileCacheMessage>({ data: path, type: "get" });
         });
     }
-    parseFileForCreatures(file: FileDetails, cache: CachedMetadata) {
-        if (!cache) return;
-        if (!cache.frontmatter) return;
-        if (!cache.frontmatter.statblock) return;
-        if (cache.frontmatter.statblock === "inline") {
-            ctx.postMessage<ReadMessage>({
-                type: "read",
-                path: file.path
-            });
-            this.pendingContentProcessing.set(file.path, file);
-            return;
-        }
-        if (!cache.frontmatter.name) return;
+    parseFrontmatter(info: FrontMatterInfo, file: FileDetails) {
+        if (!info.exists) return;
+
+        const frontmatter = LinkStringifier.transformYamlSource(
+            info.frontmatter
+        );
+
         const monster: Monster = this.validate(
-            Object.assign({}, copy(cache.frontmatter), {
-                note: file.path,
+            Object.assign({}, copy(YAML.parse(frontmatter)), {
                 mtime: file.mtime
             })
         );
@@ -227,8 +221,7 @@ class Parser {
 
         ctx.postMessage<UpdateEventMessage>({
             type: "update",
-            monster,
-            path: file.path
+            data: { monster, path: file.path }
         });
     }
     validate(draft: Partial<Monster>): Monster {

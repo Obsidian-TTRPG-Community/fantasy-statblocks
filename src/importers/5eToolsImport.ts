@@ -1,4 +1,3 @@
-import type { Monster } from "types";
 import { stringify } from "src/util/util";
 import type {
     ConditionImmunityArray,
@@ -14,6 +13,7 @@ import type {
     Align,
     Alignment
 } from "./bestiary";
+import type { Monster } from "index";
 
 const abilityMap: { [key: string]: string } = {
     str: "strength",
@@ -27,10 +27,10 @@ const abilityMap: { [key: string]: string } = {
 function parseString(str: string) {
     if (!str) return "";
     return str
-        .replace(/{@condition (.+?)}/g, "$1")
-        .replace(/{@item (.+?)}/g, "$1")
-        .replace(/{@spell ([\s\S]+?)}/g, `$1`)
-        .replace(/{@recharge (.+?)}/g, `(Recharge $1-6)`)
+        .replace(/{@condition (.+?)(?:\|.+)?}/g, "$1")
+        .replace(/{@item (.+?)(?:\|.+)?}/g, "$1")
+        .replace(/{@spell ([\s\S]+?)(?:\|.+)?}/g, `$1`)
+        .replace(/{@recharge (.+?)(?:\|.+)?}/g, `(Recharge $1-6)`)
         .replace(/{@recharge}/g, `(Recharge 6)`)
         .replace(/{@h}/g, ``)
         .replace(/{@damage (.+?)}/g, `$1`)
@@ -39,12 +39,27 @@ function parseString(str: string) {
         .replace(/{@atk mw}/g, `Melee Weapon Attack`)
         .replace(/{@atk rw}/g, `Ranged Weapon Attack`)
         .replace(/{@atk mw,rw}/g, `Melee / Ranged Weapon Attack`)
-        .replace(/{@creature (.+?)}/g, `$1`)
-        .replace(/{@skill (.+?)}/g, `$1`)
-        .replace(/{@dice (.+?)}/g, `$1`)
-        .replace(/{@hit (\d+?)}/g, `+$1`)
-        .replace(/{@dc (\d+?)}/g, `$1`)
-        .replace(/{@quickref (.+?)\|\|.+?}/, `$1`);
+        .replace(/{@atkr m}/g, `Melee Attack Roll:`)
+        .replace(/{@atkr r}/g, `Ranged Attack Roll:`)
+        .replace(/{@atkr m,r}/g, `Melee or Ranged Attack Roll:`)
+        .replace(/{@hom}/g, `Hit or Miss:`)
+        .replace(/{@creature (.+?)(?:\|.+)?}/g, `$1`)
+        .replace(/{@skill (.+?)(?:\|.+)?}/g, `$1`)
+        .replace(/{@dice (.+?)(?:\|.+)?}/g, `$1`)
+        .replace(/{@hit (\d+?)(?:\|.+)?}/g, `+$1`)
+        .replace(/{@dc (\d+?)(?:\|.+)?}/g, `$1`)
+        .replace(/{@quickref (.+?)\|\|.+?}/, `$1`)
+        .replace(/{@actSave str}/g, `Strength Saving Throw:`)
+        .replace(/{@actSave dex}/g, `Dexterity Saving Throw:`)
+        .replace(/{@actSave con}/g, `Constitution Saving Throw:`)
+        .replace(/{@actSave int}/g, `Inteligence Saving Throw:`)
+        .replace(/{@actSave wis}/g, `Wisdom Saving Throw:`)
+        .replace(/{@actSave cha}/g, `Charisma Saving Throw:`)
+        .replace(/{@actSaveFail}/g, `Failure:`)
+        .replace(/{@actSaveSuccess}/g, `Success:`)
+        .replace(/{actSaveSuccessOrFail}/g, `Failure or Success:`)
+        .replace(/{@variantrule (.+?)( \[|\|).+?}/g,`$1`);
+
 }
 
 export async function build5eMonsterFromFile(file: File): Promise<Monster[]> {
@@ -69,10 +84,11 @@ export async function build5eMonsterFromFile(file: File): Promise<Monster[]> {
                     try {
                         const importedMonster: Monster = {
                             image: null,
+                            bestiary: true,
                             name: monster.name,
                             source: getSource(monster),
                             type: getType(monster.type),
-                            subtype: "",
+                            subtype: getSubType(monster.type),
                             size: SIZE_ABV_TO_FULL[monster.size?.[0]],
                             alignment: getMonsterAlignment(monster),
                             hp:
@@ -183,6 +199,26 @@ function getType(type: Creature5eTools["type"]) {
     }
     return type.type;
 }
+
+function getSubType(type: Creature5eTools["type"]) {
+    if (!type) return;
+    if (typeof type == "string") {
+        return;
+    }
+    if (!type.tags) {
+        return;
+    }
+    let result: string[] = [];
+    for (var t of type.tags) {
+        if (typeof t == "string") {
+            result.push(t);
+        } else {
+            result.push(t.tag);
+        }
+    }
+    return result.join(", ");
+}
+
 function getCR(type: Creature5eTools["cr"]) {
     if (!type) return;
     if (typeof type == "string") {
@@ -258,9 +294,13 @@ function getAc(acField: Creature5eTools["ac"] = []) {
     }
     if (typeof item !== "object") return;
     if ("special" in item) {
-        return null;
+        return item.special;
     }
-    return item.ac;
+    if (!("ac" in item)) return null;
+    if ("from" in item) {
+        return `${item.ac} (${parseString(item.from.join(", "))})`;
+    }
+    return `${item.ac}`;
 }
 
 const spellMap: { [K in keyof EntrySpellcasting["spells"]]: string } = {
@@ -361,7 +401,7 @@ function extractSpellsBlocks(spellBlock: EntrySpellcasting): ExtractedSpells {
         "yearly",
         "charges"
     ] as const;
-    const frequencyMap: { [K in typeof frequencyCasting[number]]: string } = {
+    const frequencyMap: { [K in (typeof frequencyCasting)[number]]: string } = {
         rest: "/rest each",
         daily: "/day each",
         weekly: "/week each",
@@ -395,8 +435,16 @@ function getAlignmentString(alignment: Align[] | Align | Alignment): string {
     if (!alignment) return null; // used in sidekicks
     let alignments: string[] = [];
     if (Array.isArray(alignment)) {
+        let alignStr: string[] = [];
         for (const align of alignment) {
-            alignments.push(getAlignmentString(align));
+            if (typeof align === "string") {
+                alignStr.push(getAlignmentString(align));
+            } else {
+                alignments.push(getAlignmentString(align));
+            }
+        }
+        if (alignStr.length > 0) {
+            alignments.push(alignStr.join(" "));
         }
     } else if (typeof alignment === "object") {
         if ("special" in alignment && alignment.special != null) {

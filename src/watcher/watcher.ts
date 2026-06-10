@@ -1,18 +1,24 @@
-import { Component, Notice, TAbstractFile, TFile, TFolder } from "obsidian";
+import {
+    Component,
+    Notice,
+    Platform,
+    TAbstractFile,
+    TFile,
+    TFolder,
+    getFrontMatterInfo
+} from "obsidian";
 import type StatBlockPlugin from "src/main";
 //have to ignore until i fix typing issue
 //@ts-expect-error
-import Worker, {
+import FSWorker, {
     GetFileCacheMessage,
     FileCacheMessage,
     QueueMessage,
     UpdateEventMessage,
     SaveMessage,
-    FinishFileMessage,
-    DebugMessage,
-    ReadMessage,
-    ContentMessage
+    DebugMessage
 } from "./watcher.worker";
+import { Bestiary } from "src/bestiary/bestiary";
 
 declare global {
     interface Worker {
@@ -20,26 +26,34 @@ declare global {
     }
 }
 
-export class Watcher extends Component {
+class WatcherClass extends Component {
     announce: boolean;
+    plugin: StatBlockPlugin;
     get metadataCache() {
         return this.plugin.app.metadataCache;
     }
     get vault() {
         return this.plugin.app.vault;
     }
-    constructor(public plugin: StatBlockPlugin) {
-        super();
-    }
 
     watchPaths: Map<string, string> = new Map();
 
-    worker = new Worker();
+    workers: FSWorker[] = [];
+    index = 0;
+
+    queue: Set<string> = new Set();
+
     setDebug() {
-        this.worker.postMessage<DebugMessage>({
-            type: "debug",
-            debug: this.plugin.settings.debug
-        });
+        for (const worker of this.workers) {
+            worker.postMessage<DebugMessage>({
+                type: "debug",
+                data: this.plugin.settings.debug
+            });
+        }
+    }
+    initialize(plugin: StatBlockPlugin) {
+        this.plugin = plugin;
+        return this;
     }
     onload() {
         this.setDebug();
@@ -90,110 +104,86 @@ export class Watcher extends Component {
         );
 
         //worker messages
-        /** The worker will ask for file information from files in its queue here */
-        this.worker.addEventListener(
-            "message",
-            (event: MessageEvent<GetFileCacheMessage>) => {
-                if (event.data.type == "get") {
-                    const { path } = event.data;
-                    const data = this.getFileInformation(path);
-                    //TODO: Add in file data parsing for events
-                    //TODO: E.g., timelines
-                    this.worker.postMessage<FileCacheMessage>({
-                        type: "file",
-                        path,
-                        ...data
-                    });
-                }
-            }
-        );
 
-        /** The worker has found an event that should be updated. */
-        this.worker.addEventListener(
-            "message",
-            async (evt: MessageEvent<UpdateEventMessage>) => {
-                if (evt.data.type == "update") {
-                    let { monster, path } = evt.data;
-                    let update = false;
-                    if (this.watchPaths.has(path)) {
-                        const existing = this.watchPaths.get(path);
-                        await this.plugin.deleteMonster(existing);
-                        update = true;
+        const cores = Platform.isIosApp
+            ? 2
+            : Math.max(Math.ceil(navigator.hardwareConcurrency / 2), 2);
+        for (let i = 0; i < cores; i++) {
+            const worker = new FSWorker();
+            this.workers.push(worker);
+            /** The worker will ask for file information from files in its queue here */
+            worker.addEventListener(
+                "message",
+                async (event: MessageEvent<GetFileCacheMessage>) => {
+                    if (event.data.type == "get") {
+                        const path = event.data.data;
+                        const abstract =
+                            this.plugin.app.vault.getAbstractFileByPath(path);
+                        this.queue.delete(path);
+                        if (abstract instanceof TFile) {
+                            const data = await this.getFileInformation(
+                                abstract
+                            );
+
+                            worker.postMessage<FileCacheMessage>(
+                                data ?? { type: "file" }
+                            );
+                        } else {
+                            worker.postMessage<Partial<FileCacheMessage>>({
+                                type: "file"
+                            });
+                            this.parsePath(abstract);
+                        }
+                    }
+                }
+            );
+
+            /** The worker has found an event that should be updated. */
+            worker.addEventListener(
+                "message",
+                async (evt: MessageEvent<UpdateEventMessage>) => {
+                    if (evt.data.type == "update") {
+                        let { monster, path } = evt.data.data;
+
+                        let update = Bestiary.hasCreature(monster.name);
+                        monster.path = path;
+
+                        Bestiary.addEphemeralCreature(monster);
+
+                        this.watchPaths.set(path, monster.name);
+
                         if (this.plugin.settings.debug)
                             console.debug(
-                                `Fantasy Statblocks: Updating ${monster.name}`
+                                `Fantasy Statblocks: ${
+                                    update ? "Updated" : "Added"
+                                } ${monster.name}`
                             );
                     }
+                }
+            );
 
-                    if (
-                        "monster" in monster &&
-                        this.plugin.bestiary.has(monster.monster)
-                    ) {
-                        monster = {
-                            ...this.plugin.bestiary.get(monster.monster),
-                            ...monster
-                        };
+            /** The worker has parsed all files in its queue. */
+            worker.addEventListener(
+                "message",
+                async (evt: MessageEvent<SaveMessage>) => {
+                    if (evt.data.type == "save") {
+                        await this.save();
                     }
-
-                    this.watchPaths.set(path, monster.name);
-                    await this.plugin.saveMonster(monster, false, false);
-
-                    if (this.plugin.settings.debug)
-                        console.debug(
-                            `Fantasy Statblocks: ${
-                                update ? "Updated" : "Added"
-                            } ${monster.name}`
-                        );
                 }
-            }
-        );
+            );
+        }
 
-        /** The worker has parsed all files in its queue. */
-        this.worker.addEventListener(
-            "message",
-            async (evt: MessageEvent<SaveMessage>) => {
-                if (evt.data.type == "save") {
-                    await this.save();
-                }
-            }
-        );
-        this.worker.addEventListener(
-            "message",
-            async (evt: MessageEvent<ReadMessage>) => {
-                if (evt.data.type == "read") {
-                    const file = this.plugin.app.vault.getAbstractFileByPath(
-                        evt.data.path
-                    );
-                    if (!(file instanceof TFile)) return "";
-                    await this.plugin.app.vault
-                        .read(file)
-                        .then((fileContent) => {
-                            this.worker.postMessage<ContentMessage>({
-                                type: "content",
-                                path: evt.data.path,
-                                content: fileContent
-                            });
-                        });
-                }
-            }
-        );
         this.plugin.app.workspace.onLayoutReady(() => {
-            for (const [_, monster] of this.plugin.settings.monsters.filter(
-                ([_, monster]) => monster.note
-            )) {
-                if (this.watchPaths.has(monster.note)) {
-                    //multiple defined for this note... delete them all
-                    this.plugin.deleteMonster(monster.name);
-                }
-                this.watchPaths.set(monster.note, monster.name);
+            if (!this.plugin.settings.autoParse) {
+                Bestiary.setResolved(true);
+                return;
             }
-
-            if (!this.plugin.settings.autoParse) return;
-            this.start();
+            this.start(true);
         });
     }
     async save() {
-        await this.plugin.saveSettings();
+        //still have files queued
+        if (this.queue.size) return;
         if (this.startTime) {
             console.info(
                 `Fantasy Statblocks: Frontmatter Parsing Complete in ${(
@@ -207,9 +197,10 @@ export class Watcher extends Component {
             new Notice("Fantasy Statblocks: Frontmatter Parsing complete.");
             this.announce = false;
         }
+        Bestiary.setResolved(true);
     }
     async delete(path: string) {
-        await this.plugin.deleteMonster(this.watchPaths.get(path));
+        Bestiary.removeEphemeralCreature(this.watchPaths.get(path));
         this.watchPaths.delete(path);
         if (this.plugin.settings.debug)
             console.debug(
@@ -218,6 +209,7 @@ export class Watcher extends Component {
     }
     startTime: number;
     start(announce = false) {
+        Bestiary.setResolved(false);
         this.announce = announce;
         this.startTime = Date.now();
         console.info("Fantasy Statblocks: Starting Frontmatter Parsing.");
@@ -253,35 +245,53 @@ export class Watcher extends Component {
         for (const path of this.getFiles(folder)) {
             parsing.add(path);
         }
+
         this.startParsing([...parsing]);
     }
     startParsing(paths: string[]) {
         if (paths.length) {
-            this.worker.postMessage<QueueMessage>({
+            for (const path of paths) {
+                this.queue.add(path);
+            }
+            this.workers[this.index].postMessage<QueueMessage>({
                 type: "queue",
-                paths
+                data: paths
             });
+            this.index = (this.index + 1) % this.workers.length;
         }
     }
-    getFileInformation(path: string) {
-        const file = this.plugin.app.vault.getAbstractFileByPath(path);
-        if (!(file instanceof TFile)) return {};
+    async getFileInformation(file: TFile): Promise<FileCacheMessage | null> {
         if (this.watchPaths.has(file.path)) {
-            const monster = this.plugin.bestiary.get(
-                this.watchPaths.get(file.path)
-            );
+            const monster = Bestiary.get(this.watchPaths.get(file.path));
 
-            if (monster && monster.mtime && monster.mtime == file.stat.mtime)
-                return {};
+            if (monster?.mtime == file.stat.mtime) return null;
         }
 
-        const cache = this.metadataCache.getFileCache(file);
+        const cache = this.plugin.app.metadataCache.getFileCache(file);
+        if (!cache?.frontmatter?.statblock) return null;
+        if (
+            cache?.frontmatter?.statblock !== true &&
+            cache?.frontmatter?.statblock !== "true" &&
+            cache?.frontmatter?.statblock !== "inline"
+        )
+            return null;
+        const content = await this.plugin.app.vault.cachedRead(file);
+        const info = getFrontMatterInfo(content);
+
         return {
-            cache,
-            file: {
-                path: file.path,
-                basename: file.basename,
-                mtime: file.stat.mtime
+            type: "file",
+            data: {
+                statblock:
+                    cache.frontmatter.statblock == "inline"
+                        ? "inline"
+                        : "frontmatter",
+                content,
+                info,
+                file: {
+                    path: file.path,
+                    basename: file.basename,
+                    mtime: file.stat.mtime
+                }
             }
         };
     }
@@ -289,7 +299,7 @@ export class Watcher extends Component {
         let files = [];
         if (folder instanceof TFolder) {
             for (const child of folder.children) {
-                files.push(...this.getFiles(child));
+                files.push(child.path);
             }
         }
         if (folder instanceof TFile && folder.extension === "md") {
@@ -298,14 +308,14 @@ export class Watcher extends Component {
         return files;
     }
     async reparseVault() {
-        for (const monster of this.watchPaths.values()) {
-            this.plugin.deleteMonster(monster, false, false);
-        }
-
         this.start(false);
     }
     onunload() {
-        this.worker.terminate();
-        this.worker = null;
+        for (const worker of this.workers) {
+            worker.terminate();
+        }
+        this.workers = [];
     }
 }
+
+export const Watcher = new WatcherClass();

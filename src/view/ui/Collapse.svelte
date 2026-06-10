@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { CollapseItem } from "types/layout";
+    import type { CollapseItem } from "src/layouts/layout.types";
     import { onMount } from "svelte";
 
     export let block: CollapseItem;

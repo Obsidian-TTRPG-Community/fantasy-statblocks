@@ -1,11 +1,12 @@
 //@ts-ignore
 import ImportWorker from "./importer.worker";
-import type { Monster } from "types";
-import { App, Modal, Notice, Setting, TextComponent } from "obsidian";
+import type { Monster } from "index";
+import { App, Notice, Setting } from "obsidian";
 import type StatBlockPlugin from "src/main";
 import { nanoid } from "src/util/util";
+import FantasyStatblockModal from "src/modal/modal";
 
-class SourcePromptModal extends Modal {
+class SourcePromptModal extends FantasyStatblockModal {
     source: string;
     saved: boolean = false;
     display() {
@@ -47,7 +48,7 @@ class SourcePromptModal extends Modal {
     }
 }
 
-const getSourceFromPrompt = async (app: App): Promise<string> => {
+const getSourceFromPrompt = async (app: StatBlockPlugin): Promise<string> => {
     return new Promise((resolve) => {
         const modal = new SourcePromptModal(app);
         modal.onClose = () => {
@@ -82,7 +83,7 @@ export default class Importer {
                     let source: string;
                     if (
                         sourceless.length &&
-                        (source = await getSourceFromPrompt(this.plugin.app))
+                        (source = await getSourceFromPrompt(this.plugin))
                     ) {
                         sourceless.forEach(
                             (monster) => (monster.source = source)

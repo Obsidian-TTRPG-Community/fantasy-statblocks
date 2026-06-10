@@ -1,10 +1,10 @@
 <script lang="ts">
     import type { Monster } from "index";
-    import type { ImageItem } from "types/layout";
+    import type { ImageItem } from "src/layouts/layout.types";
     import type StatBlockPlugin from "src/main";
     import { getContext } from "svelte";
     import { Platform, TFile } from "obsidian";
-    import { Linkifier } from "src/util/linkify";
+    import { Linkifier } from "src/parser/linkify";
 
     export let monster: Monster;
     export let item: ImageItem;
@@ -69,13 +69,14 @@
         leaf.openFile(file);
     }
     function popover(evt: MouseEvent & { currentTarget: HTMLDivElement }) {
-        plugin.app.workspace.trigger(
-            "link-hover",
-            {},
-            evt.currentTarget,
-            file.path,
-            context
-        );
+        if (!file) return;
+        plugin.app.workspace.trigger("hover-link", {
+            event: evt,
+            source: plugin.manifest.id,
+            hoverParent: plugin.app.workspace.getMostRecentLeaf(),
+            targetEl: evt.currentTarget,
+            linktext: file.path
+        });
     }
 </script>
 
@@ -92,8 +93,8 @@
 
 <style>
     .image {
-        width: var(--statblock-image-width);
-        height: var(--statblock-image-height);
+        width: var(--active-image-width);
+        height: var(--active-image-height);
     }
     .image.pointer {
         cursor: pointer;
@@ -103,8 +104,8 @@
         width: 100%;
         height: 100%;
         border-radius: 100%;
-        border: var(--statblock-image-border-size) solid
-            var(--statblock-image-border-color);
+        border: var(--active-image-border-size) solid
+            var(--active-image-border-color);
         object-position: center;
     }
 </style>

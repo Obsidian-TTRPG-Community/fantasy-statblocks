@@ -1,12 +1,12 @@
+import type { Monster } from "index";
 import {
     ItemView,
     type WorkspaceLeaf,
     debounce,
     ExtraButtonComponent,
-    TextComponent,
     SearchComponent
 } from "obsidian";
-import type { Monster } from "obsidian-overload";
+import { Bestiary } from "src/bestiary/bestiary";
 import type StatBlockPlugin from "src/main";
 import { MonsterSuggestionModal } from "src/util/creature";
 
@@ -25,20 +25,18 @@ export class CreatureView extends ItemView {
         this.containerEl.on(
             "mouseover",
             "a.internal-link",
-            debounce(
-                (ev) =>
-                    app.workspace.trigger(
-                        "link-hover",
-                        {}, //hover popover, but don't need
-                        ev.target, //targetEl
-                        (ev.target as HTMLAnchorElement).dataset.href, //linkText
-                        "fantasy-statblocks " //source
-                    ),
-                10
-            )
+            debounce((event) => {
+                this.plugin.app.workspace.trigger("hover-link", {
+                    event,
+                    source: this.plugin.manifest.id,
+                    hoverParent: this.leaf,
+                    targetEl: event.target as HTMLAnchorElement,
+                    linktext: (event.target as HTMLAnchorElement).dataset.href
+                });
+            }, 10)
         );
         this.containerEl.on("click", "a.internal-link", (ev) =>
-            app.workspace.openLinkText(
+            this.app.workspace.openLinkText(
                 (ev.target as HTMLAnchorElement).dataset.href,
                 "fantasy-statblocks"
             )
@@ -49,15 +47,19 @@ export class CreatureView extends ItemView {
             "Find a creature"
         );
         const suggester = new MonsterSuggestionModal(
-            this.plugin,
-            search.inputEl
+            this.plugin.app,
+            search,
+            Bestiary.getBestiaryCreatures()
         );
-        suggester.onClose = async () => {
-            if (suggester.creature) {
-                await this.render(suggester.creature);
+        Bestiary.onResolved(() => {
+            suggester.items = Bestiary.getBestiaryCreatures();
+        });
+        suggester.onSelect(async (v) => {
+            if (v) {
+                await this.render(v.item);
                 search.setValue("");
             }
-        };
+        });
         new ExtraButtonComponent(this.topEl)
             .setIcon("cross")
             .setTooltip("Close Statblock")
@@ -74,7 +76,7 @@ export class CreatureView extends ItemView {
             });
             return;
         }
-        const statblock = this.plugin.render(creature, this.statblockEl);
+        const statblock = this.plugin.api.render(creature, this.statblockEl);
         this.addChild(statblock);
     }
 

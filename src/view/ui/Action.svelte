@@ -1,7 +1,7 @@
 <script lang="ts">
     import { ExtraButtonComponent, Notice } from "obsidian";
     import type { Monster } from "obsidian-overload";
-    import type { ActionItem } from "types/layout";
+    import type { ActionItem } from "src/layouts/layout.types";
 
     export let block: ActionItem;
     export let monster: Monster;

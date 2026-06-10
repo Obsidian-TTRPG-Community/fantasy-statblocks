@@ -1,4 +1,4 @@
-import type { Layout } from "types/layout";
+import type { Layout } from "src/layouts/layout.types";
 
 /**
  * Default location of the official community template registry.

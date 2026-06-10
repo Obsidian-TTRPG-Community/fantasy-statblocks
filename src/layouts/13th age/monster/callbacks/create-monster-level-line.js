@@ -1,4 +1,4 @@
-var base_string = `${monster.level} level ${monster.role}`;
+let base_string = `${monster.level} level ${monster.role}`;
 
 if (monster.size) {
     base_string = `${monster.size} ${base_string}`;

@@ -8,11 +8,8 @@ import {
     parseYaml
 } from "obsidian";
 import type StatBlockPlugin from "src/main";
-import type {
-    CommonProps,
-    ItemWithProperties,
-    StatblockItem
-} from "types/layout";
+import type { CommonProps } from "src/layouts/layout.types";
+import { Bestiary } from "src/bestiary/bestiary";
 enum SuggestContext {
     Layout,
     Creature,
@@ -30,7 +27,8 @@ const STANDARD_FIELDS = [
     "columns",
     "forceColumns",
     "columnWidth",
-    "columnHeight"
+    "columnHeight",
+    "extends"
 ];
 
 export class StatblockSuggester extends EditorSuggest<string> {
@@ -49,7 +47,7 @@ export class StatblockSuggester extends EditorSuggest<string> {
                 break;
             }
             case SuggestContext.Creature: {
-                suggestions = this.plugin.getBestiaryNames();
+                suggestions = this.plugin.api.getBestiaryNames();
                 break;
             }
             case SuggestContext.Layout: {
@@ -207,16 +205,16 @@ export class StatblockSuggester extends EditorSuggest<string> {
                 query
             };
         }
-        if (/^(monster|creature):/.test(line)) {
+        if (/^(monster|creature|extends):/.test(line)) {
             this._context = SuggestContext.Creature;
-            const match = line.match(/^(monster|creature):\s?(.*)\n?/);
+            const match = line.match(/^(monster|creature|extends):\s?(.*)\n?/);
             if (!match) return null;
             const [_, param, query] = match;
 
             if (
-                this.plugin
-                    .getBestiaryNames()
-                    .find((p) => p.toLowerCase() == query.toLowerCase())
+                Bestiary.getBestiaryNames().find(
+                    (p) => p.toLowerCase() == query.toLowerCase()
+                )
             ) {
                 return null;
             }
@@ -238,9 +236,9 @@ export class StatblockSuggester extends EditorSuggest<string> {
             const [_, param, query] = match;
 
             if (
-                this.plugin.layouts.find(
-                    (p) => p.name.toLowerCase() == query.toLowerCase()
-                )
+                this.plugin.manager
+                    .getAllLayouts()
+                    .find((p) => p.name.toLowerCase() == query.toLowerCase())
             ) {
                 return null;
             }

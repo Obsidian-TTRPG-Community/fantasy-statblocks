@@ -3,22 +3,23 @@
 
     type Spell = { level?: string; spells: string };
     export let spell: Spell;
-    export let render = false;
+    export let first = false;
+    export let last = false;
 </script>
 
-<ul class="spell-item">
+<ul class="spell-item" class:first class:last>
     {#if !spell.level}
         <span class="spell-line">
-            <TextContentHolder {render} property={spell.spells} />
+            <TextContentHolder property={spell.spells} />
         </span>
     {:else}
         <li class="spell-line">
             <span class="spell-level">
-                <TextContentHolder {render} property={`${spell.level}:`} />
+                <TextContentHolder property={`${spell.level}:`} />
                 <!-- {spellItem.split(":").shift()}: -->
             </span>
             <span class="spells">
-                <TextContentHolder {render} property={spell.spells} />
+                <TextContentHolder property={spell.spells} />
                 <!-- {spellItem.split(":").pop()} -->
             </span>
         </li>
@@ -29,10 +30,10 @@
     ul.spell-item {
         margin: 0;
     }
-    ul.spell-item:first-of-type {
+    ul.spell-item.first {
         margin-top: revert;
     }
-    ul.spell-item:last-of-type {
+    ul.spell-item.last {
         margin-bottom: revert;
     }
     .spells {

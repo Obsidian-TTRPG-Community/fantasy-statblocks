@@ -1,4 +1,4 @@
-import type {DefaultLayout} from "../../../../types/layout";
+import type {DefaultLayout} from "../../layout.types";
 
 export const Layout13thAgeMonster: DefaultLayout = {
     blocks: [

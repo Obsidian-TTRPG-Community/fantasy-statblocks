@@ -1,0 +1,370 @@
+.daggerheart-adversary {
+    --statblock-section-heading-font-size: 16px;
+    --statblock-rule-color: var(--color-accent);
+    --statblock-background-color: #ede9ff;
+    --statblock-bar-color: #7a7a7a;
+    --statblock-heading-font-color: #000000;
+    --statblock-property-name-font-color: #000000;
+    --statblock-section-heading-font-color: #000000;
+    --statblock-section-heading-border-color: #7a7a7a;
+    --daggerheart-text-normal: #000000;
+    --daggerheart-text-muted: #7a7a7a;
+
+    .statblock-content.statblock-content.statblock-content {
+        box-shadow: none;
+        border-color: var(--background-secondary-alt);
+        color: var(--daggerheart-text-normal);
+        padding: 0em 0.5em;
+    }
+
+    .daggerheart-adversary-tier .line,
+    .daggerheart-adversary-tier .line p,
+    .daggerheart-adversary-tier .line span {
+        font-size: 1.25em;
+        font-style: italic;
+        font-weight: bold;
+    }
+
+    .daggerheart-adversary-tier .line .property-name {
+        margin-right: 0;
+    }
+
+    .statblock-content .features {
+        margin-top: 1.0rem;
+    }
+
+    .features .statblock-rendered-text-content {
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+
+    .traits-container .statblock-trait-prop,
+    .statblock-item-container.statblock-trait-prop,
+    .statblock-item-container.javascript-container {
+        margin: 0.5rem;
+    }
+
+    div.property-container div.experience,
+    div.property-container div.motives_and_tactics,
+    div.daggerheart-adversary-description div p {
+        margin: 0.5rem;
+    }
+
+    .daggerheart-adversary-description {
+        font-style: italic;
+    }
+
+    .statblock-item-container .feats,
+    .statblock-item-container .adversary-block {
+        margin: 1.25em;
+    }
+
+    .heading-container .name div {
+        font-size: 1.5em;
+    }
+
+    div.property-container div.atk {
+        min-width: 60px;
+    }
+
+
+
+    div.property-container div.difficulty p,
+    div.property-container div.thresholds p,
+    div.property-container div.hp p,
+    div.property-container div.stress p,
+    div.property-container div.atk p {
+        font-size: 1.25em;
+        font-weight: bold;
+    }
+
+    div.property-container div.difficulty,
+    div.property-container div.thresholds,
+    div.property-container div.hp,
+    div.property-container div.stress,
+    div.property-container div.atk,
+    div.property-container div.attack {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .column .inline-container {
+        margin: 0.5rem;
+    }
+
+    div.property-container div.attack {
+        margin-right: 1.5rem;
+    }
+
+    .adversary-block .stat-line {
+        margin-bottom: 0.5rem;
+    }
+    .adversary-block .stat-line span {
+        font-weight: bold;
+    }
+
+    .adversary-block .stat-line .adversary-name {
+        font-size: 1.2rem;
+    }
+    
+    .adversary-block .stat-line .stat-name {
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+        line-height: 1.5rem;
+        width: 150px;
+    }
+
+    .adversary-block .stat-line input {
+        vertical-align: middle;
+    }
+
+    .adversary-block .stat-line input.hp-2,
+    .adversary-block .stat-line input.hp-5,
+    .adversary-block .stat-line input.hp-8,
+    .adversary-block .stat-line input.hp-11,
+    .adversary-block .stat-line input.hp-14,
+    .adversary-block .stat-line input.hp-17,
+    .adversary-block .stat-line input.hp-20 {
+        margin-right: 0.8rem;
+    }
+}
+
+.daggerheart-card {
+    --statblock-section-heading-font-size: 16px;
+    --statblock-rule-color: var(--color-accent);
+    --statblock-background-color: #ffffff;
+    --statblock-bar-color: #7a7a7a;
+    --statblock-heading-font-color: #000000;
+    --statblock-property-name-font-color: #000000;
+    --statblock-section-heading-font-color: #000000;
+    --statblock-section-heading-border-color: #7a7a7a;
+    --daggerheart-text-normal: #000000;
+    --daggerheart-text-muted: #7a7a7a;
+    --daggerheart-domain-color-Arcana: #603c73;
+    --daggerheart-domain-color-Blade: #89251f;
+    --daggerheart-domain-color-Bone: #afb5b9;
+    --daggerheart-domain-color-Codex: #245990;
+    --daggerheart-domain-color-Grace: #c44488;
+    --daggerheart-domain-color-Midnight: #191c1e;
+    --daggerheart-domain-color-Sage: #117240;
+    --daggerheart-domain-color-Splendor: #e3c127;
+    --daggerheart-domain-color-Valor: #b25c1e;
+    --daggerheart-domain-color-Other: #ccc;
+
+    .statblock-content.statblock-content.statblock-content {
+        box-shadow: none;
+        border-color: var(--background-secondary-alt);
+        color: var(--daggerheart-text-normal);
+        padding: 0em 0.5em;
+    }
+
+    .level .property-name,
+    .domain .property-name,
+    .recall .property-name,
+    .text .property-name {
+        display: none;
+        visibility: hidden;
+    }
+
+    .level p,
+    .recall p {
+        font-weight: bolder;
+    }
+
+    .level p {
+        font-size: 2em;
+    }
+
+    .domain p,
+    .card-type span {
+        font-weight: bold;
+        font-size: 1.2em;
+    }
+
+    .daggerheart-card-ribbon {
+        margin-left: 0.5rem;
+        margin-bottom: 150px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 0.5rem;
+        box-shadow: 2px 2px 2px #000000; 
+    }
+
+    .daggerheart-card-ribbon span {
+        font-size: 1.5em;
+        font-weight: bold;
+        color: white;
+        text-shadow: 2px 2px 2px #000000;  
+    }
+
+    .daggerheart-card-ribbon:has(.Arcana) {
+        background-color: var(--daggerheart-domain-color-Arcana);
+    }
+
+    .daggerheart-card-ribbon:has(.Blade) {
+        background-color: var(--daggerheart-domain-color-Blade);
+    }
+
+    .daggerheart-card-ribbon:has(.Bone) {
+        background-color: var(--daggerheart-domain-color-Bone);
+    }
+
+    .daggerheart-card-ribbon:has(.Codex) {
+        background-color: var(--daggerheart-domain-color-Codex);
+    }
+
+    .daggerheart-card-ribbon:has(.Grace) {
+        background-color: var(--daggerheart-domain-color-Grace);
+    }
+
+    .daggerheart-card-ribbon:has(.Midnight) {
+        background-color: var(--daggerheart-domain-color-Midnight);
+    }
+
+    .daggerheart-card-ribbon:has(.Sage) {
+        background-color: var(--daggerheart-domain-color-Sage);
+    }
+
+    .daggerheart-card-ribbon:has(.Splendor) {
+        background-color: var(--daggerheart-domain-color-Splendor);
+    }
+
+    .daggerheart-card-ribbon:has(.Valor) {
+        background-color: var(--daggerheart-domain-color-Valor);
+    }
+
+    .daggerheart-card-ribbon:has(.Other) {
+        background-color: var(--daggerheart-domain-color-Other);
+    }
+
+    .daggerheart-heading:has(.Arcana) .card-type {
+        background-image: linear-gradient(to right, white, var(--daggerheart-domain-color-Arcana), white);
+    }
+
+    .daggerheart-heading:has(.Blade) .card-type {
+        background-image: linear-gradient(to right, white, var(--daggerheart-domain-color-Blade), white);
+    }
+
+    .daggerheart-heading:has(.Bone) .card-type {
+        background-image: linear-gradient(to right, white, var(--daggerheart-domain-color-Bone), white);
+    }
+
+    .daggerheart-heading:has(.Codex) .card-type {
+        background-image: linear-gradient(to right, white, var(--daggerheart-domain-color-Codex), white);
+    }
+
+    .daggerheart-heading:has(.Grace) .card-type {
+        background-image: linear-gradient(to right, white, var(--daggerheart-domain-color-Grace), white);
+    }
+
+    .daggerheart-heading:has(.Midnight) .card-type {
+        background-image: linear-gradient(to right, white, var(--daggerheart-domain-color-Midnight), white);
+    }
+
+    .daggerheart-heading:has(.Sage) .card-type {
+        background-image: linear-gradient(to right, white, var(--daggerheart-domain-color-Sage), white);
+    }
+
+    .daggerheart-heading:has(.Splendor) .card-type {
+        background-image: linear-gradient(to right, white, var(--daggerheart-domain-color-Splendor), white);
+    }
+
+    .daggerheart-heading:has(.Valor) .card-type {
+        background-image: linear-gradient(to right, white, var(--daggerheart-domain-color-Valor), white);
+    }
+
+    .daggerheart-heading:has(.Other) .card-type {
+        background-image: linear-gradient(to right, white, var(--daggerheart-domain-color-Other), white);
+    }
+
+    .daggerheart-card .card-type {
+        // background-image: linear-gradient(to right, white, var(--daggerheart-domain-color-Arcana), white);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .daggerheart-card .card-type span {
+        color: white;
+        line-height: 2.0em;
+        text-shadow: 2px 2px 2px #000000;  
+    }
+    
+    .recall .statblock-markdown {
+        margin: 0.5em;
+        border: 1px solid var(--statblock-bar-color);
+        background-color: var(--statblock-property-name-font-color);
+        height: 38px;
+        width: 38px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .recall p {
+        color: #ffffff;
+        font-size: 1.5em;
+    }
+
+    .heading-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .text {
+        margin: 1.5em;
+        margin-left: 2em;
+        margin-right: 2em;
+
+    }
+}
+
+.daggerheart-environment {
+    --statblock-section-heading-font-size: 16px;
+    --statblock-rule-color: var(--color-accent);
+    --statblock-background-color: #ede9ff;
+    --statblock-bar-color: #7a7a7a;
+    --statblock-heading-font-color: #000000;
+    --statblock-property-name-font-color: #000000;
+    --statblock-section-heading-font-color: #000000;
+    --statblock-section-heading-border-color: #7a7a7a;
+    --daggerheart-text-normal: #000000;
+    --daggerheart-text-muted: #7a7a7a;
+
+    .statblock-content.statblock-content.statblock-content {
+        box-shadow: none;
+        border-color: var(--background-secondary-alt);
+        color: var(--daggerheart-text-normal);
+        padding: 0em 0.5em;
+    }
+
+    .daggerheart-environment-tier .line {
+        font-size: 1.2em;
+        font-style: italic;
+        font-weight: bold;
+    }
+
+    .daggerheart-environment-tier .line .property-name {
+        margin-right: 0;
+    }
+
+    .features .statblock-rendered-text-content {
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+
+    .traits-container .statblock-trait-prop,
+    .statblock-item-container.statblock-trait-prop {
+        margin: 0.5rem;
+    }
+
+    .daggerheart-environment-description {
+        font-style: italic;
+    }
+}

@@ -5,16 +5,19 @@ import type { Trait } from "index";
 import { basicSetup } from "src/util/editor/extensions";
 import { materialPalenight } from "src/util/editor/theme-dark";
 import { basicLightTheme } from "src/util/editor/theme-light";
+
 export function editorFromTextArea(
     textarea: HTMLTextAreaElement,
-    facet?: Extension
+    facet?: Extension,
+    lang: "js" | "yaml" = "js"
 ) {
+    let setup = basicSetup();
     if (document.body.hasClass("theme-dark")) {
-        basicSetup.push(materialPalenight);
+        setup.push(materialPalenight);
     } else {
-        basicSetup.push(basicLightTheme);
+        setup.push(basicLightTheme);
     }
-    const extensions = [...basicSetup];
+    const extensions = [...setup];
     if (facet) extensions.push(facet);
     let view = new EditorView({
         state: EditorState.create({
@@ -38,13 +41,17 @@ export function slugify(str: string) {
         .replace(/\s+/g, "-");
 }
 
+export const slugifyLayoutForCss = (layoutName: string, fallback?: string) =>
+    layoutName?.toLowerCase().replace(/\s+/g, "-").replaceAll(".", "-") ??
+    fallback;
+
 export function toTitleCase(str: string): string {
     return str[0].toUpperCase() + str.slice(1).toLowerCase();
 }
 
 export function nanoid() {
     return "xyxyxyxyxyxy".replace(/[xy]/g, function (c) {
-        var r = (Math.random() * 16) | 0,
+        let r = (Math.random() * 16) | 0,
             v = c == "x" ? r : (r & 0x3) | 0x8;
         return v.toString(16);
     });
@@ -76,12 +83,12 @@ export function stringify(
     if (Array.isArray(property)) {
         ret.push(
             `${parens ? "(" : ""}${property
-                .map((p) => stringify(p, depth++))
+                .map((p) => stringify(p, depth + 1))
                 .join(joiner)}${parens ? ")" : ""}`
         );
     } else if (typeof property == "object") {
         for (const value of Object.values(property)) {
-            ret.push(stringify(value, depth++));
+            ret.push(stringify(value, depth + 1));
         }
     }
     return ret.join(" ");

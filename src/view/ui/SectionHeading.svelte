@@ -1,6 +1,11 @@
 <script lang="ts">
     import type { Monster } from "index";
-    import type { TextItem, TraitsItem, GroupItem, InlineItem } from "types/layout";
+    import type {
+        TextItem,
+        TraitsItem,
+        GroupItem,
+        InlineItem
+    } from "src/layouts/layout.types";
     import { stringify } from "src/util/util";
     import TextContent from "./TextContent.svelte";
 
@@ -17,11 +22,11 @@
     } else if (item.heading?.length) {
         header = item.heading;
     }
-const slugify = (header: string) =>
+    const slugify = (header: string) =>
         header
             .toLowerCase()
             .replace(/[^A-Za-z0-9\s]/g, "")
-            .replace(/\s+/g, "-")
+            .replace(/\s+/g, "-");
 </script>
 
 {#if header && header.length}
@@ -32,12 +37,13 @@ const slugify = (header: string) =>
 
 <style>
     .section-header {
-        border-bottom: var(--statblock-section-heading-border-size) solid
-            var(--statblock-section-heading-border-color);
-        color: var(--statblock-section-heading-font-color);
-        font-size: var(--statblock-section-heading-font-size);
-        font-variant: var(--statblock-section-heading-font-variant);
-        font-weight: var(--statblock-section-heading-font-weight);
+        border-bottom: var(--active-section-heading-border-size) solid
+            var(--active-section-heading-border-color);
+        color: var(--active-section-heading-font-color);
+        font-size: var(--active-section-heading-font-size);
+        font-variant: var(--active-section-heading-font-variant);
+        font-weight: var(--active-section-heading-font-weight);
+        font-family: var(--active-section-heading-font);
         letter-spacing: 1px;
         margin: 0;
         margin-bottom: 0.3em;

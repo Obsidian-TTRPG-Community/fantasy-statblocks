@@ -1,5 +1,5 @@
 import { nanoid } from "src/util/util";
-import type { DefaultLayout, Layout, StatblockItem } from "../../../types/layout";
+import type { DefaultLayout, Layout, StatblockItem } from "../layout.types";
 /** You may need to edit the import path above if you are multiple folders deep. */
 
 

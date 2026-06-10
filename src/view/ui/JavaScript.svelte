@@ -1,14 +1,17 @@
 <script lang="ts">
     import type { Monster } from "index";
     import { Notice } from "obsidian";
-    import type { JavaScriptItem } from "types/layout";
+    import type { JavaScriptItem } from "src/layouts/layout.types";
     import type StatBlockPlugin from "src/main";
 
     import { getContext } from "svelte";
+    import type { Writable } from "svelte/store";
 
     export let block: JavaScriptItem;
 
-    let monster = getContext<Monster>("monster");
+    const monsterStore = getContext<Writable<Monster>>("monster");
+    let monster = $monsterStore;
+    monsterStore.subscribe((m) => (monster = m));
     let plugin = getContext<StatBlockPlugin>("plugin");
 
     const render = (div: HTMLElement) => {

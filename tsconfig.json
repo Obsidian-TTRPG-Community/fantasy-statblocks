@@ -14,5 +14,5 @@
         "lib": ["dom", "esnext", "scripthost", "es2020"],
         "isolatedModules": false
     },
-    "include": ["**/*.ts"]
+    "include": ["**/*.ts", "**/*.svelte"]
 }

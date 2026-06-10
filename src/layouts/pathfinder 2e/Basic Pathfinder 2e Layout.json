@@ -1,406 +1,432 @@
 {
-  "blocks": [
-    {
-      "type": "inline",
-      "id": "e9b8483aeafa",
-      "properties": [],
-      "nested": [
+    "blocks": [
         {
-          "type": "property",
-          "id": "2b596a6919fb",
-          "properties": [
-            "name"
-          ],
-          "fallback": "-",
-          "markdown": true,
-          "dice": false,
-          "conditioned": true,
-          "display": " "
+            "hasRule": true,
+            "id": "e9b8483aeafa",
+            "nested": [
+                {
+                    "conditioned": true,
+                    "dice": false,
+                    "display": " ",
+                    "fallback": "-",
+                    "id": "2b596a6919fb",
+                    "markdown": true,
+                    "properties": [
+                        "name"
+                    ],
+                    "type": "property"
+                },
+                {
+                    "conditioned": true,
+                    "dice": false,
+                    "display": " ",
+                    "fallback": "-",
+                    "id": "98389a48f808",
+                    "markdown": true,
+                    "properties": [
+                        "level"
+                    ],
+                    "type": "property"
+                },
+                {
+                    "id": "f90bf88b9a7a",
+                    "nested": [
+                        {
+                            "callback": "try { InitiativeTracker.newEncounter({creatures: [monster]}); } catch(e) {}",
+                            "icon": "sword",
+                            "id": "a8ba7ac88b6b",
+                            "type": "action"
+                        },
+                        {
+                            "callback": "try { InitiativeTracker.addCreatures([monster]); } catch(e) {}",
+                            "icon": "plus-with-circle",
+                            "id": "4af90ba86bc9",
+                            "type": "action"
+                        }
+                    ],
+                    "properties": [
+                    ],
+                    "type": "inline"
+                }
+            ],
+            "properties": [
+            ],
+            "type": "inline"
         },
         {
-          "type": "property",
-          "id": "98389a48f808",
-          "properties": [
-            "level"
-          ],
-          "fallback": "-",
-          "display": " ",
-          "conditioned": true,
-          "markdown": true,
-          "dice": false
+            "id": "4b3a6809a938",
+            "nested": [
+                {
+                    "conditioned": true,
+                    "hasRule": true,
+                    "id": "289a4b787968",
+                    "nested": [
+                        {
+                            "conditioned": true,
+                            "fallback": "-",
+                            "id": "694a3888b859",
+                            "markdown": true,
+                            "properties": [
+                                "rare_01"
+                            ],
+                            "type": "property"
+                        },
+                        {
+                            "conditioned": true,
+                            "fallback": "-",
+                            "id": "590a88988ae8",
+                            "markdown": true,
+                            "properties": [
+                                "rare_02"
+                            ],
+                            "type": "property"
+                        },
+                        {
+                            "conditioned": true,
+                            "fallback": "-",
+                            "id": "9a9be808699a",
+                            "markdown": true,
+                            "properties": [
+                                "rare_03"
+                            ],
+                            "type": "property"
+                        },
+                        {
+                            "conditioned": true,
+                            "fallback": "-",
+                            "id": "2988db1a685a",
+                            "markdown": true,
+                            "properties": [
+                                "rare_04"
+                            ],
+                            "type": "property"
+                        },
+                        {
+                            "conditioned": true,
+                            "display": " ",
+                            "fallback": " ",
+                            "id": "ba891ba8cbeb",
+                            "markdown": true,
+                            "properties": [
+                                "alignment"
+                            ],
+                            "type": "property"
+                        },
+                        {
+                            "conditioned": true,
+                            "display": " ",
+                            "fallback": " ",
+                            "id": "ebf9883938a8",
+                            "markdown": true,
+                            "properties": [
+                                "size"
+                            ],
+                            "type": "property"
+                        },
+                        {
+                            "conditioned": true,
+                            "display": " ",
+                            "fallback": " ",
+                            "id": "dabaf9e9fb68",
+                            "markdown": true,
+                            "properties": [
+                                "trait_01"
+                            ],
+                            "type": "property"
+                        },
+                        {
+                            "conditioned": true,
+                            "display": " ",
+                            "fallback": " ",
+                            "id": "e81a6aeadbf9",
+                            "markdown": true,
+                            "properties": [
+                                "trait_02"
+                            ],
+                            "type": "property"
+                        },
+                        {
+                            "conditioned": true,
+                            "display": " ",
+                            "fallback": "-",
+                            "id": "fa7919caabbb",
+                            "markdown": true,
+                            "properties": [
+                                "trait_03"
+                            ],
+                            "type": "property"
+                        },
+                        {
+                            "conditioned": true,
+                            "display": " ",
+                            "fallback": "-",
+                            "id": "58c9c8580b68",
+                            "markdown": true,
+                            "properties": [
+                                "trait_04"
+                            ],
+                            "type": "property"
+                        },
+                        {
+                            "conditioned": true,
+                            "display": " ",
+                            "fallback": "-",
+                            "id": "da894a7b8849",
+                            "markdown": true,
+                            "properties": [
+                                "trait_05"
+                            ],
+                            "type": "property"
+                        },
+                        {
+                            "conditioned": true,
+                            "display": " ",
+                            "fallback": "-",
+                            "id": "fb6b4b6bab49",
+                            "markdown": true,
+                            "properties": [
+                                "trait_06"
+                            ],
+                            "type": "property"
+                        },
+                        {
+                            "conditioned": true,
+                            "display": " ",
+                            "fallback": "-",
+                            "id": "480a5bfafb88",
+                            "markdown": true,
+                            "properties": [
+                                "trait_07"
+                            ],
+                            "type": "property"
+                        }
+                    ],
+                    "properties": [
+                    ],
+                    "type": "inline"
+                }
+            ],
+            "properties": [
+            ],
+            "type": "group"
+        },
+        {
+            "hasRule": true,
+            "id": "5999ea79ca3b",
+            "nested": [
+                {
+                    "conditioned": true,
+                    "dice": true,
+                    "fallback": "-",
+                    "heading": " ",
+                    "headingProp": true,
+                    "id": "9a9af9fbe959",
+                    "markdown": true,
+                    "properties": [
+                        "perception"
+                    ],
+                    "type": "traits"
+                },
+                {
+                    "conditioned": true,
+                    "display": "Language",
+                    "fallback": "-",
+                    "id": "ba28f9384918",
+                    "markdown": true,
+                    "properties": [
+                        "languages"
+                    ],
+                    "type": "property"
+                },
+                {
+                    "conditioned": true,
+                    "dice": true,
+                    "fallback": "-",
+                    "heading": " ",
+                    "id": "a8f8187b89fb",
+                    "markdown": true,
+                    "properties": [
+                        "skills"
+                    ],
+                    "type": "traits"
+                },
+                {
+                    "calculate": false,
+                    "conditioned": true,
+                    "dice": true,
+                    "fallback": "-",
+                    "headers": [
+                        "Str",
+                        "Dex",
+                        "Con",
+                        "Int",
+                        "Wis",
+                        "Cha"
+                    ],
+                    "id": "b82b0a1a9969",
+                    "properties": [
+                        "abilityMods"
+                    ],
+                    "type": "table"
+                },
+                {
+                    "conditioned": true,
+                    "dice": true,
+                    "fallback": "-",
+                    "hasRule": false,
+                    "heading": "  ",
+                    "id": "e96ba9d8a80a",
+                    "markdown": true,
+                    "properties": [
+                        "abilities_top"
+                    ],
+                    "type": "traits"
+                }
+            ],
+            "properties": [
+            ],
+            "type": "group"
+        },
+        {
+            "hasRule": true,
+            "id": "faaa08993a98",
+            "nested": [
+                {
+                    "conditioned": true,
+                    "dice": true,
+                    "fallback": "-",
+                    "heading": "",
+                    "id": "68ca69891bea",
+                    "markdown": true,
+                    "properties": [
+                        "armorclass"
+                    ],
+                    "type": "traits"
+                },
+                {
+                    "conditioned": true,
+                    "dice": true,
+                    "fallback": "-",
+                    "heading": "",
+                    "id": "9b1998e9a8da",
+                    "markdown": true,
+                    "properties": [
+                        "health"
+                    ],
+                    "type": "traits"
+                },
+                {
+                    "conditioned": true,
+                    "dice": true,
+                    "fallback": "-",
+                    "hasRule": false,
+                    "heading": "",
+                    "id": "ca2bf968987b",
+                    "markdown": true,
+                    "properties": [
+                        "abilities_mid"
+                    ],
+                    "type": "traits"
+                }
+            ],
+            "properties": [
+            ],
+            "type": "group"
+        },
+        {
+            "hasRule": true,
+            "id": "cbeabaf93b58",
+            "nested": [
+                {
+                    "conditioned": true,
+                    "dice": false,
+                    "display": "Speed",
+                    "fallback": "-",
+                    "id": "0b4809ba0b29",
+                    "markdown": true,
+                    "properties": [
+                        "speed"
+                    ],
+                    "type": "property"
+                },
+                {
+                    "conditioned": true,
+                    "dice": true,
+                    "fallback": "-",
+                    "heading": "",
+                    "headingProp": false,
+                    "id": "882bc9aa0898",
+                    "markdown": true,
+                    "properties": [
+                        "attacks"
+                    ],
+                    "type": "traits"
+                },
+                {
+                    "conditioned": true,
+                    "dice": true,
+                    "fallback": "-",
+                    "heading": " ",
+                    "id": "6919b8996939",
+                    "markdown": true,
+                    "properties": [
+                        "spellcasting"
+                    ],
+                    "type": "traits"
+                },
+                {
+                    "conditioned": true,
+                    "dice": true,
+                    "fallback": "-",
+                    "hasRule": false,
+                    "id": "aacb399a3b58",
+                    "markdown": true,
+                    "properties": [
+                        "abilities_bot"
+                    ],
+                    "type": "traits"
+                }
+            ],
+            "properties": [
+            ],
+            "type": "group"
+        },
+        {
+            "conditioned": true,
+            "fallback": "",
+            "heading": "Show to Players",
+            "id": "1b195a894b58",
+            "markdown": true,
+            "properties": [
+                "token"
+            ],
+            "text": null,
+            "type": "text"
+        },
+        {
+            "conditioned": true,
+            "fallback": "",
+            "hasRule": true,
+            "id": "1bba89582b29",
+            "properties": [
+                "token"
+            ],
+            "type": "image"
+        },
+        {
+            "conditioned": true,
+            "dice": false,
+            "display": " Source:",
+            "fallback": "-",
+            "id": "88e97a485b79",
+            "markdown": true,
+            "properties": [
+                "sourcebook"
+            ],
+            "type": "property"
         }
-      ],
-      "hasRule": true
-    },
-    {
-      "type": "group",
-      "id": "4b3a6809a938",
-      "properties": [],
-      "nested": [
-        {
-          "type": "inline",
-          "id": "289a4b787968",
-          "properties": [],
-          "nested": [
-            {
-              "type": "property",
-              "id": "694a3888b859",
-              "properties": [
-                "rare_01"
-              ],
-              "fallback": "-",
-              "conditioned": true,
-              "markdown": true
-            },
-            {
-              "type": "property",
-              "id": "590a88988ae8",
-              "properties": [
-                "rare_02"
-              ],
-              "fallback": "-",
-              "conditioned": true,
-              "markdown": true
-            },
-            {
-              "type": "property",
-              "id": "9a9be808699a",
-              "properties": [
-                "rare_03"
-              ],
-              "fallback": "-",
-              "conditioned": true,
-              "markdown": true
-            },
-            {
-              "type": "property",
-              "id": "2988db1a685a",
-              "properties": [
-                "rare_04"
-              ],
-              "fallback": "-",
-              "conditioned": true,
-              "markdown": true
-            },
-            {
-              "type": "property",
-              "id": "ba891ba8cbeb",
-              "properties": [
-                "alignment"
-              ],
-              "fallback": " ",
-              "display": " ",
-              "conditioned": true,
-              "markdown": true
-            },
-            {
-              "type": "property",
-              "id": "ebf9883938a8",
-              "properties": [
-                "size"
-              ],
-              "fallback": " ",
-              "display": " ",
-              "conditioned": true,
-              "markdown": true
-            },
-            {
-              "type": "property",
-              "id": "dabaf9e9fb68",
-              "properties": [
-                "trait_01"
-              ],
-              "fallback": " ",
-              "display": " ",
-              "conditioned": true,
-              "markdown": true
-            },
-            {
-              "type": "property",
-              "id": "e81a6aeadbf9",
-              "properties": [
-                "trait_02"
-              ],
-              "fallback": " ",
-              "display": " ",
-              "conditioned": true,
-              "markdown": true
-            },
-            {
-              "type": "property",
-              "id": "fa7919caabbb",
-              "properties": [
-                "trait_03"
-              ],
-              "fallback": "-",
-              "conditioned": true,
-              "display": " ",
-              "markdown": true
-            },
-            {
-              "type": "property",
-              "id": "58c9c8580b68",
-              "properties": [
-                "trait_04"
-              ],
-              "fallback": "-",
-              "conditioned": true,
-              "display": " ",
-              "markdown": true
-            },
-            {
-              "type": "property",
-              "id": "da894a7b8849",
-              "properties": [
-                "trait_05"
-              ],
-              "fallback": "-",
-              "display": " ",
-              "conditioned": true,
-              "markdown": true
-            },
-            {
-              "type": "property",
-              "id": "fb6b4b6bab49",
-              "properties": [
-                "trait_06"
-              ],
-              "fallback": "-",
-              "display": " ",
-              "conditioned": true,
-              "markdown": true
-            },
-            {
-              "type": "property",
-              "id": "480a5bfafb88",
-              "properties": [
-                "trait_07"
-              ],
-              "fallback": "-",
-              "display": " ",
-              "conditioned": true,
-              "markdown": true
-            }
-          ],
-          "hasRule": true,
-          "conditioned": true
-        }
-      ]
-    },
-    {
-      "type": "group",
-      "id": "5999ea79ca3b",
-      "properties": [],
-      "nested": [
-        {
-          "type": "traits",
-          "id": "9a9af9fbe959",
-          "properties": [
-            "perception"
-          ],
-          "fallback": "-",
-          "heading": " ",
-          "conditioned": true,
-          "dice": true,
-          "markdown": true,
-          "headingProp": true
-        },
-        {
-          "type": "property",
-          "id": "ba28f9384918",
-          "properties": [
-            "languages"
-          ],
-          "fallback": "-",
-          "display": "Language",
-          "conditioned": true,
-          "markdown": true
-        },
-        {
-          "type": "traits",
-          "id": "a8f8187b89fb",
-          "properties": [
-            "skills"
-          ],
-          "fallback": "-",
-          "markdown": true,
-          "dice": true,
-          "conditioned": true,
-          "heading": " "
-        },
-        {
-          "type": "table",
-          "id": "b82b0a1a9969",
-          "properties": [
-            "abilityMods"
-          ],
-          "headers": [
-            "Str",
-            "Dex",
-            "Con",
-            "Int",
-            "Wis",
-            "Cha"
-          ],
-          "calculate": false,
-          "fallback": "-",
-          "conditioned": true,
-          "dice": true
-        },
-        {
-          "type": "traits",
-          "id": "e96ba9d8a80a",
-          "properties": [
-            "abilities_top"
-          ],
-          "fallback": "-",
-          "conditioned": true,
-          "dice": true,
-          "markdown": true,
-          "heading": "  ",
-          "hasRule": false
-        }
-      ],
-      "hasRule": true
-    },
-    {
-      "type": "group",
-      "id": "faaa08993a98",
-      "properties": [],
-      "nested": [
-        {
-          "type": "traits",
-          "id": "68ca69891bea",
-          "properties": [
-            "armorclass"
-          ],
-          "fallback": "-",
-          "heading": "",
-          "conditioned": true,
-          "dice": true,
-          "markdown": true
-        },
-        {
-          "type": "traits",
-          "id": "9b1998e9a8da",
-          "properties": [
-            "health"
-          ],
-          "fallback": "-",
-          "heading": "",
-          "conditioned": true,
-          "dice": true,
-          "markdown": true
-        },
-        {
-          "type": "traits",
-          "id": "ca2bf968987b",
-          "properties": [
-            "abilities_mid"
-          ],
-          "fallback": "-",
-          "heading": "",
-          "conditioned": true,
-          "dice": true,
-          "markdown": true,
-          "hasRule": false
-        }
-      ],
-      "hasRule": true
-    },
-    {
-      "type": "group",
-      "id": "cbeabaf93b58",
-      "properties": [],
-      "nested": [
-        {
-          "type": "property",
-          "id": "0b4809ba0b29",
-          "properties": [
-            "speed"
-          ],
-          "fallback": "-",
-          "display": "Speed",
-          "conditioned": true,
-          "markdown": true,
-          "dice": false
-        },
-        {
-          "type": "traits",
-          "id": "882bc9aa0898",
-          "properties": [
-            "attacks"
-          ],
-          "fallback": "-",
-          "conditioned": true,
-          "dice": true,
-          "markdown": true,
-          "headingProp": false,
-          "heading": ""
-        },
-        {
-          "type": "traits",
-          "id": "6919b8996939",
-          "properties": [
-            "spellcasting"
-          ],
-          "fallback": "-",
-          "heading": " ",
-          "markdown": true,
-          "dice": true,
-          "conditioned": true
-        },
-        {
-          "type": "traits",
-          "id": "aacb399a3b58",
-          "properties": [
-            "abilities_bot"
-          ],
-          "fallback": "-",
-          "conditioned": true,
-          "dice": true,
-          "markdown": true,
-          "hasRule": false
-        }
-      ],
-      "hasRule": true
-    },
-    {
-      "type": "text",
-      "id": "1b195a894b58",
-      "properties": [
-        "token"
-      ],
-      "text": null,
-      "fallback": "",
-      "heading": "Show to Players",
-      "conditioned": true,
-      "markdown": true
-    },
-    {
-      "type": "image",
-      "id": "1bba89582b29",
-      "properties": [
-        "token"
-      ],
-      "fallback": "",
-      "conditioned": true,
-      "hasRule": true
-    },
-    {
-      "type": "property",
-      "id": "88e97a485b79",
-      "properties": [
-        "sourcebook"
-      ],
-      "fallback": "-",
-      "conditioned": true,
-      "markdown": true,
-      "dice": false,
-      "display": " Source:"
-    }
-  ],
-  "name": "Basic Pathfinder 2e Layout",
-  "id": "path-2e-block",
-  "edited": true
+    ],
+    "edited": true,
+    "id": "path-2e-block",
+    "name": "Basic Pathfinder 2e Layout"
 }
