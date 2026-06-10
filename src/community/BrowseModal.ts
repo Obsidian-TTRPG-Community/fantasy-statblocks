@@ -17,6 +17,7 @@ import CommunityTemplateManager from "./manager";
 import {
     layoutHasJavaScript,
     snippetNameFor,
+    SUBMIT_TEMPLATE_URL,
     type CommunityManifest,
     type CommunityTemplateEntry,
     type ResolvedTemplate
@@ -36,6 +37,7 @@ export default class BrowseCommunityModal extends Modal {
 
     private query = "";
     private system = ANY_SYSTEM;
+    private sort = "name";
     private importExample = true;
 
     /** True if at least one template was installed (so the caller can refresh). */
@@ -83,6 +85,9 @@ export default class BrowseCommunityModal extends Modal {
             this.manifest = await this.manager.getManifest(force);
             this.setStatus();
             this.renderGrid();
+            // Fetch real per-template download counts in the background and
+            // re-render the tiles once they arrive (falls back silently).
+            void this.applyDownloadStats();
         } catch (e) {
             this.manifest = null;
             this.setStatus(
@@ -92,6 +97,26 @@ export default class BrowseCommunityModal extends Modal {
                 true
             );
         }
+    }
+
+    private async applyDownloadStats() {
+        if (!this.manifest) return;
+        const stats = await this.manager.getDownloadStats();
+        if (!stats.size) return;
+        let changed = false;
+        for (const t of this.manifest.templates) {
+            if (!t.layout) continue;
+            const hits = stats.get(t.layout.replace(/^\/+/, ""));
+            if (typeof hits === "number") {
+                t.downloads = hits;
+                changed = true;
+            }
+        }
+        if (!changed) return;
+        const grid = this.bodyEl.querySelector(
+            ".statblock-community-grid"
+        );
+        if (grid instanceof HTMLElement) this.renderTiles(grid);
     }
 
     private async resolveEntry(
@@ -133,6 +158,27 @@ export default class BrowseCommunityModal extends Modal {
         return [...set].sort();
     }
 
+    private sorted(entries: CommunityTemplateEntry[]): CommunityTemplateEntry[] {
+        const byName = (a: CommunityTemplateEntry, b: CommunityTemplateEntry) =>
+            a.name.localeCompare(b.name);
+        const list = [...entries];
+        switch (this.sort) {
+            case "popular":
+                return list.sort(
+                    (a, b) =>
+                        (b.downloads ?? 0) - (a.downloads ?? 0) || byName(a, b)
+                );
+            case "system":
+                return list.sort(
+                    (a, b) =>
+                        (a.system ?? "").localeCompare(b.system ?? "") ||
+                        byName(a, b)
+                );
+            default:
+                return list.sort(byName);
+        }
+    }
+
     // ---- grid view ----
 
     private renderGrid() {
@@ -159,11 +205,33 @@ export default class BrowseCommunityModal extends Modal {
                     this.renderTiles(grid);
                 });
             })
+            .addDropdown((d) => {
+                d.addOption("name", "Sort: Name");
+                d.addOption("system", "Sort: System");
+                d.addOption("popular", "Sort: Most popular");
+                d.setValue(this.sort).onChange((v) => {
+                    this.sort = v;
+                    this.renderTiles(grid);
+                });
+            })
             .addExtraButton((b) =>
                 b
                     .setIcon("refresh-cw")
                     .setTooltip("Refresh from registry")
                     .onClick(() => this.load(true))
+            );
+
+        new Setting(controls)
+            .setClass("statblock-community-submit")
+            .setName("Have a layout to share?")
+            .setDesc(
+                "Submit it to the community registry — opens a form on GitHub."
+            )
+            .addButton((b) =>
+                b
+                    .setButtonText("Submit a template")
+                    .setTooltip("Open the submission form on GitHub")
+                    .onClick(() => window.open(SUBMIT_TEMPLATE_URL))
             );
 
         const grid = this.bodyEl.createDiv("statblock-community-grid");
@@ -172,7 +240,7 @@ export default class BrowseCommunityModal extends Modal {
 
     private renderTiles(grid: HTMLElement) {
         grid.empty();
-        const entries = this.filtered();
+        const entries = this.sorted(this.filtered());
         if (!entries.length) {
             grid.createEl("p", {
                 cls: "statblock-community-empty",
@@ -197,25 +265,33 @@ export default class BrowseCommunityModal extends Modal {
             } else {
                 const ph = thumb.createDiv("statblock-community-thumb-ph");
                 ph.createEl("span", {
-                    cls: "statblock-community-thumb-system",
-                    text: entry.system ?? "Statblock"
-                });
-                ph.createEl("span", {
                     cls: "statblock-community-thumb-hint",
                     text: "Click to preview"
                 });
             }
 
             const meta = tile.createDiv("statblock-community-tile-meta");
-            meta.createEl("span", {
+            meta.createEl("div", {
                 cls: "statblock-community-card-title",
                 text: entry.name
             });
-            if (entry.system) {
-                meta.createEl("span", {
-                    cls: "statblock-community-badge",
-                    text: entry.system
+            const data = meta.createDiv("statblock-community-tile-data");
+            const addRow = (label: string, value?: string) => {
+                if (!value) return;
+                const row = data.createDiv("statblock-community-tile-row");
+                row.createEl("span", {
+                    cls: "statblock-community-tile-label",
+                    text: `${label}:`
                 });
+                row.createEl("span", {
+                    cls: "statblock-community-tile-value",
+                    text: value
+                });
+            };
+            addRow("System", entry.system);
+            addRow("Author", entry.author);
+            if (typeof entry.downloads === "number") {
+                addRow("Downloads", entry.downloads.toLocaleString());
             }
 
             const open = () => this.showDetail(entry);
@@ -267,6 +343,13 @@ export default class BrowseCommunityModal extends Modal {
             head.createEl("div", {
                 cls: "statblock-community-card-author",
                 text: `by ${entry.author}`
+            });
+        }
+        if (typeof entry.downloads === "number") {
+            const stats = head.createDiv("statblock-community-detail-stats");
+            stats.createEl("span", {
+                cls: "statblock-community-detail-downloads",
+                text: `${entry.downloads.toLocaleString()} downloads`
             });
         }
         if (entry.description) {
@@ -469,7 +552,7 @@ export default class BrowseCommunityModal extends Modal {
     // ---- helpers ----
 
     private previewImageSrc(path: string): string {
-        const resolved = this.manager.resolveUrl(path);
+        const resolved = this.manager.resolveRawUrl(path);
         if (/^https?:\/\//i.test(resolved)) return resolved;
         return this.app.vault.adapter.getResourcePath(
             normalizePath(resolved)

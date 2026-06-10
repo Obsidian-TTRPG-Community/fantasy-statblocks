@@ -10,6 +10,29 @@ import type { Layout } from "types/layout";
 export const DEFAULT_COMMUNITY_SOURCE =
     "https://raw.githubusercontent.com/Obsidian-TTRPG-Community/fantasy-statblocks-templates/main/index.json";
 
+/** owner/repo of the official registry, used for CDN + stats URLs. */
+export const COMMUNITY_REPO =
+    "Obsidian-TTRPG-Community/fantasy-statblocks-templates";
+
+/**
+ * Raw GitHub base for the registry's files. CSS, example notes and preview
+ * images are fetched from here rather than the CDN, so author edits reach users
+ * immediately with no CDN cache lag or cold-start. Only the layout download is
+ * routed through the CDN (for popularity counting).
+ */
+export const DEFAULT_COMMUNITY_RAW = `https://raw.githubusercontent.com/${COMMUNITY_REPO}/main`;
+
+/**
+ * jsDelivr CDN base for the registry's files. Template assets (layout, example,
+ * css, preview) are fetched through here so jsDelivr records per-file download
+ * statistics — which drives the "Most popular" sort without any backend.
+ */
+export const DEFAULT_COMMUNITY_CDN = `https://cdn.jsdelivr.net/gh/${COMMUNITY_REPO}@main`;
+
+/** GitHub issue-form URL where users submit a new template. */
+export const SUBMIT_TEMPLATE_URL =
+    "https://github.com/Obsidian-TTRPG-Community/fantasy-statblocks-templates/issues/new?template=submit-template.yml";
+
 /**
  * Top-level shape of a community template registry's `index.json`.
  */
@@ -63,6 +86,8 @@ export interface CommunityTemplateEntry {
      * (e.g. "Dataview plugin", "Trajan Pro font"). Shown on the detail view.
      */
     requires?: string[];
+    /** Install/download count, surfaced on the card and used by "Popular" sort. */
+    downloads?: number;
 }
 
 /**

@@ -1,6 +1,9 @@
-import { normalizePath, requestUrl } from "obsidian";
+import { requestUrl } from "obsidian";
 import type StatBlockPlugin from "src/main";
 import {
+    COMMUNITY_REPO,
+    DEFAULT_COMMUNITY_CDN,
+    DEFAULT_COMMUNITY_RAW,
     DEFAULT_COMMUNITY_SOURCE,
     isValidLayout,
     type CommunityManifest,
@@ -23,36 +26,37 @@ export default class CommunityTemplateManager {
 
     constructor(private plugin: StatBlockPlugin) {}
 
-    /** The manifest URL currently configured (user override or default). */
+    /** The official registry manifest URL. */
     get source(): string {
-        const configured = this.plugin.settings.communityTemplateSource;
-        return configured && configured.trim().length
-            ? configured.trim()
-            : DEFAULT_COMMUNITY_SOURCE;
+        return DEFAULT_COMMUNITY_SOURCE;
     }
 
     /**
-     * True when the registry is read from the vault / local disk rather than
-     * fetched over http(s). Lets users host a registry in their own vault or on
-     * a shared drive, and makes the feature usable fully offline.
-     */
-    get isLocal(): boolean {
-        return !/^https?:\/\//i.test(this.source);
-    }
-
-    /**
-     * Resolve a (possibly relative) asset path against the manifest URL.
-     * Absolute http(s) URLs are returned unchanged.
+     * Resolve a (possibly relative) asset path against the jsDelivr CDN.
+     * Used only for the layout download so that jsDelivr records the fetch and
+     * drives the "Most popular" sort. Absolute http(s) URLs are returned
+     * unchanged.
      */
     resolveUrl(relativeOrAbsolute: string): string {
         if (/^https?:\/\//i.test(relativeOrAbsolute)) {
             return relativeOrAbsolute;
         }
-        const base = this.source;
-        const dir = base.slice(0, base.lastIndexOf("/") + 1);
-        // Strip any leading "./" or "/" from the relative path.
         const clean = relativeOrAbsolute.replace(/^\.?\//, "");
-        return `${dir}${clean}`;
+        return `${DEFAULT_COMMUNITY_CDN}/${clean}`;
+    }
+
+    /**
+     * Resolve a (possibly relative) asset path against raw GitHub. Used for
+     * assets that must always be fresh (CSS, example note, preview image) so
+     * they bypass the CDN cache and cold-start. Absolute http(s) URLs are
+     * returned unchanged.
+     */
+    resolveRawUrl(relativeOrAbsolute: string): string {
+        if (/^https?:\/\//i.test(relativeOrAbsolute)) {
+            return relativeOrAbsolute;
+        }
+        const clean = relativeOrAbsolute.replace(/^\.?\//, "");
+        return `${DEFAULT_COMMUNITY_RAW}/${clean}`;
     }
 
     /**
@@ -109,7 +113,7 @@ export default class CommunityTemplateManager {
         entry: CommunityTemplateEntry
     ): Promise<string | undefined> {
         if (!entry.example) return undefined;
-        return this.#fetchText(this.resolveUrl(entry.example));
+        return this.#fetchText(this.resolveRawUrl(entry.example));
     }
 
     /**
@@ -132,9 +136,44 @@ export default class CommunityTemplateManager {
         const paths = Array.isArray(entry.css) ? entry.css : [entry.css];
         const parts: string[] = [];
         for (const path of paths) {
-            parts.push(await this.#fetchText(this.resolveUrl(path)));
+            parts.push(await this.#fetchText(this.resolveRawUrl(path)));
         }
         return parts.join("\n\n");
+    }
+
+    /**
+     * Best-effort per-file download counts from jsDelivr's public stats API,
+     * keyed by repo-relative file path (e.g. "templates/<id>/layout.json").
+     * Returns an empty map on any failure so callers degrade gracefully to the
+     * manifest's curated numbers.
+     */
+    async getDownloadStats(period = "month"): Promise<Map<string, number>> {
+        const map = new Map<string, number>();
+        const url = `https://data.jsdelivr.com/v1/stats/packages/gh/${COMMUNITY_REPO}/files?period=${period}`;
+        try {
+            const data = JSON.parse(await this.#fetchText(url));
+            // The API may return a flat list or a nested file tree; handle both.
+            const walk = (nodes: any[], prefix: string) => {
+                for (const node of nodes ?? []) {
+                    const name = `${prefix}${node.name ?? ""}`;
+                    if (Array.isArray(node.files)) {
+                        walk(node.files, `${name}/`);
+                    }
+                    const hits =
+                        node.hits?.total ??
+                        (typeof node.hits === "number" ? node.hits : undefined) ??
+                        node.total;
+                    if (typeof hits === "number") {
+                        map.set(name.replace(/^\/+/, ""), hits);
+                    }
+                }
+            };
+            const list = Array.isArray(data) ? data : data?.files;
+            walk(list ?? [], "");
+        } catch (e) {
+            /* stats unavailable — fall back to curated numbers */
+        }
+        return map;
     }
 
     /** Clear the cached manifest(s). */
@@ -142,31 +181,18 @@ export default class CommunityTemplateManager {
         this.#cache.clear();
     }
 
-    async #fetchText(target: string): Promise<string> {
-        // Local / vault-relative sources are read through the file adapter;
-        // only http(s) targets go over the network. A local manifest may still
-        // reference absolute http(s) assets, which are fetched normally.
-        if (!/^https?:\/\//i.test(target)) {
-            const path = normalizePath(target);
-            const adapter = this.plugin.app.vault.adapter;
-            if (!(await adapter.exists(path))) {
-                throw new Error(
-                    `Local registry file not found in vault: ${path}`
-                );
-            }
-            return adapter.read(path);
-        }
+    async #fetchText(url: string): Promise<string> {
         let res;
         try {
-            res = await requestUrl({ url: target, throw: false });
+            res = await requestUrl({ url, throw: false });
         } catch (e) {
             throw new Error(
-                `Network error fetching ${target}. Check your connection and the registry URL.`
+                `Network error fetching ${url}. Check your connection.`
             );
         }
         if (res.status < 200 || res.status >= 300) {
             throw new Error(
-                `Request to ${target} failed with status ${res.status}.`
+                `Request to ${url} failed with status ${res.status}.`
             );
         }
         return res.text;
