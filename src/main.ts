@@ -98,7 +98,6 @@ const DEFAULT_DATA: StatblockData = {
     alwaysImport: false,
     defaultLayoutsIntegrated: false,
     atomicWrite: true,
-    communityTemplateSource: "",
     communityTemplateSnippets: {}
 };
 
