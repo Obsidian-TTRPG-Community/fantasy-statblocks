@@ -1,0 +1,73 @@
+{
+    "name": "Mörk Borg Creature",
+    "id": "mork-borg-creature",
+    "blocks": [
+        {
+            "type": "heading",
+            "id": "mb-name",
+            "properties": ["name"],
+            "size": 1,
+            "conditioned": true,
+            "fallback": "Creature"
+        },
+        {
+            "type": "subheading",
+            "id": "mb-sub",
+            "properties": ["subtype"],
+            "conditioned": true
+        },
+        {
+            "type": "text",
+            "id": "mb-flavor",
+            "properties": ["flavor_text"],
+            "markdown": true,
+            "conditioned": true,
+            "hasRule": true
+        },
+        {
+            "type": "group",
+            "id": "mb-stats",
+            "properties": ["hp", "morale", "armor"],
+            "hasRule": true,
+            "conditioned": true,
+            "nested": [
+                {
+                    "type": "property",
+                    "id": "mb-hp",
+                    "properties": ["hp"],
+                    "display": "HP",
+                    "conditioned": true
+                },
+                {
+                    "type": "property",
+                    "id": "mb-morale",
+                    "properties": ["morale"],
+                    "display": "Morale",
+                    "conditioned": true
+                },
+                {
+                    "type": "property",
+                    "id": "mb-armor",
+                    "properties": ["armor"],
+                    "display": "Armor",
+                    "conditioned": true
+                }
+            ]
+        },
+        {
+            "type": "traits",
+            "id": "mb-actions",
+            "properties": ["actions"],
+            "heading": "Actions",
+            "conditioned": true,
+            "hasRule": true
+        },
+        {
+            "type": "traits",
+            "id": "mb-traits",
+            "properties": ["traits"],
+            "heading": "Special",
+            "conditioned": true
+        }
+    ]
+}

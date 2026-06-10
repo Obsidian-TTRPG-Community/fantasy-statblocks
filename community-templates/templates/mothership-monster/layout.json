@@ -1,0 +1,96 @@
+{
+    "name": "Mothership Monster",
+    "id": "mothership-monster",
+    "blocks": [
+        {
+            "type": "heading",
+            "id": "ms-name",
+            "properties": ["name"],
+            "size": 1,
+            "conditioned": true,
+            "fallback": "Adversary"
+        },
+        {
+            "type": "subheading",
+            "id": "ms-sub",
+            "properties": ["subtype"],
+            "conditioned": true
+        },
+        {
+            "type": "text",
+            "id": "ms-flavor",
+            "properties": ["flavor_text"],
+            "markdown": true,
+            "conditioned": true,
+            "hasRule": true
+        },
+        {
+            "type": "group",
+            "id": "ms-checks",
+            "properties": ["combat", "instinct"],
+            "hasRule": true,
+            "conditioned": true,
+            "nested": [
+                {
+                    "type": "property",
+                    "id": "ms-combat",
+                    "properties": ["combat"],
+                    "display": "Combat",
+                    "conditioned": true
+                },
+                {
+                    "type": "property",
+                    "id": "ms-instinct",
+                    "properties": ["instinct"],
+                    "display": "Instinct",
+                    "conditioned": true
+                }
+            ]
+        },
+        {
+            "type": "group",
+            "id": "ms-def",
+            "properties": ["wounds", "health", "armor"],
+            "hasRule": true,
+            "conditioned": true,
+            "nested": [
+                {
+                    "type": "property",
+                    "id": "ms-wounds",
+                    "properties": ["wounds"],
+                    "display": "Wounds",
+                    "conditioned": true
+                },
+                {
+                    "type": "property",
+                    "id": "ms-health",
+                    "properties": ["health"],
+                    "display": "Health",
+                    "conditioned": true
+                },
+                {
+                    "type": "property",
+                    "id": "ms-armor",
+                    "properties": ["armor"],
+                    "display": "Armor",
+                    "conditioned": true
+                }
+            ]
+        },
+        {
+            "type": "traits",
+            "id": "ms-attacks",
+            "properties": ["attacks"],
+            "heading": "Attacks",
+            "conditioned": true,
+            "hasRule": true
+        },
+        {
+            "type": "traits",
+            "id": "ms-special",
+            "properties": ["traits"],
+            "heading": "Special",
+            "conditioned": true
+        }
+    ]
+}
