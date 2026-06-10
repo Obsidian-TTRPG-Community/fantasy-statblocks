@@ -26,6 +26,7 @@ import { StatblockSuggester } from "./suggest";
 import { DefaultLayouts } from "./layouts";
 import type { StatblockData } from "index";
 import LayoutManager from "./layouts/manager";
+import CommunityTemplateManager from "./community/manager";
 import { CREATURE_VIEW, CreatureView } from "./combatant";
 import { API } from "./api/api";
 import { Linkifier } from "./parser/linkify";
@@ -57,12 +58,14 @@ const DEFAULT_DATA: StatblockData = {
     hideConditionHelp: false,
     alwaysImport: false,
     defaultLayoutsIntegrated: false,
-    atomicWrite: false
+    atomicWrite: false,
+    communityTemplateSnippets: {}
 };
 
 export default class StatBlockPlugin extends Plugin {
     settings: StatblockData;
     manager = new LayoutManager();
+    communityTemplates = new CommunityTemplateManager(this);
     api: API = new API(this);
 
     getRoller(str: string) {

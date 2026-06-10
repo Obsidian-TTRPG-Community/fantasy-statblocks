@@ -19,6 +19,13 @@ declare module "obsidian" {
         setting: {
             close: () => void;
         };
+        customCss: {
+            getSnippetsFolder(): string;
+            enabledSnippets: Set<string>;
+            snippets: string[];
+            requestLoadSnippets(): void;
+            setCssEnabledStatus(snippet: string, enabled: boolean): void;
+        };
     }
     interface MetadataCache {
         initialized: boolean;
