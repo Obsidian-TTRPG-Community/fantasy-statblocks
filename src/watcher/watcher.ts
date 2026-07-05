@@ -220,6 +220,7 @@ class WatcherClass extends Component {
         for (const path of this.plugin.settings.paths) {
             const folder = this.vault.getAbstractFileByPath(path);
             if (!folder) continue;
+            if (this.getFiles(folder).length === 0) continue;
             isParsing = true;
             this.parsePath(folder);
         }
