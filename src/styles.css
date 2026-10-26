@@ -1,5 +1,6 @@
 @import "./main.css";
 @import "./settings/settings.css";
+@import "./layouts/basic-55e/xCSS/basic-55e-layout.scss";
 @import "./layouts/fate\ core/fate-core.scss";
 @import "./layouts/pathfinder 2e/xCSS/pf2e.css";
 @import "./layouts/13th age/monster/xCSS/13th-age-monsters.css";

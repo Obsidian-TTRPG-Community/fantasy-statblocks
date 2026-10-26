@@ -222,6 +222,22 @@
 				"speed": {
 					"$ref": "../util.json#/definitions/speed"
 				},
+				"initiative": {
+					"oneOf": [
+						{
+							"type": ["object"],
+							"properties": {
+								"proficiency": {
+									"type": "number"
+								}
+							},
+							"additionalProperties": false
+						},
+						{
+							"type": ["number"]
+						}
+					]
+				},
 				"str": {"type": ["integer", "null"]},
 				"dex": {"type": ["integer", "null"]},
 				"con": {"type": ["integer", "null"]},

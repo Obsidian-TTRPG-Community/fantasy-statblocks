@@ -33,7 +33,6 @@ export const CR: { [key: string]: CR } = {
     },
     "0.25": {
         cr: "1/4",
-
         value: 0.25,
         xp: 50
     },

@@ -1,4 +1,5 @@
 import { stringify } from "src/util/util";
+import { CR } from "src/data/constants";
 import type {
     ConditionImmunityArray,
     Creature5eTools,
@@ -27,10 +28,12 @@ const abilityMap: { [key: string]: string } = {
 function parseString(str: string) {
     if (!str) return "";
     return str
-        .replace(/{@condition (.+?)(?:\|.+)?}/g, "$1")
-        .replace(/{@item (.+?)(?:\|.+)?}/g, "$1")
-        .replace(/{@spell ([\s\S]+?)(?:\|.+)?}/g, `$1`)
-        .replace(/{@recharge (.+?)(?:\|.+)?}/g, `(Recharge $1-6)`)
+        .replaceAll(/{@condition (.+?)(?:\|.+?)?}/g, "$1")
+        .replaceAll(/{@item (.+?)(?:\|.+?)?}/g, "$1")
+        .replaceAll(/{@spell ([\s\S]+?)(?:\|.+?)?}/g, `$1`)
+        .replaceAll(/{@action ([\s\S]+?)(?:\|.+?)?}/g, `$1`)
+        .replaceAll(/{@status ([\s\S]+?)(?:\|.+?)?}/g, `$1`)
+        .replace(/{@recharge (.+?)(?:\|.+?)?}/g, `(Recharge $1-6)`)
         .replace(/{@recharge}/g, `(Recharge 6)`)
         .replace(/{@h}/g, ``)
         .replace(/{@damage (.+?)}/g, `$1`)
@@ -43,12 +46,14 @@ function parseString(str: string) {
         .replace(/{@atkr r}/g, `Ranged Attack Roll:`)
         .replace(/{@atkr m,r}/g, `Melee or Ranged Attack Roll:`)
         .replace(/{@hom}/g, `Hit or Miss:`)
-        .replace(/{@creature (.+?)(?:\|.+)?}/g, `$1`)
-        .replace(/{@skill (.+?)(?:\|.+)?}/g, `$1`)
-        .replace(/{@dice (.+?)(?:\|.+)?}/g, `$1`)
-        .replace(/{@hit (\d+?)(?:\|.+)?}/g, `+$1`)
-        .replace(/{@dc (\d+?)(?:\|.+)?}/g, `$1`)
+        .replace(/{@creature (.+?)(?:\|.+?)?}/g, `$1`)
+        .replace(/{@skill (.+?)(?:\|.+?)?}/g, `$1`)
+        .replace(/{@dice (.+?)(?:\|.+?)?}/g, `$1`)
+        .replace(/{@hit (\d+?)(?:\|.+?)?}/g, `+$1`)
+        .replace(/{@dc (\d+?)(?:\|.+?)?}/g, `$1`)
         .replace(/{@quickref (.+?)\|\|.+?}/, `$1`)
+        .replace(/{@actTrigger}/g, `Trigger:`)
+        .replace(/{@actResponse}/g, `Response:`)
         .replace(/{@actSave str}/g, `Strength Saving Throw:`)
         .replace(/{@actSave dex}/g, `Dexterity Saving Throw:`)
         .replace(/{@actSave con}/g, `Constitution Saving Throw:`)
@@ -56,8 +61,11 @@ function parseString(str: string) {
         .replace(/{@actSave wis}/g, `Wisdom Saving Throw:`)
         .replace(/{@actSave cha}/g, `Charisma Saving Throw:`)
         .replace(/{@actSaveFail}/g, `Failure:`)
+        .replace(/{@actSaveFail 1}/g, `First Failure:`)
+        .replace(/{@actSaveFail 2}/g, `Second Failure:`)
+        .replace(/{@actSaveFail 3}/g, `Third Failure:`)
         .replace(/{@actSaveSuccess}/g, `Success:`)
-        .replace(/{actSaveSuccessOrFail}/g, `Failure or Success:`)
+        .replace(/{@actSaveSuccessOrFail}/g, `Failure or Success:`)
         .replace(/{@variantrule (.+?)( \[|\|).+?}/g,`$1`);
 
 }
@@ -101,6 +109,7 @@ export async function build5eMonsterFromFile(file: File): Promise<Monster[]> {
                                     : "",
                             ac: getAc(monster.ac),
                             speed: getSpeedString(monster),
+                            initiative: getInitiativeBonus(monster),
                             stats: [
                                 monster.str,
                                 monster.dex,
@@ -150,14 +159,9 @@ export async function build5eMonsterFromFile(file: File): Promise<Monster[]> {
                                 monster.trait?.flatMap(normalizeEntries) ?? [],
                             actions:
                                 monster.action?.flatMap(normalizeEntries) ?? [],
-                            bonus_actions:
-                                monster.bonus?.flatMap(normalizeEntries) ?? [],
-                            reactions:
-                                monster.reaction?.flatMap(normalizeEntries) ??
-                                [],
-                            legendary_actions:
-                                monster.legendary?.flatMap(normalizeEntries) ??
-                                [],
+                            bonus_actions: getBonusActions(monster),
+                            reactions: getReactions(monster),
+                            legendary_actions: getLegendaryActions(monster),
                             mythic_actions: [
                                 ...((monster.mythicHeader
                                     ? [
@@ -171,7 +175,7 @@ export async function build5eMonsterFromFile(file: File): Promise<Monster[]> {
                                 ...(monster.mythic?.flatMap(normalizeEntries) ??
                                     [])
                             ],
-                            spells: getSpells(monster),
+                            spells: getActionSpellsText(monster),
                             spellsNotes: getSpellNotes(monster).join(" ")
                         };
                         imported.push(importedMonster);
@@ -225,6 +229,68 @@ function getCR(type: Creature5eTools["cr"]) {
         return type;
     }
     return type.cr;
+}
+
+function getBonusActions(monster: Creature5eTools) {
+    const bonus_actions = monster.bonus?.flatMap(normalizeEntries) ?? [];
+
+    const spells = getFilteredSpells(monster, "bonus")
+        .map(s => ({name: s.name, entries: spellBlockToEntries(s)}))
+        .flatMap(normalizeEntries);
+    bonus_actions.push(...spells);
+
+    return bonus_actions;
+}
+
+function getReactions(monster: Creature5eTools) {
+    const reactions = monster.reaction?.flatMap(normalizeEntries) ?? [];
+
+    const spells = getFilteredSpells(monster, "reaction")
+        .map(s => ({name: s.name, entries: spellBlockToEntries(s)}))
+        .flatMap(normalizeEntries);
+    reactions.push(...spells);
+
+    return reactions;
+}
+
+function getLegendaryActions(monster: Creature5eTools) {
+    const legendary_actions = monster.legendary?.flatMap(normalizeEntries) ?? [];
+
+    const spells = getFilteredSpells(monster, "legendary")
+        .map(s => ({name: s.name, entries: spellBlockToEntries(s)}))
+        .flatMap(normalizeEntries);
+    legendary_actions.push(...spells);
+
+    return legendary_actions;
+}
+
+function getFilteredSpells(monster: Creature5eTools, filter: string): SpellBlock[] {
+    if (!monster.spellcasting || !monster.spellcasting.length) return [];
+
+    return monster.spellcasting
+        .filter(s => s.displayAs == filter)
+        .map(extractSpellBlock);
+}
+
+function spellBlockToEntries(spellBlock: SpellBlock): Entry[] {
+    const ret = [];
+    for (let section of spellBlock.text) {
+        if (typeof section == "string") {
+            ret.push(section);
+        } else {
+            const [name, entry] = Object.entries(section as Record<string, string>)[0];
+            ret.push({
+                type: "",
+                name: spellBlock.name,
+                items: [{
+                    name: name,
+                    entry: entry
+                }]
+            });
+        }
+    }
+
+    return ret;
 }
 
 function getSpellNotes(monster: Creature5eTools) {
@@ -316,20 +382,25 @@ const spellMap: { [K in keyof EntrySpellcasting["spells"]]: string } = {
     "9": "9th level"
 };
 
-type ExtractedSpells = Array<string | Record<string, string>>;
+type SpellBlock = {
+    name: string;
+    text: SpellText;
+}
+
+type SpellText = Array<string | Record<string, string>>;
 
 function getSpellStringFromArray(spellsArray: _ArrayOfSpell) {
     const ret: string[] = [];
     for (const entry of spellsArray) {
         if (typeof entry == "string") {
-            ret.push(entry);
+            ret.push(parseString(entry));
             continue;
         }
         if (!entry.hidden && entry.entry && entry.entry.length) {
-            ret.push(entry.entry);
+            ret.push(parseString(entry.entry));
         }
     }
-    return parseString(ret.join(", "));
+    return ret.join(", ");
 }
 type SpellFrequency = Array<[frequency: number, spells: string]>;
 function getSpellsFromFrequency(
@@ -344,34 +415,39 @@ function getSpellsFromFrequency(
     return ret;
 }
 
-function extractSpellsBlocks(spellBlock: EntrySpellcasting): ExtractedSpells {
-    let ret: ExtractedSpells = [
-        parseString((spellBlock.headerEntries ?? []).join("\n"))
-    ];
+function extractSpellBlock(spellEntry: EntrySpellcasting): SpellBlock {
+    let ret: SpellBlock = {
+        name: spellEntry.name,
+        text: [
+            parseString((spellEntry.headerEntries ?? []).join("\n"))
+        ]
+    };
 
-    if ("spells" in spellBlock) {
+    const hiddenSections = spellEntry.hidden ?? [];
+
+    if ("spells" in spellEntry && !("spells" in hiddenSections)) {
         try {
-            for (const level in spellBlock.spells ?? {}) {
+            for (const level in spellEntry.spells ?? {}) {
                 const block =
-                    spellBlock.spells[level as keyof typeof spellBlock.spells];
+                    spellEntry.spells[level as keyof typeof spellEntry.spells];
                 const { spells } = block;
                 let name: string = `${
-                    spellMap[level as keyof typeof spellBlock.spells]
+                    spellMap[level as keyof typeof spellEntry.spells]
                 }`;
                 name += "slots" in block ? ` (${block.slots} slots)` : "";
 
                 const sp = parseString(spells.join(", "));
-                ret.push({ [name]: sp });
+                ret.text.push({ [name]: sp });
             }
         } catch (e) {
             throw new Error("There was an error parsing the spells.");
         }
     }
-    if ("will" in spellBlock) {
-        if (spellBlock.will.length > 0) {
+    if ("will" in spellEntry && !("will" in hiddenSections)) {
+        if (spellEntry.will.length > 0) {
             try {
-                ret.push({
-                    "At will": getSpellStringFromArray(spellBlock.will)
+                ret.text.push({
+                    "At will": getSpellStringFromArray(spellEntry.will)
                 });
             } catch (e) {
                 throw new Error(
@@ -380,11 +456,11 @@ function extractSpellsBlocks(spellBlock: EntrySpellcasting): ExtractedSpells {
             }
         }
     }
-    if ("ritual" in spellBlock) {
-        if (spellBlock.ritual.length > 0) {
+    if ("ritual" in spellEntry && !("ritual" in hiddenSections)) {
+        if (spellEntry.ritual.length > 0) {
             try {
-                ret.push({
-                    Rituals: getSpellStringFromArray(spellBlock.ritual)
+                ret.text.push({
+                    Rituals: getSpellStringFromArray(spellEntry.ritual)
                 });
             } catch (e) {
                 throw new Error(
@@ -409,10 +485,10 @@ function extractSpellsBlocks(spellBlock: EntrySpellcasting): ExtractedSpells {
         charges: " charges"
     };
     for (const frequency of frequencyCasting) {
-        if (frequency in spellBlock) {
-            const entries = getSpellsFromFrequency(spellBlock[frequency]);
+        if (frequency in spellEntry && !(hiddenSections.includes(frequency))) {
+            const entries = getSpellsFromFrequency(spellEntry[frequency]);
             for (const entry of entries.sort((a, b) => b[0] - a[0])) {
-                ret.push({
+                ret.text.push({
                     [`${entry[0]}${frequencyMap[frequency]}`]: entry[1]
                 });
             }
@@ -422,10 +498,13 @@ function extractSpellsBlocks(spellBlock: EntrySpellcasting): ExtractedSpells {
     return ret;
 }
 
-function getSpells(monster: Creature5eTools): ExtractedSpells {
+function getActionSpellsText(monster: Creature5eTools): SpellText {
     if (!monster.spellcasting || !monster.spellcasting.length) return [];
 
-    return monster.spellcasting.flatMap(extractSpellsBlocks);
+    return monster.spellcasting
+        .filter(s => !["bonus", "reaction", "legendary"].includes(s.displayAs ?? ""))
+        .flatMap(extractSpellBlock)
+        .flatMap(s => s.text);
 }
 function getMonsterAlignment(monster: Creature5eTools): string {
     if (!monster.alignment) return null;
@@ -543,6 +622,18 @@ function getSpeedString(monster: Creature5eTools): string {
         }
     }
     return stack.join(joiner);
+}
+
+function getInitiativeBonus(monster: Creature5eTools): number {
+    const initiative = monster.initiative;
+    if (!initiative) return 0;
+    if (typeof initiative == "number") return initiative;
+
+    const cr = getCR(monster.cr);
+    let cr_value = CR[cr]?.value ?? 0;
+    
+    const prof_bonus = Math.max(Math.floor(2 + (cr_value - 1) / 4), 2);
+    return initiative.proficiency * prof_bonus;
 }
 
 function getSenses(monster: Creature5eTools): string {

@@ -71,6 +71,11 @@ export type Creature5eTools =
                     special?: string;
                 };
           speed: Speed;
+          initiative?:
+            | {
+                proficiency: number;
+              }
+            | number;
           str: number | null;
           dex: number | null;
           con: number | null;
@@ -1021,6 +1026,11 @@ export type Creature5eTools =
                     special?: string;
                 };
           speed?: Speed;
+          initiative?:
+            | {
+                proficiency: number;
+              }
+            | number;
           str?: number | null;
           dex?: number | null;
           con?: number | null;
@@ -3387,13 +3397,14 @@ export interface EntrySpellcasting {
         | "yearly"
         | "ritual"
         | "spells"
+        | "charges"
     )[];
     footerEntries?: string[];
     ability?: "str" | "dex" | "con" | "int" | "wis" | "cha";
     /**
      * Implicitly "trait"
      */
-    displayAs?: "trait" | "action";
+    displayAs?: "trait" | "action" | "bonus" | "reaction" | "legendary";
     /**
      * The UID of an item which provides the charges required to cast any "charges" spells.
      */
