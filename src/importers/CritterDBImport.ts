@@ -27,13 +27,9 @@ export async function buildMonsterFromCritterFile(
                             size: monster.stats.size,
                             alignment: monster.stats.alignment,
                             hp: monster.stats.hitPoints,
-                            hit_dice: `${Math.floor(
-                                monster.stats.extraHealthFromConstitution /
-                                    monster.stats.abilityScoreModifiers
-                                        .constitution
-                            )}d${monster.stats.hitDieSize} + ${
-                                monster.stats.extraHealthFromConstitution
-                            }`,
+                            hit_dice:
+                                monster.stats.hitPointsStr
+                                    ?.match(/\(([^)]*?)\)/)?.[1] ?? "",
                             ac: monster.stats.armorClass,
                             speed: monster.stats.speed,
                             stats: [
